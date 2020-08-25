@@ -1,0 +1,7 @@
+image: alpine/edge
+sources:
+- https://git.sr.ht/~rkta/microtojson
+tasks:
+- check: |
+    cd microtojson
+    make -s
