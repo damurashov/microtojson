@@ -12,3 +12,5 @@ Using an char array and abusing type integer it is possible to create any type.
 See `test_mtojson.c` for usage.
 
 This project is heavily inspired by microjson from Eric S. Raymond (https://gitlab.com/esr/microjson/).
+
+**Branches starting with `rk/` are considered private and will be force pushed!**
