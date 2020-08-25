@@ -37,7 +37,7 @@ gen_json_integer(char *out, char *val)
 static char*
 gen_json_array(char *out, struct json_array *jar)
 {
-	if ((rem_len -= 2) < 0) return NULL; // 2: []
+	if ((rem_len -= 2) < 0) return NULL; // 2 -> []
 	*out++ = '[';
 	if (jar->count == 0){
 		*out++ = ']';
@@ -92,9 +92,9 @@ gen_json_array(char *out, struct json_array *jar)
 char*
 generate_json(char *out, int len, struct json_kv *kv)
 {
-	int object_meta_len = 2; // {}\0
+	int object_meta_len = 2; // 2 -> {}
 	if (nested_object_depth == 0)
-		object_meta_len = 3; // {}\0
+		object_meta_len = 3; // 3 -> {}\0
 	nested_object_depth++;
 	if((rem_len = len - object_meta_len) < 0) return NULL;
 	*out++ = '{';
@@ -106,9 +106,8 @@ generate_json(char *out, int len, struct json_kv *kv)
 
 	while (kv->key){
 		char *key = kv->key;
-		rem_len -= (strlen(key) + 4); // "":_
-		if (rem_len < 0)
-			return NULL;
+		rem_len -= (strlen(key) + 4); // 4 -> "":_
+		if (rem_len < 0) return NULL;
 
 		*out++ = '"';
 		while ((*out++ = *key++));
