@@ -42,6 +42,17 @@ gen_json_integer(char *out, int val)
 }
 
 static char*
+gen_json_value(char *out, char *val)
+{
+	rem_len -= strlen(val);
+	if (rem_len < 0)
+		return NULL;
+	while ((*out++ = *val++));
+	--out; // Discard \0
+	return out;
+}
+
+static char*
 gen_json_array(char *out, struct json_array *jar)
 {
 	if ((rem_len -= 2) < 0) return NULL; // 2 -> []
@@ -135,6 +146,9 @@ generate_json(char *out, int len, struct json_kv *kv)
 			break;
 		case t_json_string:
 			out = gen_json_string(out, (char*)kv->value);
+			break;
+		case t_json_value:
+			out = gen_json_value(out, (char*)kv->value);
 			break;
 		}
 

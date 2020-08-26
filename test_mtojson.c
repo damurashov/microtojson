@@ -313,6 +313,21 @@ test_json_integer_buffer_overflow()
 }
 
 int
+test_json_valuetype()
+{
+	char *expected = "{\"key\": This is not valid {}JSON!}";
+	char *test = "test_json_valuetype";
+	tell_single_test(test);
+
+	struct json_kv jkv[] = {
+		{ .key = "key", .value = "This is not valid {}JSON!", .type = t_json_value, },
+		{ NULL },
+	};
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
+	return check_result(test, expected, result);
+}
+
+int
 exec_test(int i)
 {
 	switch (i){
@@ -352,13 +367,15 @@ exec_test(int i)
 	case 12:
 		return test_json_object_empty();
 		break;
+	case 13:
+		return test_json_valuetype();
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 12
+#define MAXTEST 13
 
 int
 main(int argc, char *argv[])
