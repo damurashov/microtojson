@@ -9,6 +9,7 @@
 enum { len = 10000 };
 char result[len];
 _Bool single_test = 0;
+int verbose = 0;
 
 int
 check_result(char *test, char *expected, char *result)
@@ -51,8 +52,9 @@ test_json_integer()
 	char *test = "test_json_integer";
 	tell_single_test(test);
 
+	int n = 1;
 	struct json_kv jkv[] = {
-		{ .key = "key", .value = "1", .type = t_json_integer, },
+		{ .key = "key", .value = &n, .type = t_json_integer, },
 		{ NULL },
 	};
 	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
@@ -66,9 +68,11 @@ test_json_integer_two()
 	char *test = "test_json_integer";
 	tell_single_test(test);
 
+	int ns[] = {1, 2};
+
 	struct json_kv jkv[] = {
-		{ .type = t_json_integer, .key = "key", .value = "1", },
-		{ .type = t_json_integer, .key = "key", .value = "2", },
+		{ .type = t_json_integer, .key = "key", .value = &ns[0], },
+		{ .type = t_json_integer, .key = "key", .value = &ns[1], },
 		{ NULL }
 	};
 	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
@@ -82,9 +86,9 @@ test_json_array_integer()
 	char *test = "test_json_array_integer";
 	tell_single_test(test);
 
-	char *arr[8] = {"1", "2"};
+	int arr[] = {1, 2};
 	struct json_array jar = {
-		.value = (void*)arr, .count = 2, .type = t_json_integer };
+		.value = arr, .count = 2, .type = t_json_integer };
 
 	struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_json_array, },
@@ -103,7 +107,7 @@ test_json_array_string()
 
 	char *arr[8] = {"1", "23"};
 	struct json_array jar = {
-		.value = (void*)arr, .count = 2, .type = t_json_string };
+		.value = arr, .count = 2, .type = t_json_string };
 
 	struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_json_array, },
@@ -122,10 +126,10 @@ test_json_array_array()
 
 	char *arr[] = {"1", "2", "3"};
 	struct json_array inner_jar_arr = {
-		.value = (void*)arr, .count = 3, .type = t_json_string };
+		.value = arr, .count = 3, .type = t_json_string };
 	struct json_array *inner_jar[] = { &inner_jar_arr, &inner_jar_arr };
 	struct json_array jar = {
-		.value = (void*)inner_jar, .count = 2, .type = t_json_array };
+		.value = inner_jar, .count = 2, .type = t_json_array };
 
 	struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_json_array, },
@@ -145,7 +149,7 @@ test_json_array_empty()
 
 	char *arr[1];
 	struct json_array jar = {
-		.value = (void*)arr, .count = 0, .type = t_json_string };
+		.value = arr, .count = 0, .type = t_json_string };
 
 	struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_json_array, },
@@ -165,13 +169,13 @@ test_json_array_empty_one()
 
 	char *arr[] = {"1", "2", "3"};
 	struct json_array inner_jar_arr = {
-		.value = (void*)arr, .count = 3, .type = t_json_string };
+		.value = arr, .count = 3, .type = t_json_string };
 	struct json_array inner_jar_empty = {
-		.value = (void*)arr, .count = 0, .type = t_json_string };
+		.value = arr, .count = 0, .type = t_json_string };
 
 	struct json_array *inner_jar[] = { &inner_jar_empty, &inner_jar_arr };
 	struct json_array jar = {
-		.value = (void*)inner_jar, .count = 2, .type = t_json_array };
+		.value = inner_jar, .count = 2, .type = t_json_array };
 
 	struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_json_array, },
@@ -213,18 +217,21 @@ test_json_object()
 
 	char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
 	struct json_array addarr = {
-		.value = (void*)addresses, .count = 3, .type = t_json_string };
+		.value = addresses, .count = 3, .type = t_json_string };
 
+	int kid = 1;
+	int cnt = 3;
 	struct json_kv keys[] = {
-		{ .key = "key_id", .value = "1",     .type = t_json_integer },
-		{ .key = "count",   .value = "3",     .type = t_json_integer },
+		{ .key = "key_id", .value = &kid,     .type = t_json_integer },
+		{ .key = "count",   .value = &cnt,     .type = t_json_integer },
 		{ .key = "values", .value = &addarr, .type = t_json_array },
 		{ NULL }
 	};
 
+	int nok = 1;
 	struct json_kv jkv[] = {
 		{ .key = "keys", .value = &keys, .type = t_json_object },
-		{ .key = "number_of_keys", .value = "1", .type = t_json_integer},
+		{ .key = "number_of_keys", .value = &nok, .type = t_json_integer},
 		{ NULL }
 	};
 
@@ -253,32 +260,35 @@ test_json_array_object()
 
 	char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
 	struct json_array addarr = {
-		.value = (void*)addresses, .count = 3, .type = t_json_string };
+		.value = addresses, .count = 3, .type = t_json_string };
 
 	char *array2[] = {"DEADFEED"};
 	struct json_array arr2 = {
-		.value = (void*)array2, .count = 1, .type = t_json_string };
+		.value = array2, .count = 1, .type = t_json_string };
 
+	int kid[] = { 1, 2 };
+	int cnt[] = { 3, 1 };
 	struct json_kv keys_kv[][4] = {
 		{
-		{ .key = "key_id", .value = "1",     .type = t_json_integer },
-		{ .key = "count",   .value = "3",     .type = t_json_integer },
+		{ .key = "key_id", .value = &kid[0],     .type = t_json_integer },
+		{ .key = "count",   .value = &cnt[0],     .type = t_json_integer },
 		{ .key = "values", .value = &addarr, .type = t_json_array },
 		{ NULL }
 		}, {
-		{ .key = "key_id", .value = "2",     .type = t_json_integer },
-		{ .key = "count",   .value = "1",     .type = t_json_integer },
+		{ .key = "key_id", .value = &kid[1],     .type = t_json_integer },
+		{ .key = "count",   .value = &cnt[1],     .type = t_json_integer },
 		{ .key = "values", .value = &arr2, .type = t_json_array },
 		{ NULL }
 		}
 	};
 
+	int nok = 2;
 	struct json_kv *keys_ptr[] = { keys_kv[0], keys_kv[1] };
 	struct json_array keys = {
-		.value = (void*)keys_ptr, .count = 2, .type = t_json_object };
+		.value = keys_ptr, .count = 2, .type = t_json_object };
 	struct json_kv jkv[] = {
 		{ .key = "keys", .value = &keys, .type = t_json_array },
-		{ .key = "number_of_keys", .value = "2", .type = t_json_integer},
+		{ .key = "number_of_keys", .value = &nok, .type = t_json_integer},
 		{ NULL }
 	};
 
@@ -357,11 +367,14 @@ main(int argc, char *argv[])
 	int test = 0;
 	int rv = 0;
 
-	while ((opt = getopt(argc, argv, "hn:")) != -1){
+	while ((opt = getopt(argc, argv, "hn:v")) != -1){
 		switch (opt){
 		case 'n':
 			single_test = 1;
 			test = atoi(optarg);
+			break;
+		case 'v':
+			verbose = 1;
 			break;
 		case 'h':
 		default:
@@ -375,6 +388,8 @@ main(int argc, char *argv[])
 	} else {
 		for (int i = 1; i <= MAXTEST; i++){
 			rv += exec_test(i);
+			if (verbose)
+				printf("%d: %d\n", i, rv);
 		}
 	}
 

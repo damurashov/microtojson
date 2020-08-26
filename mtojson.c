@@ -5,6 +5,8 @@
 
 #include "mtojson.h"
 
+#include <limits.h>
+#include <stdio.h>
 #include <string.h>
 
 static int rem_len;
@@ -24,14 +26,19 @@ gen_json_string(char *out, char *val)
 }
 
 static char*
-gen_json_integer(char *out, char *val)
+gen_json_integer(char *out, int val)
 {
-	rem_len -= strlen(val);
+	#define INT_STRING_SIZE ((sizeof(int)*CHAR_BIT - 1)*28/93 + 3)
+	char buf[INT_STRING_SIZE];
+	sprintf(buf, "%d", val);
+	rem_len -= strlen(buf);
 	if (rem_len < 0)
 		return NULL;
-	while ((*out++ = *val++));
+	char *ptr = &buf[0];
+	while ((*out++ = *ptr++));
 	--out; // Discard \0
 	return out;
+	#undef INT_STRING_SIZE
 }
 
 static char*
@@ -54,7 +61,7 @@ gen_json_array(char *out, struct json_array *jar)
 		}
 	}
 	else if (jar->type == t_json_integer){
-		char **val = (char**)jar->value;
+		int *val = jar->value;
 		for (int i = 0; i < jar->count; i++){
 			out = gen_json_integer(out, val[i]);
 			if (!out) return NULL;
@@ -121,7 +128,7 @@ generate_json(char *out, int len, struct json_kv *kv)
 			out = gen_json_array(out, (struct json_array*)kv->value);
 			break;
 		case t_json_integer:
-			out = gen_json_integer(out, (char*)kv->value);
+			out = gen_json_integer(out, *(int*)kv->value);
 			break;
 		case t_json_object:
 			out = generate_json(out, len, (struct json_kv*)kv->value);
