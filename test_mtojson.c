@@ -1,6 +1,7 @@
 #include "mtojson.h"
 
 #include <getopt.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,6 +40,22 @@ test_json_string()
 
 	struct json_kv jkv[] = {
 		{ .key = "key", .value = "value", .type = t_json_string, },
+		{ NULL },
+	};
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
+	return check_result(test, expected, result);
+}
+
+int
+test_json_boolean()
+{
+	char *expected = "{\"key\": true}";
+	char *test = "test_json_boolean";
+	tell_single_test(test);
+
+	_Bool value = true;
+	struct json_kv jkv[] = {
+		{ .key = "key", .value = &value, .type = t_json_boolean, },
 		{ NULL },
 	};
 	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
@@ -108,6 +125,25 @@ test_json_array_string()
 	char *arr[8] = {"1", "23"};
 	struct json_array jar = {
 		.value = arr, .count = 2, .type = t_json_string };
+
+	struct json_kv jkv[] = {
+		{ .key = "array", .value = &jar, .type = t_json_array, },
+		{ NULL }
+	};
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
+	return check_result(test, expected, result);
+}
+
+int
+test_json_array_boolean()
+{
+	char *expected = "{\"array\": [true, false]}";
+	char *test = "test_json_array_boolean";
+	tell_single_test(test);
+
+	_Bool arr [] = {true, false};
+	struct json_array jar = {
+		.value = arr, .count = 2, .type = t_json_boolean };
 
 	struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_json_array, },
@@ -332,50 +368,57 @@ exec_test(int i)
 {
 	switch (i){
 	case 1:
-		return test_json_string();
-		break;
-	case 2:
 		return test_json_integer();
 		break;
-	case 3:
+	case 2:
 		return test_json_integer_two();
 		break;
-	case 4:
-		return test_json_array_integer();
-		break;
-	case 5:
-		return test_json_array_string();
-		break;
-	case 6:
-		return test_json_array_array();
-		break;
-	case 7:
-		return test_json_array_empty();
-		break;
-	case 8:
-		return test_json_array_empty_one();
-		break;
-	case 9:
-		return test_json_object();
-		break;
-	case 10:
-		return test_json_array_object();
-		break;
-	case 11:
+	case 3:
 		return test_json_integer_buffer_overflow();
 		break;
+	case 4:
+		return test_json_string();
+		break;
+	case 5:
+		return test_json_boolean();
+		break;
+	case 6:
+		return test_json_valuetype();
+		break;
+	case 7:
+		return test_json_array_integer();
+		break;
+	case 8:
+		return test_json_array_boolean();
+		break;
+	case 9:
+		return test_json_array_string();
+		break;
+	case 10:
+		return test_json_array_array();
+		break;
+	case 11:
+		return test_json_array_empty();
+		break;
 	case 12:
-		return test_json_object_empty();
+		return test_json_array_empty_one();
 		break;
 	case 13:
-		return test_json_valuetype();
+		return test_json_object();
+		break;
+	case 14:
+		return test_json_array_object();
+		break;
+	case 15:
+		return test_json_object_empty();
+		break;
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 13
+#define MAXTEST 15
 
 int
 main(int argc, char *argv[])

@@ -5,6 +5,7 @@
 
 enum json_value_type {
 	t_json_array,
+	t_json_boolean,
 	t_json_integer,
 	t_json_string,
 	t_json_object,

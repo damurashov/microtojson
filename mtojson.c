@@ -13,6 +13,23 @@ static int rem_len;
 static int nested_object_depth = 0;
 
 static char*
+gen_json_boolean(char *out, _Bool val)
+{
+	char *t = "true";
+	char *f = "false";
+	char *v;
+	if (val)
+		v = t;
+	else
+		v = f;
+	rem_len -= strlen(v);
+	if (rem_len < 0) return NULL;
+	while ((*out++ = *v++));
+	--out; // Discard \0
+	return out;
+}
+
+static char*
 gen_json_string(char *out, char *val)
 {
 	rem_len -= (strlen(val) + 2); // ""
@@ -65,6 +82,16 @@ gen_json_array(char *out, struct json_array *jar)
 		struct json_array **val = (struct json_array**)jar->value;
 		for (int i = 0; i < jar->count; i++){
 			out = gen_json_array(out, val[i]);
+			if (!out) return NULL;
+			rem_len -= 2;
+			*out++ = ',';
+			*out++ = ' ';
+		}
+	}
+	else if (jar->type == t_json_boolean){
+		_Bool *val = jar->value;
+		for (int i = 0; i < jar->count; i++){
+			out = gen_json_boolean(out, val[i]);
 			if (!out) return NULL;
 			rem_len -= 2;
 			*out++ = ',';
@@ -137,6 +164,9 @@ generate_json(char *out, int len, struct json_kv *kv)
 		switch (kv->type){
 		case t_json_array:
 			out = gen_json_array(out, (struct json_array*)kv->value);
+			break;
+		case t_json_boolean:
+			out = gen_json_boolean(out, *(_Bool*)kv->value);
 			break;
 		case t_json_integer:
 			out = gen_json_integer(out, *(int*)kv->value);
