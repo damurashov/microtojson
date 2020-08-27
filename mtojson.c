@@ -78,7 +78,7 @@ gen_json_array(char *out, struct json_array *jar)
 		*out++ = ']';
 		return out;
 	}
-	if (jar->type == t_json_array){
+	if (jar->type == t_to_array){
 		struct json_array **val = (struct json_array**)jar->value;
 		for (int i = 0; i < jar->count; i++){
 			out = gen_json_array(out, val[i]);
@@ -88,7 +88,7 @@ gen_json_array(char *out, struct json_array *jar)
 			*out++ = ' ';
 		}
 	}
-	else if (jar->type == t_json_boolean){
+	else if (jar->type == t_to_boolean){
 		_Bool *val = jar->value;
 		for (int i = 0; i < jar->count; i++){
 			out = gen_json_boolean(out, val[i]);
@@ -98,7 +98,7 @@ gen_json_array(char *out, struct json_array *jar)
 			*out++ = ' ';
 		}
 	}
-	else if (jar->type == t_json_integer){
+	else if (jar->type == t_to_integer){
 		int *val = jar->value;
 		for (int i = 0; i < jar->count; i++){
 			out = gen_json_integer(out, val[i]);
@@ -108,7 +108,7 @@ gen_json_array(char *out, struct json_array *jar)
 			*out++ = ' ';
 		}
 	}
-	else if (jar->type == t_json_object){
+	else if (jar->type == t_to_object){
 		struct json_kv **val = (struct json_kv**)jar->value;
 		for (int i = 0; i < jar->count; i++){
 			out = generate_json(out, rem_len, val[i]);
@@ -118,7 +118,7 @@ gen_json_array(char *out, struct json_array *jar)
 			*out++ = ' ';
 		}
 	}
-	else if (jar->type == t_json_string){
+	else if (jar->type == t_to_string){
 		char **val = (char**)jar->value;
 		for (int i = 0; i < jar->count; i++){
 			out = gen_json_string(out, val[i]);
@@ -162,22 +162,22 @@ generate_json(char *out, int len, struct json_kv *kv)
 		*out++ = ' ';
 
 		switch (kv->type){
-		case t_json_array:
+		case t_to_array:
 			out = gen_json_array(out, (struct json_array*)kv->value);
 			break;
-		case t_json_boolean:
+		case t_to_boolean:
 			out = gen_json_boolean(out, *(_Bool*)kv->value);
 			break;
-		case t_json_integer:
+		case t_to_integer:
 			out = gen_json_integer(out, *(int*)kv->value);
 			break;
-		case t_json_object:
+		case t_to_object:
 			out = generate_json(out, len, (struct json_kv*)kv->value);
 			break;
-		case t_json_string:
+		case t_to_string:
 			out = gen_json_string(out, (char*)kv->value);
 			break;
-		case t_json_value:
+		case t_to_value:
 			out = gen_json_value(out, (char*)kv->value);
 			break;
 		}

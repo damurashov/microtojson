@@ -4,12 +4,12 @@
 #include <stdint.h>
 
 enum json_value_type {
-	t_json_array,
-	t_json_boolean,
-	t_json_integer,
-	t_json_string,
-	t_json_object,
-	t_json_value,
+	t_to_array,
+	t_to_boolean,
+	t_to_integer,
+	t_to_string,
+	t_to_object,
+	t_to_value,
 };
 
 struct json_kv {

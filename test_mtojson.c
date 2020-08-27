@@ -39,7 +39,7 @@ test_json_string()
 	tell_single_test(test);
 
 	struct json_kv jkv[] = {
-		{ .key = "key", .value = "value", .type = t_json_string, },
+		{ .key = "key", .value = "value", .type = t_to_string, },
 		{ NULL },
 	};
 	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
@@ -55,7 +55,7 @@ test_json_boolean()
 
 	_Bool value = true;
 	struct json_kv jkv[] = {
-		{ .key = "key", .value = &value, .type = t_json_boolean, },
+		{ .key = "key", .value = &value, .type = t_to_boolean, },
 		{ NULL },
 	};
 	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
@@ -71,7 +71,7 @@ test_json_integer()
 
 	int n = 1;
 	struct json_kv jkv[] = {
-		{ .key = "key", .value = &n, .type = t_json_integer, },
+		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
 	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
@@ -88,8 +88,8 @@ test_json_integer_two()
 	int ns[] = {1, 2};
 
 	struct json_kv jkv[] = {
-		{ .type = t_json_integer, .key = "key", .value = &ns[0], },
-		{ .type = t_json_integer, .key = "key", .value = &ns[1], },
+		{ .type = t_to_integer, .key = "key", .value = &ns[0], },
+		{ .type = t_to_integer, .key = "key", .value = &ns[1], },
 		{ NULL }
 	};
 	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
@@ -105,10 +105,10 @@ test_json_array_integer()
 
 	int arr[] = {1, 2};
 	struct json_array jar = {
-		.value = arr, .count = 2, .type = t_json_integer };
+		.value = arr, .count = 2, .type = t_to_integer };
 
 	struct json_kv jkv[] = {
-		{ .key = "array", .value = &jar, .type = t_json_array, },
+		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
 	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
@@ -124,10 +124,10 @@ test_json_array_string()
 
 	char *arr[8] = {"1", "23"};
 	struct json_array jar = {
-		.value = arr, .count = 2, .type = t_json_string };
+		.value = arr, .count = 2, .type = t_to_string };
 
 	struct json_kv jkv[] = {
-		{ .key = "array", .value = &jar, .type = t_json_array, },
+		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
 	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
@@ -143,10 +143,10 @@ test_json_array_boolean()
 
 	_Bool arr [] = {true, false};
 	struct json_array jar = {
-		.value = arr, .count = 2, .type = t_json_boolean };
+		.value = arr, .count = 2, .type = t_to_boolean };
 
 	struct json_kv jkv[] = {
-		{ .key = "array", .value = &jar, .type = t_json_array, },
+		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
 	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
@@ -162,13 +162,13 @@ test_json_array_array()
 
 	char *arr[] = {"1", "2", "3"};
 	struct json_array inner_jar_arr = {
-		.value = arr, .count = 3, .type = t_json_string };
+		.value = arr, .count = 3, .type = t_to_string };
 	struct json_array *inner_jar[] = { &inner_jar_arr, &inner_jar_arr };
 	struct json_array jar = {
-		.value = inner_jar, .count = 2, .type = t_json_array };
+		.value = inner_jar, .count = 2, .type = t_to_array };
 
 	struct json_kv jkv[] = {
-		{ .key = "array", .value = &jar, .type = t_json_array, },
+		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
 
@@ -185,10 +185,10 @@ test_json_array_empty()
 
 	char *arr[1];
 	struct json_array jar = {
-		.value = arr, .count = 0, .type = t_json_string };
+		.value = arr, .count = 0, .type = t_to_string };
 
 	struct json_kv jkv[] = {
-		{ .key = "array", .value = &jar, .type = t_json_array, },
+		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
 
@@ -205,16 +205,16 @@ test_json_array_empty_one()
 
 	char *arr[] = {"1", "2", "3"};
 	struct json_array inner_jar_arr = {
-		.value = arr, .count = 3, .type = t_json_string };
+		.value = arr, .count = 3, .type = t_to_string };
 	struct json_array inner_jar_empty = {
-		.value = arr, .count = 0, .type = t_json_string };
+		.value = arr, .count = 0, .type = t_to_string };
 
 	struct json_array *inner_jar[] = { &inner_jar_empty, &inner_jar_arr };
 	struct json_array jar = {
-		.value = inner_jar, .count = 2, .type = t_json_array };
+		.value = inner_jar, .count = 2, .type = t_to_array };
 
 	struct json_kv jkv[] = {
-		{ .key = "array", .value = &jar, .type = t_json_array, },
+		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
 
@@ -253,21 +253,21 @@ test_json_object()
 
 	char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
 	struct json_array addarr = {
-		.value = addresses, .count = 3, .type = t_json_string };
+		.value = addresses, .count = 3, .type = t_to_string };
 
 	int kid = 1;
 	int cnt = 3;
 	struct json_kv keys[] = {
-		{ .key = "key_id", .value = &kid,     .type = t_json_integer },
-		{ .key = "count",   .value = &cnt,     .type = t_json_integer },
-		{ .key = "values", .value = &addarr, .type = t_json_array },
+		{ .key = "key_id", .value = &kid,     .type = t_to_integer },
+		{ .key = "count",   .value = &cnt,     .type = t_to_integer },
+		{ .key = "values", .value = &addarr, .type = t_to_array },
 		{ NULL }
 	};
 
 	int nok = 1;
 	struct json_kv jkv[] = {
-		{ .key = "keys", .value = &keys, .type = t_json_object },
-		{ .key = "number_of_keys", .value = &nok, .type = t_json_integer},
+		{ .key = "keys", .value = &keys, .type = t_to_object },
+		{ .key = "number_of_keys", .value = &nok, .type = t_to_integer},
 		{ NULL }
 	};
 
@@ -296,24 +296,24 @@ test_json_array_object()
 
 	char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
 	struct json_array addarr = {
-		.value = addresses, .count = 3, .type = t_json_string };
+		.value = addresses, .count = 3, .type = t_to_string };
 
 	char *array2[] = {"DEADFEED"};
 	struct json_array arr2 = {
-		.value = array2, .count = 1, .type = t_json_string };
+		.value = array2, .count = 1, .type = t_to_string };
 
 	int kid[] = { 1, 2 };
 	int cnt[] = { 3, 1 };
 	struct json_kv keys_kv[][4] = {
 		{
-		{ .key = "key_id", .value = &kid[0],     .type = t_json_integer },
-		{ .key = "count",   .value = &cnt[0],     .type = t_json_integer },
-		{ .key = "values", .value = &addarr, .type = t_json_array },
+		{ .key = "key_id", .value = &kid[0],     .type = t_to_integer },
+		{ .key = "count",   .value = &cnt[0],     .type = t_to_integer },
+		{ .key = "values", .value = &addarr, .type = t_to_array },
 		{ NULL }
 		}, {
-		{ .key = "key_id", .value = &kid[1],     .type = t_json_integer },
-		{ .key = "count",   .value = &cnt[1],     .type = t_json_integer },
-		{ .key = "values", .value = &arr2, .type = t_json_array },
+		{ .key = "key_id", .value = &kid[1],     .type = t_to_integer },
+		{ .key = "count",   .value = &cnt[1],     .type = t_to_integer },
+		{ .key = "values", .value = &arr2, .type = t_to_array },
 		{ NULL }
 		}
 	};
@@ -321,10 +321,10 @@ test_json_array_object()
 	int nok = 2;
 	struct json_kv *keys_ptr[] = { keys_kv[0], keys_kv[1] };
 	struct json_array keys = {
-		.value = keys_ptr, .count = 2, .type = t_json_object };
+		.value = keys_ptr, .count = 2, .type = t_to_object };
 	struct json_kv jkv[] = {
-		{ .key = "keys", .value = &keys, .type = t_json_array },
-		{ .key = "number_of_keys", .value = &nok, .type = t_json_integer},
+		{ .key = "keys", .value = &keys, .type = t_to_array },
+		{ .key = "number_of_keys", .value = &nok, .type = t_to_integer},
 		{ NULL }
 	};
 
@@ -340,7 +340,7 @@ test_json_integer_buffer_overflow()
 	tell_single_test(test);
 
 	struct json_kv jkv[] = {
-		{ .key = "key", .value = "value", .type = t_json_string, },
+		{ .key = "key", .value = "value", .type = t_to_string, },
 		{ NULL },
 	};
 	if (generate_json(result, strlen(expected) - 1, jkv))
@@ -356,7 +356,7 @@ test_json_valuetype()
 	tell_single_test(test);
 
 	struct json_kv jkv[] = {
-		{ .key = "key", .value = "This is not valid {}JSON!", .type = t_json_value, },
+		{ .key = "key", .value = "This is not valid {}JSON!", .type = t_to_value, },
 		{ NULL },
 	};
 	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(-1);
