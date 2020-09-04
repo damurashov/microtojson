@@ -9,7 +9,7 @@ This is still beta, use at own risk.
 Make sure structs are NULL terminated.
 
 Currently only string, boolean and integer are valid types.
-To create an arbitrary value use `t_json_value` and pass the correctly formatted value as char array.
+To create an arbitrary value use `t_to_value` and pass the correctly formatted value as char array.
 
 See `test_mtojson.c` for usage.
 
