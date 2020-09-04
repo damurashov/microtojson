@@ -1,5 +1,7 @@
 # microtojson
 
+[![builds.sr.ht status](https://builds.sr.ht/~rkta/microtojson.svg)](https://builds.sr.ht/~rkta/microtojson?)
+
 A simple embedded friendly JSON serializer.
 
 This is still beta, use at own risk.
