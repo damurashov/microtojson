@@ -1,3 +1,19 @@
+/*
+ * Tests for microtojson.h
+ *
+ * If generate_json does not detect an expected buffer overflow, running tests
+ * will be aborted immediately with an exit status 125.
+ *
+ * If generate_json does detect an non-expected buffer overflow, running tests
+ * will be aborted immediately with an exit status 124.
+ *
+ * If tests fail exit status is the count of failed tests. All succeeding tests
+ * will be run and the number of the failed tests will be printed to stderr.
+ *
+ * Every test is run twice: the first time a buffer overflow is provoked - the
+ * test must fail!
+ */
+
 #include "mtojson.h"
 
 #include <getopt.h>
@@ -26,8 +42,11 @@ check_result(char *test, char *expected, char *result)
 void
 tell_single_test(char* test)
 {
-	if (single_test)
-		fprintf(stderr, "Running test: %s\n", test);
+	if (single_test || verbose){
+		printf("Running test: %-30s ", test);
+		if (!verbose)
+			printf("%s", "\n");
+	}
 }
 
 int
@@ -42,7 +61,8 @@ test_json_string()
 		{ .key = "key", .value = "value", .type = t_to_string, },
 		{ NULL },
 	};
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -59,7 +79,8 @@ test_json_boolean()
 		{ .key = "key", .value = &value, .type = t_to_boolean, },
 		{ NULL },
 	};
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -76,7 +97,8 @@ test_json_integer()
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -95,7 +117,8 @@ test_json_integer_two()
 		{ .type = t_to_integer, .key = "key", .value = &ns[1], },
 		{ NULL }
 	};
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -115,7 +138,8 @@ test_json_array_integer()
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -135,7 +159,8 @@ test_json_array_string()
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -155,7 +180,8 @@ test_json_array_boolean()
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -179,7 +205,8 @@ test_json_array_array()
 		{ NULL }
 	};
 
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -200,7 +227,8 @@ test_json_array_empty()
 		{ NULL }
 	};
 
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -227,7 +255,8 @@ test_json_array_empty_one()
 		{ NULL }
 	};
 
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -242,7 +271,8 @@ test_json_object_empty()
 	struct json_kv jkv[] = {
 		{ NULL },
 	};
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -282,7 +312,8 @@ test_json_object()
 		{ NULL }
 	};
 
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -340,25 +371,9 @@ test_json_array_object()
 		{ NULL }
 	};
 
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
-}
-
-int
-test_json_integer_buffer_overflow()
-{
-	char *expected = "{\"key\": \"value\"}";
-	char *test = "test_json_integer_buffer_overflow";
-	char result[len];
-	tell_single_test(test);
-
-	struct json_kv jkv[] = {
-		{ .key = "key", .value = "value", .type = t_to_string, },
-		{ NULL },
-	};
-	if (generate_json(result, strlen(expected) - 1, jkv))
-		exit(125);
-	return 0;
 }
 
 int
@@ -373,7 +388,8 @@ test_json_valuetype()
 		{ .key = "key", .value = "This is not valid {}JSON!", .type = t_to_value, },
 		{ NULL },
 	};
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(125);
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -388,42 +404,39 @@ exec_test(int i)
 		return test_json_integer_two();
 		break;
 	case 3:
-		return test_json_integer_buffer_overflow();
-		break;
-	case 4:
 		return test_json_string();
 		break;
-	case 5:
+	case 4:
 		return test_json_boolean();
 		break;
-	case 6:
+	case 5:
 		return test_json_valuetype();
 		break;
-	case 7:
+	case 6:
 		return test_json_array_integer();
 		break;
-	case 8:
+	case 7:
 		return test_json_array_boolean();
 		break;
-	case 9:
+	case 8:
 		return test_json_array_string();
 		break;
-	case 10:
+	case 9:
 		return test_json_array_array();
 		break;
-	case 11:
+	case 10:
 		return test_json_array_empty();
 		break;
-	case 12:
+	case 11:
 		return test_json_array_empty_one();
 		break;
-	case 13:
+	case 12:
 		return test_json_object();
 		break;
-	case 14:
+	case 13:
 		return test_json_array_object();
 		break;
-	case 15:
+	case 14:
 		return test_json_object_empty();
 		break;
 	default:
@@ -432,11 +445,13 @@ exec_test(int i)
 	}
 	return 1;
 }
-#define MAXTEST 15
+#define MAXTEST 14
 
 int
 main(int argc, char *argv[])
 {
+	int failed_tests[MAXTEST];
+	int failed = 0;
 	int opt;
 	int test = 0;
 	int rv = 0;
@@ -461,11 +476,19 @@ main(int argc, char *argv[])
 		rv = exec_test(test);
 	} else {
 		for (int i = 1; i <= MAXTEST; i++){
-			rv += exec_test(i);
+			rv = exec_test(i);
 			if (verbose)
 				printf("%d: %d\n", i, rv);
+			if (rv)
+				failed_tests[failed++] = i;
 		}
 	}
 
-	return rv;
+	if (failed){
+		fprintf(stderr, "\n%s ", "Failed tests:");
+		for (int i = 0; i < failed; i++)
+			fprintf(stderr, "%d ", failed_tests[i]);
+		fprintf(stderr, "%s", "\n");
+	}
+	return failed;
 }
