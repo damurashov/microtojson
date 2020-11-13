@@ -82,7 +82,7 @@ int
 test_json_integer_two()
 {
 	char *expected = "{\"key\": 1, \"key\": 2}";
-	char *test = "test_json_integer";
+	char *test = "test_json_integer_two";
 	tell_single_test(test);
 
 	int ns[] = {1, 2};
