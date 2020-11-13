@@ -182,7 +182,10 @@ generate_json(char *out, int len, struct json_kv *kv)
 			break;
 		}
 
-		if (!out) return NULL;
+		if (!out){
+			nested_object_depth = 0;
+			return NULL;
+		}
 		rem_len -= 2;
 		*out++ = ',';
 		*out++ = ' ';
