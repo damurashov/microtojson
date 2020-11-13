@@ -172,7 +172,7 @@ generate_json(char *out, int len, struct json_kv *kv)
 			out = gen_json_integer(out, *(int*)kv->value);
 			break;
 		case t_to_object:
-			out = generate_json(out, len, (struct json_kv*)kv->value);
+			out = generate_json(out, rem_len, (struct json_kv*)kv->value);
 			break;
 		case t_to_string:
 			out = gen_json_string(out, (char*)kv->value);
