@@ -1,6 +1,6 @@
 CC = gcc
 
-CFLAGS = -Wall -Wextra -Wpedantic -g -Og
+CFLAGS = -std=c99 -Wall -Wextra -Wpedantic -g -Og -fno-common -Wshadow
 
 .PHONY: all clean
 
