@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum { len = 10000 };
 _Bool single_test = 0;
 int verbose = 0;
 
@@ -54,7 +53,7 @@ test_json_string()
 {
 	char *expected = "{\"key\": \"value\"}";
 	char *test = "test_json_string";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	struct json_kv jkv[] = {
@@ -71,7 +70,7 @@ test_json_boolean()
 {
 	char *expected = "{\"key\": true}";
 	char *test = "test_json_boolean";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	_Bool value = true;
@@ -89,7 +88,7 @@ test_json_integer()
 {
 	char *expected = "{\"key\": 1}";
 	char *test = "test_json_integer";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	int n = 1;
@@ -107,7 +106,7 @@ test_json_integer_two()
 {
 	char *expected = "{\"key\": 1, \"key\": 2}";
 	char *test = "test_json_integer_two";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	int ns[] = {1, 2};
@@ -127,7 +126,7 @@ test_json_array_integer()
 {
 	char *expected = "{\"array\": [1, 2]}";
 	char *test = "test_json_array_integer";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	int arr[] = {1, 2};
@@ -148,7 +147,7 @@ test_json_array_string()
 {
 	char *expected = "{\"array\": [\"1\", \"23\"]}";
 	char *test = "test_json_array_string";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	char *arr[8] = {"1", "23"};
@@ -169,7 +168,7 @@ test_json_array_boolean()
 {
 	char *expected = "{\"array\": [true, false]}";
 	char *test = "test_json_array_boolean";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	_Bool arr [] = {true, false};
@@ -190,7 +189,7 @@ test_json_array_array()
 {
 	char *expected = "{\"array\": [[\"1\", \"2\", \"3\"], [\"1\", \"2\", \"3\"]]}";
 	char *test = "test_json_array_array";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	char *arr[] = {"1", "2", "3"};
@@ -215,7 +214,7 @@ test_json_array_empty()
 {
 	char *expected = "{\"array\": []}";
 	char *test = "test_json_array_empty";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	char *arr[1];
@@ -237,7 +236,7 @@ test_json_array_empty_one()
 {
 	char *expected = "{\"array\": [[], [\"1\", \"2\", \"3\"]]}";
 	char *test = "test_json_array_one_empty";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	char *arr[] = {"1", "2", "3"};
@@ -265,7 +264,7 @@ test_json_object_empty()
 {
 	char *expected = "{}";
 	char *test = "test_json_object_empty";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	struct json_kv jkv[] = {
@@ -289,7 +288,7 @@ test_json_object()
 	                 "}";
 
 	char *test = "test_json_object";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
@@ -334,7 +333,7 @@ test_json_array_object()
 	                 "}";
 
 	char *test = "test_json_array_object";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
@@ -381,7 +380,7 @@ test_json_valuetype()
 {
 	char *expected = "{\"key\": This is not valid {}JSON!}";
 	char *test = "test_json_valuetype";
-	char result[len];
+	char result[strlen(expected) + 1];
 	tell_single_test(test);
 
 	struct json_kv jkv[] = {
