@@ -324,7 +324,7 @@ test_json_array_object()
 	                           "\"key_id\": 1, "
 	                           "\"count\": 3, "
 	                           "\"values\": [\"DEADBEEF\", \"1337BEEF\", \"0000BEEF\"]"
-	                   "}, {"
+	                   "}, {}, {"
 	                           "\"key_id\": 2, "
 	                           "\"count\": 1, "
 	                           "\"values\": [\"DEADFEED\"]"
@@ -348,22 +348,24 @@ test_json_array_object()
 	int cnt[] = { 3, 1 };
 	struct json_kv keys_kv[][4] = {
 		{
-		{ .key = "key_id", .value = &kid[0],     .type = t_to_integer },
-		{ .key = "count",   .value = &cnt[0],     .type = t_to_integer },
-		{ .key = "values", .value = &addarr, .type = t_to_array },
-		{ NULL }
+			{ .key = "key_id", .value = &kid[0], .type = t_to_integer },
+			{ .key = "count",  .value = &cnt[0], .type = t_to_integer },
+			{ .key = "values", .value = &addarr, .type = t_to_array },
+			{ NULL }
 		}, {
-		{ .key = "key_id", .value = &kid[1],     .type = t_to_integer },
-		{ .key = "count",   .value = &cnt[1],     .type = t_to_integer },
-		{ .key = "values", .value = &arr2, .type = t_to_array },
-		{ NULL }
+			{ NULL }
+		}, {
+			{ .key = "key_id", .value = &kid[1], .type = t_to_integer },
+			{ .key = "count",  .value = &cnt[1], .type = t_to_integer },
+			{ .key = "values", .value = &arr2,   .type = t_to_array },
+			{ NULL }
 		}
 	};
 
 	int nok = 2;
-	struct json_kv *keys_ptr[] = { keys_kv[0], keys_kv[1] };
+	struct json_kv *keys_ptr[] = { keys_kv[0], keys_kv[1], keys_kv[2] };
 	struct json_array keys = {
-		.value = keys_ptr, .count = 2, .type = t_to_object };
+		.value = keys_ptr, .count = 3, .type = t_to_object };
 	struct json_kv jkv[] = {
 		{ .key = "keys", .value = &keys, .type = t_to_array },
 		{ .key = "number_of_keys", .value = &nok, .type = t_to_integer},
