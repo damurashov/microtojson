@@ -141,18 +141,19 @@ generate_json(char *out, int len, struct json_kv *kv)
 	if (nested_object_depth == 0)
 		object_meta_len = 3; // 3 -> {}\0
 	nested_object_depth++;
-	if((rem_len = len - object_meta_len) < 0) return NULL;
+	if((rem_len = len - object_meta_len) < 0) goto fail;
 	*out++ = '{';
 	if (!kv->key){
 		*out++ = '}';
 		*out++ = '\0';
+		nested_object_depth--;
 		return out;
 	}
 
 	while (kv->key){
 		char *key = kv->key;
 		rem_len -= (strlen(key) + 4); // 4 -> "":_
-		if (rem_len < 0) return NULL;
+		if (rem_len < 0) goto fail;
 
 		*out++ = '"';
 		while ((*out++ = *key++));
@@ -182,10 +183,8 @@ generate_json(char *out, int len, struct json_kv *kv)
 			break;
 		}
 
-		if (!out){
-			nested_object_depth = 0;
-			return NULL;
-		}
+		if (!out)
+			goto fail;
 		rem_len -= 2;
 		*out++ = ',';
 		*out++ = ' ';
@@ -198,4 +197,8 @@ generate_json(char *out, int len, struct json_kv *kv)
 	*++out = '\0';
 	nested_object_depth--;
 	return out;
+
+fail:
+	nested_object_depth = 0;
+	return NULL;
 }
