@@ -376,6 +376,44 @@ test_json_array_object()
 }
 
 int
+test_json_object_object()
+{
+	char *expected = "{"
+	                   "\"outer\": {"
+	                            "\"middle\": {"
+	                                          "\"inner\": true"
+	                            "}"
+	                   "}"
+	                 "}";
+
+	char *test = "test_json_object_object";
+	char result[strlen(expected) + 1];
+	tell_single_test(test);
+
+	_Bool value = true;
+
+	struct json_kv inner[] = {
+		{ .key = "inner", .value = &value, .type = t_to_boolean },
+		{ NULL }
+	};
+
+	struct json_kv middle[] = {
+		{ .key = "middle", .value = &inner, .type = t_to_object },
+		{ NULL }
+	};
+
+	struct json_kv jkv[] = {
+		{ .key = "outer", .value = &middle, .type = t_to_object },
+		{ NULL }
+	};
+
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	return check_result(test, expected, result);
+}
+
+
+int
 test_json_valuetype()
 {
 	char *expected = "{\"key\": This is not valid {}JSON!}";
@@ -438,13 +476,16 @@ exec_test(int i)
 	case 14:
 		return test_json_object_empty();
 		break;
+	case 15:
+		return test_json_object_object();
+		break;
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 14
+#define MAXTEST 15
 
 int
 main(int argc, char *argv[])
