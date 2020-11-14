@@ -143,12 +143,8 @@ generate_json(char *out, int len, struct json_kv *kv)
 	nested_object_depth++;
 	if((rem_len = len - object_meta_len) < 0) goto fail;
 	*out++ = '{';
-	if (!kv->key){
-		*out++ = '}';
-		*out++ = '\0';
-		nested_object_depth--;
-		return out;
-	}
+	if (!kv->key)
+		goto done;
 
 	while (kv->key){
 		char *key = kv->key;
@@ -192,9 +188,11 @@ generate_json(char *out, int len, struct json_kv *kv)
 	}
 
 	rem_len += 2;
-	--out;
-	*--out = '}';
-	*++out = '\0';
+	out -= 2;
+
+done:
+	*out++ = '}';
+	*out = '\0';
 	nested_object_depth--;
 	return out;
 
