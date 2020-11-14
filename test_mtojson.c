@@ -412,6 +412,44 @@ test_json_object_object()
 	return check_result(test, expected, result);
 }
 
+int
+test_json_object_nested_empty()
+{
+	char *expected = "{"
+	                   "\"outer\": {"
+	                            "\"middle\": {"
+	                                          "\"inner\": {}"
+	                            "}"
+	                   "}"
+	                 "}";
+
+	char *test = "test_json_object_nested_empty";
+	char result[strlen(expected) + 1];
+	tell_single_test(test);
+
+	struct json_kv value[] = {
+		{ NULL },
+	};
+
+	struct json_kv inner[] = {
+		{ .key = "inner", .value = &value, .type = t_to_object },
+		{ NULL }
+	};
+
+	struct json_kv middle[] = {
+		{ .key = "middle", .value = &inner, .type = t_to_object },
+		{ NULL }
+	};
+
+	struct json_kv jkv[] = {
+		{ .key = "outer", .value = &middle, .type = t_to_object },
+		{ NULL }
+	};
+
+	if (generate_json(result, strlen(expected), jkv)) exit(125);
+	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	return check_result(test, expected, result);
+}
 
 int
 test_json_valuetype()
@@ -479,13 +517,16 @@ exec_test(int i)
 	case 15:
 		return test_json_object_object();
 		break;
+	case 16:
+		return test_json_object_nested_empty();
+		break;
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 15
+#define MAXTEST 16
 
 int
 main(int argc, char *argv[])
