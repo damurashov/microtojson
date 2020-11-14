@@ -4,4 +4,4 @@ sources:
 tasks:
 - check: |
     cd microtojson
-    make -s
+    make ASAN= -s
