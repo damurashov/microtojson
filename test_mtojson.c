@@ -56,8 +56,9 @@ test_json_string()
 {
 	char *expected = "{\"key\": \"value\"}";
 	char *test = "test_json_string";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -65,8 +66,8 @@ test_json_string()
 		{ .key = "key", .value = "value", .type = t_to_string, },
 		{ NULL },
 	};
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -75,8 +76,9 @@ test_json_boolean()
 {
 	char *expected = "{\"key\": true}";
 	char *test = "test_json_boolean";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -85,8 +87,8 @@ test_json_boolean()
 		{ .key = "key", .value = &value, .type = t_to_boolean, },
 		{ NULL },
 	};
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -95,8 +97,9 @@ test_json_integer()
 {
 	char *expected = "{\"key\": 1}";
 	char *test = "test_json_integer";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -105,8 +108,8 @@ test_json_integer()
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -115,8 +118,9 @@ test_json_integer_two()
 {
 	char *expected = "{\"key\": 1, \"key\": 2}";
 	char *test = "test_json_integer_two";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -127,8 +131,8 @@ test_json_integer_two()
 		{ .type = t_to_integer, .key = "key", .value = &ns[1], },
 		{ NULL }
 	};
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -137,8 +141,9 @@ test_json_array_integer()
 {
 	char *expected = "{\"array\": [1, 2]}";
 	char *test = "test_json_array_integer";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -150,8 +155,8 @@ test_json_array_integer()
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -160,8 +165,9 @@ test_json_array_string()
 {
 	char *expected = "{\"array\": [\"1\", \"23\"]}";
 	char *test = "test_json_array_string";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -173,8 +179,8 @@ test_json_array_string()
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -183,8 +189,9 @@ test_json_array_boolean()
 {
 	char *expected = "{\"array\": [true, false]}";
 	char *test = "test_json_array_boolean";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -196,8 +203,8 @@ test_json_array_boolean()
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -206,8 +213,9 @@ test_json_array_array()
 {
 	char *expected = "{\"array\": [[\"1\", \"2\", \"3\"], [\"1\", \"2\", \"3\"]]}";
 	char *test = "test_json_array_array";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -223,8 +231,8 @@ test_json_array_array()
 		{ NULL }
 	};
 
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -233,8 +241,9 @@ test_json_array_empty()
 {
 	char *expected = "{\"array\": []}";
 	char *test = "test_json_array_empty";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -247,8 +256,8 @@ test_json_array_empty()
 		{ NULL }
 	};
 
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -257,8 +266,9 @@ test_json_array_empty_one()
 {
 	char *expected = "{\"array\": [[], [\"1\", \"2\", \"3\"]]}";
 	char *test = "test_json_array_one_empty";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -277,8 +287,8 @@ test_json_array_empty_one()
 		{ NULL }
 	};
 
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -287,16 +297,17 @@ test_json_object_empty()
 {
 	char *expected = "{}";
 	char *test = "test_json_object_empty";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
 	struct json_kv jkv[] = {
 		{ NULL },
 	};
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -313,8 +324,9 @@ test_json_object()
 	                 "}";
 
 	char *test = "test_json_object";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -338,8 +350,8 @@ test_json_object()
 		{ NULL }
 	};
 
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -360,8 +372,9 @@ test_json_array_object()
 	                 "}";
 
 	char *test = "test_json_array_object";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -401,8 +414,8 @@ test_json_array_object()
 		{ NULL }
 	};
 
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -418,8 +431,9 @@ test_json_object_object()
 	                 "}";
 
 	char *test = "test_json_object_object";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -440,8 +454,8 @@ test_json_object_object()
 		{ NULL }
 	};
 
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -457,8 +471,9 @@ test_json_object_nested_empty()
 	                 "}";
 
 	char *test = "test_json_object_nested_empty";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -481,8 +496,8 @@ test_json_object_nested_empty()
 		{ NULL }
 	};
 
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -491,8 +506,9 @@ test_json_valuetype()
 {
 	char *expected = "{\"key\": This is not valid {}JSON!}";
 	char *test = "test_json_valuetype";
-	char result[strlen(expected) + 1];
-	memset(result, '\0', strlen(expected) + 1);
+	int len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
 	rp = result;
 	tell_single_test(test);
 
@@ -500,8 +516,8 @@ test_json_valuetype()
 		{ .key = "key", .value = "This is not valid {}JSON!", .type = t_to_value, },
 		{ NULL },
 	};
-	if (generate_json(result, strlen(expected), jkv)) exit(125);
-	if (!generate_json(result, strlen(expected) + 1, jkv)) exit(124);
+	if (generate_json(result, len - 1, jkv)) exit(125);
+	if (!generate_json(result, len, jkv)) exit(124);
 	return check_result(test, expected, result);
 }
 
