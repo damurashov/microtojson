@@ -66,8 +66,8 @@ test_json_string()
 		{ .key = "key", .value = "value", .type = t_to_string, },
 		{ NULL },
 	};
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -87,8 +87,8 @@ test_json_boolean()
 		{ .key = "key", .value = &value, .type = t_to_boolean, },
 		{ NULL },
 	};
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -108,8 +108,8 @@ test_json_integer()
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -131,8 +131,8 @@ test_json_integer_two()
 		{ .type = t_to_integer, .key = "key", .value = &ns[1], },
 		{ NULL }
 	};
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -155,8 +155,8 @@ test_json_array_integer()
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -179,8 +179,8 @@ test_json_array_string()
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -203,8 +203,8 @@ test_json_array_boolean()
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -232,8 +232,8 @@ test_json_array_array()
 		{ NULL }
 	};
 
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -257,8 +257,8 @@ test_json_array_empty()
 		{ NULL }
 	};
 
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -288,8 +288,8 @@ test_json_array_empty_one()
 		{ NULL }
 	};
 
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -307,8 +307,8 @@ test_json_object_empty()
 	struct json_kv jkv[] = {
 		{ NULL },
 	};
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -351,8 +351,8 @@ test_json_object()
 		{ NULL }
 	};
 
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -415,8 +415,8 @@ test_json_array_object()
 		{ NULL }
 	};
 
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -455,8 +455,8 @@ test_json_object_object()
 		{ NULL }
 	};
 
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -497,8 +497,8 @@ test_json_object_nested_empty()
 		{ NULL }
 	};
 
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 
@@ -517,8 +517,8 @@ test_json_valuetype()
 		{ .key = "key", .value = "This is not valid {}JSON!", .type = t_to_value, },
 		{ NULL },
 	};
-	if (generate_json(result, len - 1, jkv)) exit(125);
-	if (!generate_json(result, len, jkv)) exit(124);
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
 	return check_result(test, expected, result);
 }
 

@@ -130,7 +130,7 @@ gen_json_array(char *out, struct json_array *jar)
 	else if (jar->type == t_to_object){
 		struct json_kv **val = (struct json_kv**)jar->value;
 		for (int i = 0; i < jar->count; i++){
-			out = generate_json(out, rem_len, val[i]);
+			out = generate_json(out, val[i], rem_len);
 			if (!out)
 				return NULL;
 			rem_len -= 2;
@@ -159,7 +159,7 @@ gen_json_array(char *out, struct json_array *jar)
 }
 
 char*
-generate_json(char *out, size_t len, struct json_kv *kv)
+generate_json(char *out, struct json_kv *kv, size_t len)
 {
 	rem_len = len;
 	size_t object_meta_len = 2; // 2 -> {}
@@ -198,7 +198,7 @@ generate_json(char *out, size_t len, struct json_kv *kv)
 			out = gen_json_integer(out, *(int*)kv->value);
 			break;
 		case t_to_object:
-			out = generate_json(out, rem_len, (struct json_kv*)kv->value);
+			out = generate_json(out, (struct json_kv*)kv->value, rem_len);
 			break;
 		case t_to_string:
 			out = gen_json_string(out, (char*)kv->value);
