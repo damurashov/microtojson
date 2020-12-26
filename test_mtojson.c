@@ -222,6 +222,7 @@ test_json_array_array()
 	char *arr[] = {"1", "2", "3"};
 	struct json_array inner_jar_arr = {
 		.value = arr, .count = 3, .type = t_to_string };
+
 	struct json_array *inner_jar[] = { &inner_jar_arr, &inner_jar_arr };
 	struct json_array jar = {
 		.value = inner_jar, .count = 2, .type = t_to_array };
@@ -276,7 +277,7 @@ test_json_array_empty_one()
 	struct json_array inner_jar_arr = {
 		.value = arr, .count = 3, .type = t_to_string };
 	struct json_array inner_jar_empty = {
-		.value = arr, .count = 0, .type = t_to_string };
+		.value = NULL, .count = 0, .type = t_to_string };
 
 	struct json_array *inner_jar[] = { &inner_jar_empty, &inner_jar_arr };
 	struct json_array jar = {
@@ -337,16 +338,16 @@ test_json_object()
 	int kid = 1;
 	int cnt = 3;
 	struct json_kv keys[] = {
-		{ .key = "key_id", .value = &kid,     .type = t_to_integer },
-		{ .key = "count",   .value = &cnt,     .type = t_to_integer },
+		{ .key = "key_id", .value = &kid,    .type = t_to_integer },
+		{ .key = "count",  .value = &cnt,    .type = t_to_integer },
 		{ .key = "values", .value = &addarr, .type = t_to_array },
 		{ NULL }
 	};
 
 	int nok = 1;
 	struct json_kv jkv[] = {
-		{ .key = "keys", .value = &keys, .type = t_to_object },
-		{ .key = "number_of_keys", .value = &nok, .type = t_to_integer},
+		{ .key = "keys",           .value = &keys, .type = t_to_object },
+		{ .key = "number_of_keys", .value = &nok,  .type = t_to_integer},
 		{ NULL }
 	};
 
@@ -409,8 +410,8 @@ test_json_array_object()
 	struct json_array keys = {
 		.value = keys_ptr, .count = 3, .type = t_to_object };
 	struct json_kv jkv[] = {
-		{ .key = "keys", .value = &keys, .type = t_to_array },
-		{ .key = "number_of_keys", .value = &nok, .type = t_to_integer},
+		{ .key = "keys",           .value = &keys, .type = t_to_array },
+		{ .key = "number_of_keys", .value = &nok,  .type = t_to_integer},
 		{ NULL }
 	};
 
