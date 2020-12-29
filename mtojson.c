@@ -22,7 +22,7 @@ reduce_rem_len(size_t len)
 }
 
 static char*
-gen_json_boolean(char *out, _Bool val)
+gen_boolean(char *out, _Bool val)
 {
 	char *t = "true";
 	char *f = "false";
@@ -40,7 +40,7 @@ gen_json_boolean(char *out, _Bool val)
 }
 
 static char*
-gen_json_string(char *out, char *val)
+gen_string(char *out, char *val)
 {
 	size_t len = strlen(val);
 	if (!reduce_rem_len(len + 2)) // ""
@@ -53,7 +53,7 @@ gen_json_string(char *out, char *val)
 }
 
 static char*
-gen_json_integer(char *out, int val)
+gen_integer(char *out, int val)
 {
 	#define INT_STRING_SIZE ((sizeof(int)*CHAR_BIT - 1)*28/93 + 3)
 	char buf[INT_STRING_SIZE];
@@ -69,7 +69,7 @@ gen_json_integer(char *out, int val)
 }
 
 static char*
-gen_json_value(char *out, char *val)
+gen_value(char *out, char *val)
 {
 	size_t len = strlen(val);
 	if (!reduce_rem_len(len + 0))
@@ -80,7 +80,7 @@ gen_json_value(char *out, char *val)
 }
 
 static char*
-gen_json_array(char *out, struct json_array *jar)
+gen_array(char *out, struct json_array *jar)
 {
 	if (!reduce_rem_len(2)) // 2 -> []
 		return NULL;
@@ -94,7 +94,7 @@ gen_json_array(char *out, struct json_array *jar)
 	if (jar->type == t_to_array){
 		struct json_array **val = (struct json_array**)jar->value;
 		for (int i = 0; i < jar->count; i++){
-			out = gen_json_array(out, val[i]);
+			out = gen_array(out, val[i]);
 			if (!out)
 				return NULL;
 			rem_len -= 2;
@@ -106,7 +106,7 @@ gen_json_array(char *out, struct json_array *jar)
 	else if (jar->type == t_to_boolean){
 		_Bool *val = jar->value;
 		for (int i = 0; i < jar->count; i++){
-			out = gen_json_boolean(out, val[i]);
+			out = gen_boolean(out, val[i]);
 			if (!out)
 				return NULL;
 			rem_len -= 2;
@@ -118,7 +118,7 @@ gen_json_array(char *out, struct json_array *jar)
 	else if (jar->type == t_to_integer){
 		int *val = jar->value;
 		for (int i = 0; i < jar->count; i++){
-			out = gen_json_integer(out, val[i]);
+			out = gen_integer(out, val[i]);
 			if (!out)
 				return NULL;
 			rem_len -= 2;
@@ -142,7 +142,7 @@ gen_json_array(char *out, struct json_array *jar)
 	else if (jar->type == t_to_string){
 		char **val = (char**)jar->value;
 		for (int i = 0; i < jar->count; i++){
-			out = gen_json_string(out, val[i]);
+			out = gen_string(out, val[i]);
 			if (!out)
 				return NULL;
 			rem_len -= 2;
@@ -189,22 +189,22 @@ generate_json(char *out, struct json_kv *kv, size_t len)
 
 		switch (kv->type){
 		case t_to_array:
-			out = gen_json_array(out, (struct json_array*)kv->value);
+			out = gen_array(out, (struct json_array*)kv->value);
 			break;
 		case t_to_boolean:
-			out = gen_json_boolean(out, *(_Bool*)kv->value);
+			out = gen_boolean(out, *(_Bool*)kv->value);
 			break;
 		case t_to_integer:
-			out = gen_json_integer(out, *(int*)kv->value);
+			out = gen_integer(out, *(int*)kv->value);
 			break;
 		case t_to_object:
 			out = generate_json(out, (struct json_kv*)kv->value, rem_len);
 			break;
 		case t_to_string:
-			out = gen_json_string(out, (char*)kv->value);
+			out = gen_string(out, (char*)kv->value);
 			break;
 		case t_to_value:
-			out = gen_json_value(out, (char*)kv->value);
+			out = gen_value(out, (char*)kv->value);
 			break;
 		}
 
