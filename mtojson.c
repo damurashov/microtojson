@@ -90,6 +90,20 @@ gen_value(char *out, char *val)
 }
 
 static char*
+gen_array_type(char *out, void *val, _Bool is_last, char* (*func)())
+{
+	out = (*func)(out, val);
+	if (!out)
+		return NULL;
+	if (!is_last){
+		rem_len -= 2;
+		*out++ = ',';
+		*out++ = ' ';
+	}
+	return out;
+}
+
+static char*
 gen_array(char *out, struct json_array *jar)
 {
 	if (!reduce_rem_len(2)) // 2 -> []
@@ -101,71 +115,60 @@ gen_array(char *out, struct json_array *jar)
 		return out;
 	}
 
+	_Bool is_last;
+	char* (*func)() = gen_functions[jar->type];
 	if (jar->type == t_to_array){
 		struct json_array **val = (struct json_array**)jar->value;
 		for (size_t i = 0; i < jar->count; i++){
-			out = gen_array(out, val[i]);
+			is_last = (i + 1 == jar->count);
+			out = gen_array_type(out, val[i], is_last, func);
 			if (!out)
 				return NULL;
-			rem_len -= 2;
-			*out++ = ',';
-			*out++ = ' ';
 		}
 	}
 
 	else if (jar->type == t_to_boolean){
 		_Bool *val = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
-			out = gen_boolean(out, &val[i]);
+			is_last = (i + 1 == jar->count);
+			out = gen_array_type(out, &val[i], is_last, func);
 			if (!out)
 				return NULL;
-			rem_len -= 2;
-			*out++ = ',';
-			*out++ = ' ';
 		}
 	}
 
 	else if (jar->type == t_to_integer){
 		int *val = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
-			out = gen_integer(out, &val[i]);
+			is_last = (i + 1 == jar->count);
+			out = gen_array_type(out, &val[i], is_last, func);
 			if (!out)
 				return NULL;
-			rem_len -= 2;
-			*out++ = ',';
-			*out++ = ' ';
 		}
 	}
 
 	else if (jar->type == t_to_object){
 		struct json_kv **val = (struct json_kv**)jar->value;
 		for (size_t i = 0; i < jar->count; i++){
-			out = gen_object(out, val[i]);
+			is_last = (i + 1 == jar->count);
+			out = gen_array_type(out, val[i], is_last, func);
 			if (!out)
 				return NULL;
-			rem_len -= 2;
-			*out++ = ',';
-			*out++ = ' ';
 		}
 	}
 
 	else if (jar->type == t_to_string){
 		char **val = (char**)jar->value;
 		for (size_t i = 0; i < jar->count; i++){
-			out = gen_string(out, val[i]);
+			is_last = (i + 1 == jar->count);
+			out = gen_array_type(out, val[i], is_last, func);
 			if (!out)
 				return NULL;
-			rem_len -= 2;
-			*out++ = ',';
-			*out++ = ' ';
 		}
 	}
 
-	// Remove the ', '
-	rem_len += 2;
-	--out;
-	*--out = ']';
-	return ++out;
+	*out++ = ']';
+	return out;
 }
 
 static char*
