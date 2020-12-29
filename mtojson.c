@@ -9,8 +9,17 @@
 #include <stdio.h>
 #include <string.h>
 
-static int rem_len;
+static size_t rem_len;
 static int nested_object_depth = 0;
+
+static int
+reduce_rem_len(size_t len)
+{
+	if (rem_len < len)
+		return 0;
+	rem_len -= len;
+	return 1;
+}
 
 static char*
 gen_json_boolean(char *out, _Bool val)
@@ -22,8 +31,9 @@ gen_json_boolean(char *out, _Bool val)
 		v = t;
 	else
 		v = f;
-	rem_len -= strlen(v);
-	if (rem_len < 0) return NULL;
+	size_t len = strlen(v);
+	if (!reduce_rem_len(len))
+		return NULL;
 	while ((*out++ = *v++));
 	--out; // Discard \0
 	return out;
@@ -32,8 +42,8 @@ gen_json_boolean(char *out, _Bool val)
 static char*
 gen_json_string(char *out, char *val)
 {
-	rem_len -= (strlen(val) + 2); // ""
-	if (rem_len < 0)
+	size_t len = strlen(val);
+	if (!reduce_rem_len(len + 2)) // ""
 		return NULL;
 	*out++ = '"';
 	while ((*out++ = *val++));
@@ -48,8 +58,8 @@ gen_json_integer(char *out, int val)
 	#define INT_STRING_SIZE ((sizeof(int)*CHAR_BIT - 1)*28/93 + 3)
 	char buf[INT_STRING_SIZE];
 	sprintf(buf, "%d", val);
-	rem_len -= strlen(buf);
-	if (rem_len < 0)
+	size_t len = strlen(buf);
+	if (!reduce_rem_len(len + 0))
 		return NULL;
 	char *ptr = &buf[0];
 	while ((*out++ = *ptr++));
@@ -61,8 +71,8 @@ gen_json_integer(char *out, int val)
 static char*
 gen_json_value(char *out, char *val)
 {
-	rem_len -= strlen(val);
-	if (rem_len < 0)
+	size_t len = strlen(val);
+	if (!reduce_rem_len(len + 0))
 		return NULL;
 	while ((*out++ = *val++));
 	--out; // Discard \0
@@ -72,7 +82,9 @@ gen_json_value(char *out, char *val)
 static char*
 gen_json_array(char *out, struct json_array *jar)
 {
-	if ((rem_len -= 2) < 0) return NULL; // 2 -> []
+	if (!reduce_rem_len(2)) // 2 -> []
+		return NULL;
+
 	*out++ = '[';
 	if (jar->count == 0){
 		*out++ = ']';
@@ -135,21 +147,26 @@ gen_json_array(char *out, struct json_array *jar)
 }
 
 char*
-generate_json(char *out, int len, struct json_kv *kv)
+generate_json(char *out, size_t len, struct json_kv *kv)
 {
-	int object_meta_len = 2; // 2 -> {}
+	rem_len = len;
+	size_t object_meta_len = 2; // 2 -> {}
 	if (nested_object_depth == 0)
 		object_meta_len = 3; // 3 -> {}\0
 	nested_object_depth++;
-	if((rem_len = len - object_meta_len) < 0) goto fail;
+
+	if (!reduce_rem_len(object_meta_len))
+		goto fail;
+
 	*out++ = '{';
 	if (!kv->key)
 		goto done;
 
 	while (kv->key){
 		char *key = kv->key;
-		rem_len -= (strlen(key) + 4); // 4 -> "":_
-		if (rem_len < 0) goto fail;
+		size_t l = strlen(key);
+		if (!reduce_rem_len(l + 4)) // 4 -> "":_
+			goto fail;
 
 		*out++ = '"';
 		while ((*out++ = *key++));
@@ -181,14 +198,15 @@ generate_json(char *out, int len, struct json_kv *kv)
 
 		if (!out)
 			goto fail;
-		rem_len -= 2;
-		*out++ = ',';
-		*out++ = ' ';
+
+		if ((kv + 1)->key){
+			rem_len -= 2;
+			*out++ = ',';
+			*out++ = ' ';
+		}
+
 		kv++;
 	}
-
-	rem_len += 2;
-	out -= 2;
 
 done:
 	*out++ = '}';

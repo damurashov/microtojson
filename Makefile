@@ -2,7 +2,7 @@ CC = gcc
 
 CFLAGS = -std=c99
 CFLAGS += -Wall -Wextra -Wpedantic
-CFLAGS += -fno-common -Wshadow
+CFLAGS += -fno-common -Wshadow -Wconversion
 CFLAGS += -g -O2
 
 ASAN = -fsanitize=address,undefined -fno-omit-frame-pointer

@@ -2,6 +2,7 @@
 #define RKTA_MTOJSON_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 enum json_value_type {
 	t_to_array,
@@ -24,5 +25,5 @@ struct json_array {
 	enum json_value_type type;
 };
 
-char* generate_json(char *out, int len, struct json_kv *kvs);
+char* generate_json(char *out, size_t len, struct json_kv *kvs);
 #endif

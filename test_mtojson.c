@@ -56,7 +56,7 @@ test_json_string()
 {
 	char *expected = "{\"key\": \"value\"}";
 	char *test = "test_json_string";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -76,7 +76,7 @@ test_json_boolean()
 {
 	char *expected = "{\"key\": true}";
 	char *test = "test_json_boolean";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -97,7 +97,7 @@ test_json_integer()
 {
 	char *expected = "{\"key\": 1}";
 	char *test = "test_json_integer";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -118,7 +118,7 @@ test_json_integer_two()
 {
 	char *expected = "{\"key\": 1, \"key\": 2}";
 	char *test = "test_json_integer_two";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -141,7 +141,7 @@ test_json_array_integer()
 {
 	char *expected = "{\"array\": [1, 2]}";
 	char *test = "test_json_array_integer";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -165,7 +165,7 @@ test_json_array_string()
 {
 	char *expected = "{\"array\": [\"1\", \"23\"]}";
 	char *test = "test_json_array_string";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -189,7 +189,7 @@ test_json_array_boolean()
 {
 	char *expected = "{\"array\": [true, false]}";
 	char *test = "test_json_array_boolean";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -213,7 +213,7 @@ test_json_array_array()
 {
 	char *expected = "{\"array\": [[\"1\", \"2\", \"3\"], [\"1\", \"2\", \"3\"]]}";
 	char *test = "test_json_array_array";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -241,7 +241,7 @@ test_json_array_empty()
 {
 	char *expected = "{\"array\": []}";
 	char *test = "test_json_array_empty";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -266,7 +266,7 @@ test_json_array_empty_one()
 {
 	char *expected = "{\"array\": [[], [\"1\", \"2\", \"3\"]]}";
 	char *test = "test_json_array_one_empty";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -297,7 +297,7 @@ test_json_object_empty()
 {
 	char *expected = "{}";
 	char *test = "test_json_object_empty";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -324,7 +324,7 @@ test_json_object()
 	                 "}";
 
 	char *test = "test_json_object";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -372,7 +372,7 @@ test_json_array_object()
 	                 "}";
 
 	char *test = "test_json_array_object";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -431,7 +431,7 @@ test_json_object_object()
 	                 "}";
 
 	char *test = "test_json_object_object";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -471,7 +471,7 @@ test_json_object_nested_empty()
 	                 "}";
 
 	char *test = "test_json_object_nested_empty";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
@@ -506,7 +506,7 @@ test_json_valuetype()
 {
 	char *expected = "{\"key\": This is not valid {}JSON!}";
 	char *test = "test_json_valuetype";
-	int len = strlen(expected) + 1;
+	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
