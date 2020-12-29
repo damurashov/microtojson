@@ -9,7 +9,21 @@
 #include <stdio.h>
 #include <string.h>
 
-static char* gen_json_object(char *out, struct json_kv *kv);
+static char* gen_array(char *out, struct json_array *jar);
+static char* gen_boolean(char *out, _Bool *val);
+static char* gen_integer(char *out, int *val);
+static char* gen_object(char *out, struct json_kv *kv);
+static char* gen_string(char *out, char *val);
+static char* gen_value(char *out, char *val);
+
+char* (*gen_functions[])() = {
+	gen_array,
+	gen_boolean,
+	gen_integer,
+	gen_object,
+	gen_string,
+	gen_value,
+};
 
 static size_t rem_len;
 static int nested_object_depth = 0;
@@ -126,7 +140,7 @@ gen_array(char *out, struct json_array *jar)
 	else if (jar->type == t_to_object){
 		struct json_kv **val = (struct json_kv**)jar->value;
 		for (size_t i = 0; i < jar->count; i++){
-			out = gen_json_object(out, val[i]);
+			out = gen_object(out, val[i]);
 			if (!out)
 				return NULL;
 			rem_len -= 2;
@@ -155,7 +169,7 @@ gen_array(char *out, struct json_array *jar)
 }
 
 static char*
-gen_json_object(char *out, struct json_kv *kv)
+gen_object(char *out, struct json_kv *kv)
 {
 	size_t object_meta_len = 2; // 2 -> {}
 	if (nested_object_depth == 0)
@@ -182,26 +196,7 @@ gen_json_object(char *out, struct json_kv *kv)
 		*out++ = ':';
 		*out++ = ' ';
 
-		switch (kv->type){
-		case t_to_array:
-			out = gen_array(out, (struct json_array*)kv->value);
-			break;
-		case t_to_boolean:
-			out = gen_boolean(out, (_Bool*)kv->value);
-			break;
-		case t_to_integer:
-			out = gen_integer(out, (int*)kv->value);
-			break;
-		case t_to_object:
-			out = gen_json_object(out, (struct json_kv*)kv->value);
-			break;
-		case t_to_string:
-			out = gen_string(out, (char*)kv->value);
-			break;
-		case t_to_value:
-			out = gen_value(out, (char*)kv->value);
-			break;
-		}
+		out = gen_functions[kv->type](out, kv->value);
 
 		if (!out)
 			goto fail;
@@ -230,5 +225,5 @@ char*
 generate_json(char *out, struct json_kv *kv, size_t len)
 {
 	rem_len = len;
-	return gen_json_object(out, kv);
+	return gen_object(out, kv);
 }
