@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 
+static char* gen_json_object(char *out, struct json_kv *kv);
+
 static size_t rem_len;
 static int nested_object_depth = 0;
 
@@ -124,7 +126,7 @@ gen_array(char *out, struct json_array *jar)
 	else if (jar->type == t_to_object){
 		struct json_kv **val = (struct json_kv**)jar->value;
 		for (size_t i = 0; i < jar->count; i++){
-			out = generate_json(out, val[i], rem_len);
+			out = gen_json_object(out, val[i]);
 			if (!out)
 				return NULL;
 			rem_len -= 2;
@@ -152,10 +154,9 @@ gen_array(char *out, struct json_array *jar)
 	return ++out;
 }
 
-char*
-generate_json(char *out, struct json_kv *kv, size_t len)
+static char*
+gen_json_object(char *out, struct json_kv *kv)
 {
-	rem_len = len;
 	size_t object_meta_len = 2; // 2 -> {}
 	if (nested_object_depth == 0)
 		object_meta_len = 3; // 3 -> {}\0
@@ -170,13 +171,13 @@ generate_json(char *out, struct json_kv *kv, size_t len)
 
 	while (kv->key){
 		char *key = kv->key;
-		size_t l = strlen(key);
-		if (!reduce_rem_len(l + 4)) // 4 -> "":_
+		size_t len = strlen(key);
+		if (!reduce_rem_len(len + 4)) // 4 -> "":_
 			goto fail;
 
 		*out++ = '"';
-		memcpy(out, key, l);
-		out += l;
+		memcpy(out, key, len);
+		out += len;
 		*out++ = '"';
 		*out++ = ':';
 		*out++ = ' ';
@@ -192,7 +193,7 @@ generate_json(char *out, struct json_kv *kv, size_t len)
 			out = gen_integer(out, (int*)kv->value);
 			break;
 		case t_to_object:
-			out = generate_json(out, (struct json_kv*)kv->value, rem_len);
+			out = gen_json_object(out, (struct json_kv*)kv->value);
 			break;
 		case t_to_string:
 			out = gen_string(out, (char*)kv->value);
@@ -223,4 +224,11 @@ done:
 fail:
 	nested_object_depth = 0;
 	return NULL;
+}
+
+char*
+generate_json(char *out, struct json_kv *kv, size_t len)
+{
+	rem_len = len;
+	return gen_json_object(out, kv);
 }
