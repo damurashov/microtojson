@@ -1,0 +1,7 @@
+image: openbsd/latest
+sources:
+- https://git.sr.ht/~rkta/microtojson
+tasks:
+- check: |
+    cd microtojson
+    make ASAN= CFLAGS='-std=c99 -O2' -s
