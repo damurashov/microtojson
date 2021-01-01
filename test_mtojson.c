@@ -63,7 +63,7 @@ static void
 tell_single_test(char* test)
 {
 	if (single_test || verbose){
-		printf("Running test: %-30s ", test);
+		printf("%-40s ", test);
 		if (!verbose)
 			printf("%s", "\n");
 	}
@@ -528,6 +528,68 @@ test_json_valuetype()
 	return check_result(test, expected, result);
 }
 
+#ifdef FLOAT_ENABLE
+static int
+test_json_float_one_seventh()
+{
+	char *expected = "{\"key\": 0.142857149243354797363}";
+
+	char *test = "test_json_float_one_seventh";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
+	rp = result;
+
+	float f = 1/7.0f;
+	struct json_kv jkv[] = {
+		{ .key = "key", .value = &f, .type = t_to_float },
+		{ NULL },
+	};
+	run_test(test, result, jkv, len);
+	return check_result(test, expected, result);
+}
+
+static int
+test_json_float_one_seventh_plus_1000()
+{
+	char *expected = "{\"key\": 1000.14288330078125}";
+
+	char *test = "test_json_float_one_seventh_plus_1000";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
+	rp = result;
+
+	float f = 1/7.0f + 1000.0f;
+	struct json_kv jkv[] = {
+		{ .key = "key", .value = &f, .type = t_to_float },
+		{ NULL },
+	};
+	run_test(test, result, jkv, len);
+	return check_result(test, expected, result);
+}
+
+static int
+test_json_float_one_seventh_by_1000()
+{
+	char *expected = "{\"key\": 0.000142857155879028141499}";
+
+	char *test = "test_json_float_one_seventh_by_1000";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
+	rp = result;
+
+	float f = (1/7.0f) / 1000.0f;
+	struct json_kv jkv[] = {
+		{ .key = "key", .value = &f, .type = t_to_float },
+		{ NULL },
+	};
+	run_test(test, result, jkv, len);
+	return check_result(test, expected, result);
+}
+#endif
+
 static int
 exec_test(int i)
 {
@@ -583,13 +645,27 @@ exec_test(int i)
 	case 17:
 		return test_json_uinteger();
 		break;
+#ifdef FLOAT_ENABLE
+	case 18:
+		return test_json_float_one_seventh();
+	case 19:
+		return test_json_float_one_seventh_plus_1000();
+	case 20:
+		return test_json_float_one_seventh_by_1000();
+#else
+	case 18:
+	case 19:
+	case 20:
+		return 0;
+#endif
+		break;
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 17
+#define MAXTEST 20
 
 int
 main(int argc, char *argv[])

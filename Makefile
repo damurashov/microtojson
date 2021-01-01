@@ -2,6 +2,7 @@ CFLAGS = -std=c99
 CFLAGS += -Wall -Wextra -Wpedantic
 CFLAGS += -fno-common -Wshadow -Wconversion -Wmissing-declarations
 CFLAGS += -g -O2
+CFLAGS += -DFLOAT_ENABLE
 
 ASAN = -fsanitize=address,undefined -fno-omit-frame-pointer
 CFLAGS += $(ASAN)

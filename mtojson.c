@@ -16,6 +16,9 @@ static char* gen_object(char *out, struct json_kv *kv);
 static char* gen_string(char *out, char *val);
 static char* gen_uinteger(char *out, unsigned *val);
 static char* gen_value(char *out, char *val);
+#ifdef FLOAT_ENABLE
+static char* gen_float(char *out, float *v);
+#endif
 
 char* (*gen_functions[])() = {
 	gen_array,
@@ -25,6 +28,9 @@ char* (*gen_functions[])() = {
 	gen_string,
 	gen_uinteger,
 	gen_value,
+#ifdef FLOAT_ENABLE
+	gen_float,
+#endif
 };
 
 static size_t rem_len;
@@ -94,6 +100,21 @@ gen_uinteger(char *out, unsigned *val)
 	return strcpy_val(out, buf, NULL);
 	#undef INT_STRING_SIZE
 }
+
+#ifdef FLOAT_ENABLE
+#include <float.h>
+// TODO(rkta): FLT_STRING_SIZE needs reason/explanation
+#define INT_STRING_SIZE ((sizeof(int)*CHAR_BIT - 1)*28/93 + 3)
+#define FLT_STRING_SIZE INT_STRING_SIZE + DECIMAL_DIG
+static char*
+gen_float(char *out, float *v)
+{
+	char buf[FLT_STRING_SIZE];
+	sprintf(buf, "%.*g", DECIMAL_DIG, *v);
+	return strcpy_val(out, buf, NULL);
+}
+#undef FLT_STRING_SIZE
+#endif
 
 static char*
 gen_value(char *out, char *val)

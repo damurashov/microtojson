@@ -12,6 +12,9 @@ enum json_value_type {
 	t_to_string,
 	t_to_uinteger,
 	t_to_value,
+#ifdef FLOAT_ENABLE
+	t_to_float,
+#endif
 };
 
 struct json_kv {
