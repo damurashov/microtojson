@@ -14,6 +14,7 @@ static char* gen_boolean(char *out, _Bool *val);
 static char* gen_integer(char *out, int *val);
 static char* gen_object(char *out, struct json_kv *kv);
 static char* gen_string(char *out, char *val);
+static char* gen_uinteger(char *out, unsigned *val);
 static char* gen_value(char *out, char *val);
 
 char* (*gen_functions[])() = {
@@ -22,6 +23,7 @@ char* (*gen_functions[])() = {
 	gen_integer,
 	gen_object,
 	gen_string,
+	gen_uinteger,
 	gen_value,
 };
 
@@ -79,6 +81,16 @@ gen_integer(char *out, int *val)
 	#define INT_STRING_SIZE ((sizeof(int)*CHAR_BIT - 1)*28/93 + 3)
 	char buf[INT_STRING_SIZE];
 	sprintf(buf, "%d", *val);
+	return strcpy_val(out, buf, NULL);
+	#undef INT_STRING_SIZE
+}
+
+static char*
+gen_uinteger(char *out, unsigned *val)
+{
+	#define INT_STRING_SIZE ((sizeof(int)*CHAR_BIT - 1)*28/93 + 3)
+	char buf[INT_STRING_SIZE];
+	sprintf(buf, "%u", *val);
 	return strcpy_val(out, buf, NULL);
 	#undef INT_STRING_SIZE
 }

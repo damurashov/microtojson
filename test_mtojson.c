@@ -137,6 +137,28 @@ test_json_integer_two()
 }
 
 static int
+test_json_uinteger()
+{
+	char *expected = "{\"key\": 65535}";
+	char *test = "test_json_uinteger";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
+	rp = result;
+	tell_single_test(test);
+
+	int n = 65535;
+	struct json_kv jkv[] = {
+		{ .key = "key", .value = &n, .type = t_to_uinteger, },
+		{ NULL },
+	};
+	if (generate_json(result, jkv, len - 1)) exit(125);
+	if (!generate_json(result, jkv, len)) exit(124);
+	return check_result(test, expected, result);
+}
+
+
+static int
 test_json_array_integer()
 {
 	char *expected = "{\"array\": [1, 2]}";
@@ -574,13 +596,16 @@ exec_test(int i)
 	case 16:
 		return test_json_object_nested_empty();
 		break;
+	case 17:
+		return test_json_uinteger();
+		break;
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 16
+#define MAXTEST 17
 
 int
 main(int argc, char *argv[])

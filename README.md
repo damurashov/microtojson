@@ -6,12 +6,19 @@ A simple embedded friendly JSON serializer.
 
 This is still beta, use at own risk.
 
-Make sure structs are NULL terminated.
+Supported types are:
+- array
+- JSON object
+- string
+- boolean
+- integer
+- unsigned integer
 
-Currently only array, JSON object, string, boolean and integer are valid types.
 To create an arbitrary value use `t_to_value` and pass the correctly formatted value as char array.
 
 See `test_mtojson.c` for usage.
+
+Make sure structs are NULL terminated.
 
 This project is mainly developed on [sourcehut](https://sr.ht/~rkta/microtojson/).
 It is mirrored on [gitlab](https://gitlab.com/rkta/microtojson) and [github](https://github.com/rkta/microtojson).

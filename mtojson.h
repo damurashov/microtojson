@@ -10,6 +10,7 @@ enum json_value_type {
 	t_to_integer,
 	t_to_object,
 	t_to_string,
+	t_to_uinteger,
 	t_to_value,
 };
 
