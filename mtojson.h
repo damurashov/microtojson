@@ -21,7 +21,7 @@ struct json_kv {
 
 struct json_array {
 	void *value;
-	int count;
+	size_t count;
 	enum json_value_type type;
 };
 
