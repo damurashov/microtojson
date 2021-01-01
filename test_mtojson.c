@@ -116,7 +116,7 @@ test_json_integer()
 static int
 test_json_integer_two()
 {
-	char *expected = "{\"key\": 1, \"key\": 2}";
+	char *expected = "{\"key\": -32767, \"key\": 32767}";
 	char *test = "test_json_integer_two";
 	size_t len = strlen(expected) + 1;
 	char result[len];
@@ -124,7 +124,7 @@ test_json_integer_two()
 	rp = result;
 	tell_single_test(test);
 
-	int ns[] = {1, 2};
+	int ns[] = {-32767, 32767};
 
 	struct json_kv jkv[] = {
 		{ .type = t_to_integer, .key = "key", .value = &ns[0], },
