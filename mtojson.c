@@ -22,6 +22,23 @@ reduce_rem_len(size_t len)
 }
 
 static char*
+strcpy_val(char *out, char *val, char *wrapper)
+{
+	size_t wlen = wrapper ? 2 : 0;
+	size_t len = strlen(val);
+
+	if (!reduce_rem_len(len + wlen))
+		return NULL;
+	if (wrapper)
+		*out++ = *wrapper;
+	while ((*out++ = *val++));
+	--out; // Discard \0
+	if (wrapper)
+		*out++ = *wrapper;
+	return out;
+}
+
+static char*
 gen_boolean(char *out, _Bool val)
 {
 	char *t = "true";
@@ -31,25 +48,13 @@ gen_boolean(char *out, _Bool val)
 		v = t;
 	else
 		v = f;
-	size_t len = strlen(v);
-	if (!reduce_rem_len(len))
-		return NULL;
-	while ((*out++ = *v++));
-	--out; // Discard \0
-	return out;
+	return strcpy_val(out, v, NULL);
 }
 
 static char*
 gen_string(char *out, char *val)
 {
-	size_t len = strlen(val);
-	if (!reduce_rem_len(len + 2)) // ""
-		return NULL;
-	*out++ = '"';
-	while ((*out++ = *val++));
-	--out; // Discard \0
-	*out++ = '"';
-	return out;
+	return strcpy_val(out, val, "\"");
 }
 
 static char*
@@ -58,25 +63,14 @@ gen_integer(char *out, int val)
 	#define INT_STRING_SIZE ((sizeof(int)*CHAR_BIT - 1)*28/93 + 3)
 	char buf[INT_STRING_SIZE];
 	sprintf(buf, "%d", val);
-	size_t len = strlen(buf);
-	if (!reduce_rem_len(len + 0))
-		return NULL;
-	char *ptr = &buf[0];
-	while ((*out++ = *ptr++));
-	--out; // Discard \0
-	return out;
+	return strcpy_val(out, buf, NULL);
 	#undef INT_STRING_SIZE
 }
 
 static char*
 gen_value(char *out, char *val)
 {
-	size_t len = strlen(val);
-	if (!reduce_rem_len(len + 0))
-		return NULL;
-	while ((*out++ = *val++));
-	--out; // Discard \0
-	return out;
+	return strcpy_val(out, val, NULL);
 }
 
 static char*
