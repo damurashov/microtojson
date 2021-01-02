@@ -31,8 +31,8 @@ strcpy_val(char *out, char *val, char *wrapper)
 		return NULL;
 	if (wrapper)
 		*out++ = *wrapper;
-	while ((*out++ = *val++));
-	--out; // Discard \0
+	memcpy(out, val, len);
+	out += len;
 	if (wrapper)
 		*out++ = *wrapper;
 	return out;
@@ -175,8 +175,8 @@ generate_json(char *out, struct json_kv *kv, size_t len)
 			goto fail;
 
 		*out++ = '"';
-		while ((*out++ = *key++));
-		--out; // Discard \0
+		memcpy(out, key, l);
+		out += l;
 		*out++ = '"';
 		*out++ = ':';
 		*out++ = ' ';
