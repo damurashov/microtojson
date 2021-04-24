@@ -29,7 +29,7 @@ int verbose = 0;
 // Helper pointer, use 'display rp' inside gdb to see the string grow
 const char *rp;
 
-int
+static int
 check_result(char *test, char *expected, char *result)
 {
 	int r = strcmp(result, expected);
@@ -41,7 +41,7 @@ check_result(char *test, char *expected, char *result)
 	return r != 0;
 }
 
-void
+static void
 tell_single_test(char* test)
 {
 	if (single_test || verbose){
@@ -51,7 +51,7 @@ tell_single_test(char* test)
 	}
 }
 
-int
+static int
 test_json_string()
 {
 	char *expected = "{\"key\": \"value\"}";
@@ -71,7 +71,7 @@ test_json_string()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_boolean()
 {
 	char *expected = "{\"key\": true}";
@@ -92,7 +92,7 @@ test_json_boolean()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_integer()
 {
 	char *expected = "{\"key\": 1}";
@@ -113,7 +113,7 @@ test_json_integer()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_integer_two()
 {
 	char *expected = "{\"key\": 1, \"key\": 2}";
@@ -136,7 +136,7 @@ test_json_integer_two()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_array_integer()
 {
 	char *expected = "{\"array\": [1, 2]}";
@@ -160,7 +160,7 @@ test_json_array_integer()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_array_string()
 {
 	char *expected = "{\"array\": [\"1\", \"23\"]}";
@@ -184,7 +184,7 @@ test_json_array_string()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_array_boolean()
 {
 	char *expected = "{\"array\": [true, false]}";
@@ -208,7 +208,7 @@ test_json_array_boolean()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_array_array()
 {
 	char *expected = "{\"array\": [[\"1\", \"2\", \"3\"], [\"1\", \"2\", \"3\"]]}";
@@ -237,7 +237,7 @@ test_json_array_array()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_array_empty()
 {
 	char *expected = "{\"array\": []}";
@@ -262,7 +262,7 @@ test_json_array_empty()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_array_empty_one()
 {
 	char *expected = "{\"array\": [[], [\"1\", \"2\", \"3\"]]}";
@@ -293,7 +293,7 @@ test_json_array_empty_one()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_object_empty()
 {
 	char *expected = "{}";
@@ -312,7 +312,7 @@ test_json_object_empty()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_object()
 {
 	char *expected = "{"
@@ -356,7 +356,7 @@ test_json_object()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_array_object()
 {
 	char *expected = "{"
@@ -420,7 +420,7 @@ test_json_array_object()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_object_object()
 {
 	char *expected = "{"
@@ -460,7 +460,7 @@ test_json_object_object()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_object_nested_empty()
 {
 	char *expected = "{"
@@ -502,7 +502,7 @@ test_json_object_nested_empty()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 test_json_valuetype()
 {
 	char *expected = "{\"key\": This is not valid {}JSON!}";
@@ -522,7 +522,7 @@ test_json_valuetype()
 	return check_result(test, expected, result);
 }
 
-int
+static int
 exec_test(int i)
 {
 	switch (i){
