@@ -18,10 +18,10 @@
 
 #include <getopt.h>
 #include <stdbool.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 _Bool single_test = 0;
 int verbose = 0;
