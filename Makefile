@@ -1,5 +1,3 @@
-CC = gcc
-
 CFLAGS = -std=c99
 CFLAGS += -Wall -Wextra -Wpedantic
 CFLAGS += -fno-common -Wshadow -Wconversion -Wmissing-declarations
