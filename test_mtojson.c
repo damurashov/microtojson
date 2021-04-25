@@ -1,10 +1,10 @@
 /*
  * Tests for microtojson.h
  *
- * If generate_json does not detect an expected buffer overflow, running tests
+ * If generate_json DOES NOT detect an EXPECTED buffer overflow, running tests
  * will be aborted immediately with an exit status 125.
  *
- * If generate_json does detect an non-expected buffer overflow, running tests
+ * If generate_json DOES detect an NON-EXPECTED buffer overflow, running tests
  * will be aborted immediately with an exit status 124.
  *
  * If tests fail exit status is the count of failed tests. All succeeding tests
@@ -28,6 +28,24 @@ int verbose = 0;
 
 // Helper pointer, use 'display rp' inside gdb to see the string grow
 const char *rp;
+
+static void tell_single_test();
+
+static void
+run_test(char *test, char *result, struct json_kv *jkv, size_t len)
+{
+	tell_single_test(test);
+	if (generate_json(result, jkv, len - 1)) {
+		if (verbose)
+			printf("%s\n", "UNDETECTED buffer overflow");
+		exit(125);
+	}
+	if (!generate_json(result, jkv, len)) {
+		if (verbose)
+			printf("%s\n", "NON-EXPECTED buffer overflow");
+		exit(124);
+	}
+}
 
 static int
 check_result(char *test, char *expected, char *result)
@@ -60,14 +78,12 @@ test_json_string()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	struct json_kv jkv[] = {
 		{ .key = "key", .value = "value", .type = t_to_string, },
 		{ NULL },
 	};
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -80,15 +96,13 @@ test_json_boolean()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	_Bool value = true;
 	struct json_kv jkv[] = {
 		{ .key = "key", .value = &value, .type = t_to_boolean, },
 		{ NULL },
 	};
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -101,15 +115,13 @@ test_json_integer()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	int n = 1;
 	struct json_kv jkv[] = {
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -122,7 +134,6 @@ test_json_integer_two()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	int ns[] = {-32767, 32767};
 
@@ -131,8 +142,7 @@ test_json_integer_two()
 		{ .type = t_to_integer, .key = "key", .value = &ns[1], },
 		{ NULL }
 	};
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -145,15 +155,13 @@ test_json_uinteger()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	int n = 65535;
 	struct json_kv jkv[] = {
 		{ .key = "key", .value = &n, .type = t_to_uinteger, },
 		{ NULL },
 	};
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -167,7 +175,6 @@ test_json_array_integer()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	int arr[] = {1, 2};
 	struct json_array jar = {
@@ -177,8 +184,7 @@ test_json_array_integer()
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -191,7 +197,6 @@ test_json_array_string()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	char *arr[8] = {"1", "23"};
 	struct json_array jar = {
@@ -201,8 +206,7 @@ test_json_array_string()
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -215,7 +219,6 @@ test_json_array_boolean()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	_Bool arr [] = {true, false};
 	struct json_array jar = {
@@ -225,8 +228,7 @@ test_json_array_boolean()
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -239,7 +241,6 @@ test_json_array_array()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	char *arr[] = {"1", "2", "3"};
 	struct json_array inner_jar_arr = {
@@ -254,8 +255,7 @@ test_json_array_array()
 		{ NULL }
 	};
 
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -268,7 +268,6 @@ test_json_array_empty()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	char *arr[1];
 	struct json_array jar = {
@@ -279,8 +278,7 @@ test_json_array_empty()
 		{ NULL }
 	};
 
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -293,7 +291,6 @@ test_json_array_empty_one()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	char *arr[] = {"1", "2", "3"};
 	struct json_array inner_jar_arr = {
@@ -310,8 +307,7 @@ test_json_array_empty_one()
 		{ NULL }
 	};
 
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -324,13 +320,11 @@ test_json_object_empty()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	struct json_kv jkv[] = {
 		{ NULL },
 	};
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -351,7 +345,6 @@ test_json_object()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
 	struct json_array addarr = {
@@ -373,8 +366,7 @@ test_json_object()
 		{ NULL }
 	};
 
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -399,7 +391,6 @@ test_json_array_object()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
 	struct json_array addarr = {
@@ -437,8 +428,7 @@ test_json_array_object()
 		{ NULL }
 	};
 
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -458,7 +448,6 @@ test_json_object_object()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	_Bool value = true;
 
@@ -477,8 +466,7 @@ test_json_object_object()
 		{ NULL }
 	};
 
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -498,7 +486,6 @@ test_json_object_nested_empty()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	struct json_kv value[] = {
 		{ NULL },
@@ -519,8 +506,7 @@ test_json_object_nested_empty()
 		{ NULL }
 	};
 
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
@@ -533,14 +519,12 @@ test_json_valuetype()
 	char result[len];
 	memset(result, '\0', len);
 	rp = result;
-	tell_single_test(test);
 
 	struct json_kv jkv[] = {
 		{ .key = "key", .value = "This is not valid {}JSON!", .type = t_to_value, },
 		{ NULL },
 	};
-	if (generate_json(result, jkv, len - 1)) exit(125);
-	if (!generate_json(result, jkv, len)) exit(124);
+	run_test(test, result, jkv, len);
 	return check_result(test, expected, result);
 }
 
