@@ -444,7 +444,7 @@ test_json_array_object(void)
 }
 
 static int
-test_json_object_object(void)
+test_json_object_object(_Bool fails)
 {
 	char *expected = "{"
 	                   "\"outer\": {"
@@ -477,12 +477,14 @@ test_json_object_object(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len, 0);
-	return check_result(test, expected, result);
+	run_test(test, result, jkv, len, fails);
+
+	int r = check_result(test, expected, result);
+	return fails ? !r : r;
 }
 
 static int
-test_json_object_nested_empty(void)
+test_json_object_nested_empty(_Bool fails)
 {
 	char *expected = "{"
 	                   "\"outer\": {"
@@ -517,8 +519,9 @@ test_json_object_nested_empty(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len, 0);
-	return check_result(test, expected, result);
+	run_test(test, result, jkv, len, fails);
+	int r = check_result(test, expected, result);
+	return fails ? !r : r;
 }
 
 static int
@@ -658,10 +661,18 @@ exec_test(int i)
 		return test_json_object_empty();
 		break;
 	case 15:
-		return test_json_object_object();
+#ifdef MAX_NESTED_OBJECT_DEPTH
+		if (MAX_NESTED_OBJECT_DEPTH < 2)
+			return test_json_object_object(1);
+#endif
+		return test_json_object_object(0);
 		break;
 	case 16:
-		return test_json_object_nested_empty();
+#ifdef MAX_NESTED_OBJECT_DEPTH
+		if (MAX_NESTED_OBJECT_DEPTH < 3)
+			return test_json_object_nested_empty(1);
+#endif
+		return test_json_object_nested_empty(0);
 		break;
 	case 17:
 		return test_json_uinteger();

@@ -211,6 +211,10 @@ gen_array(char *out, struct json_array *jar)
 static char*
 gen_object(char *out, const struct json_kv *kv)
 {
+#ifdef MAX_NESTED_OBJECT_DEPTH
+	if (nested_object_depth > MAX_NESTED_OBJECT_DEPTH)
+		goto fail;
+#endif
 	size_t object_meta_len = 2; // 2 -> {}
 	if (nested_object_depth == 0)
 		object_meta_len = 3; // 3 -> {}\0

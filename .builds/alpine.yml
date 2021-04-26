@@ -5,3 +5,6 @@ tasks:
 - check: |
     cd microtojson
     CFLAGS=-Werror make ASAN= -s
+- recursion: |
+    cd microtojson
+    CFLAGS=-Werror,-DMAX_RECURSION_LEVEL=1 make ASAN= -s
