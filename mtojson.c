@@ -195,9 +195,6 @@ gen_object(char *out, struct json_kv *kv)
 		goto fail;
 
 	*out++ = '{';
-	if (!kv->key)
-		goto done;
-
 	while (kv->key){
 		char *key = kv->key;
 		size_t len = strlen(key);
@@ -225,7 +222,6 @@ gen_object(char *out, struct json_kv *kv)
 		kv++;
 	}
 
-done:
 	*out++ = '}';
 	*out = '\0';
 	nested_object_depth--;
