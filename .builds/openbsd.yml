@@ -4,9 +4,8 @@ sources:
 tasks:
 - check: |
     cd microtojson
-    make ASAN= \
-    CFLAGS='-std=c99 -O2 \
-    -Wall -Wextra -pedantic -Wconversion -Werror -Wshadow \
-    -fno-common \
-    -Wno-missing-field-initializers' \
-    -s
+    cc -std=c99 -O2 -Wall -Wextra -pedantic -Wconversion -Werror -Wshadow \
+    -fno-common -Wno-missing-field-initializers \
+    -o test_mtojson mtojson.c test_mtojson.c
+    ./test_mtojson
+    rm -f test_mtojson *.o
