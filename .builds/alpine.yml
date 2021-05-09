@@ -4,4 +4,4 @@ sources:
 tasks:
 - check: |
     cd microtojson
-    make ASAN= -s
+    CFLAGS=-Werror make ASAN= -s

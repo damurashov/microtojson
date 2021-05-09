@@ -1,6 +1,6 @@
 CC=gcc
 
-CFLAGS = -std=c99
+CFLAGS += -std=c99
 CFLAGS += -Wall -Wextra -Wpedantic
 CFLAGS += -Wformat=2 -Wduplicated-cond -Wjump-misses-init -Wnull-dereference
 CFLAGS += -fno-common -Wshadow -Wconversion -Wmissing-declarations
