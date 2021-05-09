@@ -14,6 +14,11 @@
  * test must fail!
  */
 
+/*
+ * SPDX-License-Identifier: BSD-2-Clause
+ * This file is Copyright (c) 2020 by Rene Kita
+ */
+
 #include "mtojson.h"
 
 #include <getopt.h>
