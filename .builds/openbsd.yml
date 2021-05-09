@@ -2,7 +2,7 @@ image: openbsd/latest
 sources:
 - https://git.sr.ht/~rkta/microtojson
 tasks:
-- check: |
+- check_cc: |
     cd microtojson
     cc -std=c99 -O2 -Wall -Wextra -pedantic -Wconversion -Werror -Wshadow \
     -fno-common -c \
@@ -10,5 +10,12 @@ tasks:
     cc -std=c99 -O2 -Wall -Wextra -pedantic -Wconversion -Werror -Wshadow \
     -fno-common -Wno-missing-field-initializers \
     -o test_mtojson mtojson.o test_mtojson.c
+    ./test_mtojson
+    rm -f test_mtojson *.o
+- check_gcc: |
+    cd microtojson
+    gcc -std=c99 -O2 -Wall -Wextra -pedantic -Werror -Wshadow \
+    -fno-common -Wno-missing-field-initializers \
+    -o test_mtojson mtojson.c test_mtojson.c
     ./test_mtojson
     rm -f test_mtojson *.o
