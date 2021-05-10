@@ -22,6 +22,7 @@
 #include "mtojson.h"
 
 #include <getopt.h>
+#include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -534,6 +535,78 @@ test_json_valuetype()
 }
 
 static int
+test_json_int_max()
+{
+	char int_max[20];
+	sprintf(int_max, "%d", INT_MAX);
+	char expected[30];
+	strcpy(expected, "{\"key\": ");
+	strcat(strcat(expected, int_max), "}");
+
+	char *test = "test_json_int_max";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
+	rp = result;
+
+	int n = INT_MAX;
+	struct json_kv jkv[] = {
+		{ .key = "key", .value = &n, .type = t_to_integer, },
+		{ NULL },
+	};
+	run_test(test, result, jkv, len);
+	return check_result(test, expected, result);
+
+}
+
+static int
+test_json_int_min()
+{
+	char uint_min[20];
+	sprintf(uint_min, "%d", INT_MIN);
+	char expected[30];
+	strcpy(expected, "{\"key\": ");
+	strcat(strcat(expected, uint_min), "}");
+
+	char *test = "test_json_int_min";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
+	rp = result;
+
+	int n = INT_MIN;
+	struct json_kv jkv[] = {
+		{ .key = "key", .value = &n, .type = t_to_integer, },
+		{ NULL },
+	};
+	run_test(test, result, jkv, len);
+	return check_result(test, expected, result);
+}
+
+static int
+test_json_uint_max()
+{
+	char uint_max[20];
+	sprintf(uint_max, "%u", UINT_MAX);
+	char expected[30];
+	strcpy(expected, "{\"key\": ");
+	strcat(strcat(expected, uint_max), "}");
+
+	char *test = "test_json_uint_max";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
+	rp = result;
+
+	unsigned n = UINT_MAX;
+	struct json_kv jkv[] = {
+		{ .key = "key", .value = &n, .type = t_to_uinteger, },
+		{ NULL },
+	};
+	run_test(test, result, jkv, len);
+	return check_result(test, expected, result);
+}
+static int
 exec_test(int i)
 {
 	switch (i){
@@ -588,13 +661,22 @@ exec_test(int i)
 	case 17:
 		return test_json_uinteger();
 		break;
+	case 18:
+		return test_json_int_max();
+		break;
+	case 19:
+		return test_json_int_min();
+		break;
+	case 20:
+		return test_json_uint_max();
+		break;
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 17
+#define MAXTEST 20
 
 int
 main(int argc, char *argv[])
