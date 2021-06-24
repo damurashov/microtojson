@@ -16,6 +16,8 @@ Supported types are:
 
 To create an arbitrary value use `t_to_value` and pass the correctly formatted value as char array.
 
+`generate_json()` returns the length of the generated JSON or 0 in case of an error.
+
 See `test_mtojson.c` for usage.
 
 `microtojson` uses recursion to create JSON from nested objects.

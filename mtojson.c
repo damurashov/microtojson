@@ -261,9 +261,16 @@ fail:
 	return NULL;
 }
 
-char*
+size_t
 generate_json(char *out, const struct json_kv *kv, size_t len)
 {
+	const char *start = out;
+
 	rem_len = len;
-	return gen_object(out, kv);
+	out = gen_object(out, kv);
+
+	if (!out)
+		return 0;
+
+	return (size_t)(out - start);
 }

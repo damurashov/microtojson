@@ -7,6 +7,9 @@
  * If generate_json DOES detect an NON-EXPECTED buffer overflow, running tests
  * will be aborted immediately with an exit status 124.
  *
+ * If generate_json returns the wrong string length, running tests will be
+ * aborted immediately with an exit status 123.
+ *
  * If tests fail exit status is the count of failed tests. All succeeding tests
  * will be run and the number of the failed tests will be printed to stderr.
  *
@@ -51,10 +54,18 @@ run_test(char *test, char *result, const struct json_kv *jkv, size_t len, _Bool 
 			printf("%s\n", "UNDETECTED buffer overflow");
 		exit(125);
 	}
-	if (!generate_json(result, jkv, len)) {
+
+	size_t l = generate_json(result, jkv, len);
+	if (!l) {
 		if (verbose)
 			printf("%s\n", "NON-EXPECTED buffer overflow");
 		exit(124);
+	}
+
+	if (l != strlen(result)) {
+		if (verbose)
+			printf("%s\n", "String length mismatch");
+		exit(123);
 	}
 }
 
