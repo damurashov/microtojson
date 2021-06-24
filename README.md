@@ -26,5 +26,3 @@ It is mirrored on [gitlab](https://gitlab.com/rkta/microtojson) and [github](htt
 If you want to contribute or find any bugs, feel free to choose the way that best fits your work style.
 
 This project is heavily inspired by [microjson](https://gitlab.com/esr/microjson/) from Eric S. Raymond.
-
-**Branches starting with `rk/` are considered private and will be force pushed!**
