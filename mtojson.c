@@ -11,7 +11,7 @@
 static char* gen_array(char *out, struct json_array *jar);
 static char* gen_boolean(char *out, _Bool *val);
 static char* gen_integer(char *out, int *val);
-static char* gen_object(char *out, struct json_kv *kv);
+static char* gen_object(char *out, const struct json_kv *kv);
 static char* gen_string(char *out, char *val);
 static char* gen_uinteger(char *out, unsigned *val);
 static char* gen_value(char *out, char *val);
@@ -209,7 +209,7 @@ gen_array(char *out, struct json_array *jar)
 }
 
 static char*
-gen_object(char *out, struct json_kv *kv)
+gen_object(char *out, const struct json_kv *kv)
 {
 	size_t object_meta_len = 2; // 2 -> {}
 	if (nested_object_depth == 0)
@@ -258,7 +258,7 @@ fail:
 }
 
 char*
-generate_json(char *out, struct json_kv *kv, size_t len)
+generate_json(char *out, const struct json_kv *kv, size_t len)
 {
 	rem_len = len;
 	return gen_object(out, kv);

@@ -26,5 +26,5 @@ struct json_array {
 	enum json_value_type type;
 };
 
-char* generate_json(char *out, struct json_kv *kv, size_t len);
+char* generate_json(char *out, const struct json_kv *kv, size_t len);
 #endif
