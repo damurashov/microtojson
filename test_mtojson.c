@@ -38,9 +38,14 @@ const char *rp;
 static void tell_single_test();
 
 static void
-run_test(char *test, char *result, const struct json_kv *jkv, size_t len)
+run_test(char *test, char *result, const struct json_kv *jkv, size_t len, _Bool fails)
 {
 	tell_single_test(test);
+	if (fails) {
+		generate_json(result, jkv, len);
+		return;
+	}
+
 	if (generate_json(result, jkv, len - 1)) {
 		if (verbose)
 			printf("%s\n", "UNDETECTED buffer overflow");
@@ -89,7 +94,7 @@ test_json_string(void)
 		{ .key = "key", .value = "value", .type = t_to_string, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -108,7 +113,7 @@ test_json_boolean(void)
 		{ .key = "key", .value = &value, .type = t_to_boolean, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -127,7 +132,7 @@ test_json_integer(void)
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -148,7 +153,7 @@ test_json_integer_two(void)
 		{ .type = t_to_integer, .key = "key", .value = &ns[1], },
 		{ NULL }
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -167,7 +172,7 @@ test_json_uinteger(void)
 		{ .key = "key", .value = &n, .type = t_to_uinteger, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -190,7 +195,7 @@ test_json_array_integer(void)
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -212,7 +217,7 @@ test_json_array_string(void)
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -234,7 +239,7 @@ test_json_array_boolean(void)
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -261,7 +266,7 @@ test_json_array_array(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -284,7 +289,7 @@ test_json_array_empty(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -313,7 +318,7 @@ test_json_array_empty_one(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -330,7 +335,7 @@ test_json_object_empty(void)
 	struct json_kv jkv[] = {
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -372,7 +377,7 @@ test_json_object(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -434,7 +439,7 @@ test_json_array_object(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -472,7 +477,7 @@ test_json_object_object(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -512,7 +517,7 @@ test_json_object_nested_empty(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -530,7 +535,7 @@ test_json_valuetype(void)
 		{ .key = "key", .value = "This is not valid {}JSON!", .type = t_to_value, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -554,7 +559,7 @@ test_json_int_max(void)
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 
 }
@@ -579,7 +584,7 @@ test_json_int_min(void)
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 
@@ -603,7 +608,7 @@ test_json_uint_max(void)
 		{ .key = "key", .value = &n, .type = t_to_uinteger, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
+	run_test(test, result, jkv, len, 0);
 	return check_result(test, expected, result);
 }
 static int
