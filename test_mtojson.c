@@ -49,9 +49,18 @@ run_test(char *test, char *result, const struct json_kv *jkv, size_t len, _Bool 
 		return;
 	}
 
-	if (generate_json(result, jkv, len - 1)) {
+	int err = 0;
+	if (len >= 10 && generate_json(result, jkv, len - 10))
+		err++;
+	if (generate_json(result, jkv, len / 2))
+		err++;
+	if (generate_json(result, jkv, 1))
+		err++;
+	if (generate_json(result, jkv, len - 1))
+		err++;
+	if (err) {
 		if (verbose)
-			printf("%s\n", "UNDETECTED buffer overflow");
+			printf("%s, %d\n", "UNDETECTED buffer overflow", err);
 		exit(125);
 	}
 
@@ -741,6 +750,9 @@ main(int argc, char *argv[])
 				failed_tests[failed++] = i;
 		}
 	}
+
+	if (verbose)
+		printf("%s", "\n");
 
 	if (failed){
 		fprintf(stderr, "\n%s ", "Failed tests:");
