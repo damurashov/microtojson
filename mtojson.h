@@ -16,12 +16,12 @@ enum json_value_type {
 
 struct json_kv {
 	char *key;
-	void *value;
+	const void *value;
 	enum json_value_type type;
 };
 
 struct json_array {
-	void *value;
+	const void *value;
 	size_t count;
 	enum json_value_type type;
 };

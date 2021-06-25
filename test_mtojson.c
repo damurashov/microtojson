@@ -38,7 +38,7 @@ const char *rp;
 static void tell_single_test();
 
 static void
-run_test(char *test, char *result, struct json_kv *jkv, size_t len)
+run_test(char *test, char *result, const struct json_kv *jkv, size_t len)
 {
 	tell_single_test(test);
 	if (generate_json(result, jkv, len - 1)) {
@@ -85,7 +85,7 @@ test_json_string()
 	memset(result, '\0', len);
 	rp = result;
 
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .key = "key", .value = "value", .type = t_to_string, },
 		{ NULL },
 	};
@@ -103,8 +103,8 @@ test_json_boolean()
 	memset(result, '\0', len);
 	rp = result;
 
-	_Bool value = true;
-	struct json_kv jkv[] = {
+	const _Bool value = true;
+	const struct json_kv jkv[] = {
 		{ .key = "key", .value = &value, .type = t_to_boolean, },
 		{ NULL },
 	};
@@ -122,8 +122,8 @@ test_json_integer()
 	memset(result, '\0', len);
 	rp = result;
 
-	int n = 1;
-	struct json_kv jkv[] = {
+	const int n = 1;
+	const struct json_kv jkv[] = {
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
@@ -141,9 +141,9 @@ test_json_integer_two()
 	memset(result, '\0', len);
 	rp = result;
 
-	int ns[] = {-32767, 32767};
+	const int ns[] = {-32767, 32767};
 
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .type = t_to_integer, .key = "key", .value = &ns[0], },
 		{ .type = t_to_integer, .key = "key", .value = &ns[1], },
 		{ NULL }
@@ -162,8 +162,8 @@ test_json_uinteger()
 	memset(result, '\0', len);
 	rp = result;
 
-	int n = 65535;
-	struct json_kv jkv[] = {
+	const int n = 65535;
+	const struct json_kv jkv[] = {
 		{ .key = "key", .value = &n, .type = t_to_uinteger, },
 		{ NULL },
 	};
@@ -182,11 +182,11 @@ test_json_array_integer()
 	memset(result, '\0', len);
 	rp = result;
 
-	int arr[] = {1, 2};
-	struct json_array jar = {
+	const int arr[] = {1, 2};
+	const struct json_array jar = {
 		.value = arr, .count = 2, .type = t_to_integer };
 
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
@@ -204,11 +204,11 @@ test_json_array_string()
 	memset(result, '\0', len);
 	rp = result;
 
-	char *arr[8] = {"1", "23"};
-	struct json_array jar = {
+	const char *arr[8] = {"1", "23"};
+	const struct json_array jar = {
 		.value = arr, .count = 2, .type = t_to_string };
 
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
@@ -226,11 +226,11 @@ test_json_array_boolean()
 	memset(result, '\0', len);
 	rp = result;
 
-	_Bool arr [] = {true, false};
-	struct json_array jar = {
+	const _Bool arr [] = {true, false};
+	const struct json_array jar = {
 		.value = arr, .count = 2, .type = t_to_boolean };
 
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
@@ -248,15 +248,15 @@ test_json_array_array()
 	memset(result, '\0', len);
 	rp = result;
 
-	char *arr[] = {"1", "2", "3"};
-	struct json_array inner_jar_arr = {
+	const char *arr[] = {"1", "2", "3"};
+	const struct json_array inner_jar_arr = {
 		.value = arr, .count = 3, .type = t_to_string };
 
-	struct json_array *inner_jar[] = { &inner_jar_arr, &inner_jar_arr };
-	struct json_array jar = {
+	const struct json_array *inner_jar[] = { &inner_jar_arr, &inner_jar_arr };
+	const struct json_array jar = {
 		.value = inner_jar, .count = 2, .type = t_to_array };
 
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
@@ -275,11 +275,11 @@ test_json_array_empty()
 	memset(result, '\0', len);
 	rp = result;
 
-	char *arr[1];
-	struct json_array jar = {
+	const char *arr[1];
+	const struct json_array jar = {
 		.value = arr, .count = 0, .type = t_to_string };
 
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
@@ -298,17 +298,17 @@ test_json_array_empty_one()
 	memset(result, '\0', len);
 	rp = result;
 
-	char *arr[] = {"1", "2", "3"};
-	struct json_array inner_jar_arr = {
+	const char *arr[] = {"1", "2", "3"};
+	const struct json_array inner_jar_arr = {
 		.value = arr, .count = 3, .type = t_to_string };
-	struct json_array inner_jar_empty = {
+	const struct json_array inner_jar_empty = {
 		.value = NULL, .count = 0, .type = t_to_string };
 
-	struct json_array *inner_jar[] = { &inner_jar_empty, &inner_jar_arr };
-	struct json_array jar = {
+	const struct json_array *inner_jar[] = { &inner_jar_empty, &inner_jar_arr };
+	const struct json_array jar = {
 		.value = inner_jar, .count = 2, .type = t_to_array };
 
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
@@ -352,21 +352,21 @@ test_json_object()
 	memset(result, '\0', len);
 	rp = result;
 
-	char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
-	struct json_array addarr = {
+	const char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
+	const struct json_array addarr = {
 		.value = addresses, .count = 3, .type = t_to_string };
 
-	int kid = 1;
-	int cnt = 3;
-	struct json_kv keys[] = {
+	const int kid = 1;
+	const int cnt = 3;
+	const struct json_kv keys[] = {
 		{ .key = "key_id", .value = &kid,    .type = t_to_integer },
 		{ .key = "count",  .value = &cnt,    .type = t_to_integer },
 		{ .key = "values", .value = &addarr, .type = t_to_array },
 		{ NULL }
 	};
 
-	int nok = 1;
-	struct json_kv jkv[] = {
+	const int nok = 1;
+	const struct json_kv jkv[] = {
 		{ .key = "keys",           .value = &keys, .type = t_to_object },
 		{ .key = "number_of_keys", .value = &nok,  .type = t_to_integer},
 		{ NULL }
@@ -398,17 +398,17 @@ test_json_array_object()
 	memset(result, '\0', len);
 	rp = result;
 
-	char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
-	struct json_array addarr = {
+	const char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
+	const struct json_array addarr = {
 		.value = addresses, .count = 3, .type = t_to_string };
 
-	char *array2[] = {"DEADFEED"};
-	struct json_array arr2 = {
+	const char *array2[] = {"DEADFEED"};
+	const struct json_array arr2 = {
 		.value = array2, .count = 1, .type = t_to_string };
 
-	int kid[] = { 1, 2 };
-	int cnt[] = { 3, 1 };
-	struct json_kv keys_kv[][4] = {
+	const int kid[] = { 1, 2 };
+	const int cnt[] = { 3, 1 };
+	const struct json_kv keys_kv[][4] = {
 		{
 			{ .key = "key_id", .value = &kid[0], .type = t_to_integer },
 			{ .key = "count",  .value = &cnt[0], .type = t_to_integer },
@@ -424,11 +424,11 @@ test_json_array_object()
 		}
 	};
 
-	int nok = 2;
-	struct json_kv *keys_ptr[] = { keys_kv[0], keys_kv[1], keys_kv[2] };
-	struct json_array keys = {
+	const int nok = 2;
+	const struct json_kv *keys_ptr[] = { keys_kv[0], keys_kv[1], keys_kv[2] };
+	const struct json_array keys = {
 		.value = keys_ptr, .count = 3, .type = t_to_object };
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .key = "keys",           .value = &keys, .type = t_to_array },
 		{ .key = "number_of_keys", .value = &nok,  .type = t_to_integer},
 		{ NULL }
@@ -455,19 +455,19 @@ test_json_object_object()
 	memset(result, '\0', len);
 	rp = result;
 
-	_Bool value = true;
+	const _Bool value = true;
 
-	struct json_kv inner[] = {
+	const struct json_kv inner[] = {
 		{ .key = "inner", .value = &value, .type = t_to_boolean },
 		{ NULL }
 	};
 
-	struct json_kv middle[] = {
+	const struct json_kv middle[] = {
 		{ .key = "middle", .value = &inner, .type = t_to_object },
 		{ NULL }
 	};
 
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .key = "outer", .value = &middle, .type = t_to_object },
 		{ NULL }
 	};
@@ -493,21 +493,21 @@ test_json_object_nested_empty()
 	memset(result, '\0', len);
 	rp = result;
 
-	struct json_kv value[] = {
+	const struct json_kv value[] = {
 		{ NULL },
 	};
 
-	struct json_kv inner[] = {
+	const struct json_kv inner[] = {
 		{ .key = "inner", .value = &value, .type = t_to_object },
 		{ NULL }
 	};
 
-	struct json_kv middle[] = {
+	const struct json_kv middle[] = {
 		{ .key = "middle", .value = &inner, .type = t_to_object },
 		{ NULL }
 	};
 
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .key = "outer", .value = &middle, .type = t_to_object },
 		{ NULL }
 	};
@@ -526,7 +526,7 @@ test_json_valuetype()
 	memset(result, '\0', len);
 	rp = result;
 
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .key = "key", .value = "This is not valid {}JSON!", .type = t_to_value, },
 		{ NULL },
 	};
@@ -549,8 +549,8 @@ test_json_int_max()
 	memset(result, '\0', len);
 	rp = result;
 
-	int n = INT_MAX;
-	struct json_kv jkv[] = {
+	const int n = INT_MAX;
+	const struct json_kv jkv[] = {
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
@@ -575,7 +575,7 @@ test_json_int_min()
 	rp = result;
 
 	int n = INT_MIN;
-	struct json_kv jkv[] = {
+	const struct json_kv jkv[] = {
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
@@ -598,8 +598,8 @@ test_json_uint_max()
 	memset(result, '\0', len);
 	rp = result;
 
-	unsigned n = UINT_MAX;
-	struct json_kv jkv[] = {
+	const unsigned n = UINT_MAX;
+	const struct json_kv jkv[] = {
 		{ .key = "key", .value = &n, .type = t_to_uinteger, },
 		{ NULL },
 	};
