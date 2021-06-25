@@ -133,7 +133,8 @@ gen_array_type(char *out, const void *val, _Bool is_last, char* (*func)())
 	if (!out)
 		return NULL;
 	if (!is_last){
-		rem_len -= 2;
+		if (!reduce_rem_len(2))
+			return NULL;
 		*out++ = ',';
 		*out++ = ' ';
 	}
@@ -243,7 +244,8 @@ gen_object(char *out, const struct json_kv *kv)
 			goto fail;
 
 		if ((kv + 1)->key){
-			rem_len -= 2;
+			if (!reduce_rem_len(2))
+				goto fail;
 			*out++ = ',';
 			*out++ = ' ';
 		}
