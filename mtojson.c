@@ -155,7 +155,7 @@ gen_array(char *out, struct json_array *jar)
 	_Bool is_last;
 	char* (*func)() = gen_functions[jar->type];
 	if (jar->type == t_to_array){
-		struct json_array **val = (struct json_array**)jar->value;
+		struct json_array **val = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
 			out = gen_array_type(out, val[i], is_last, func);
@@ -185,7 +185,7 @@ gen_array(char *out, struct json_array *jar)
 	}
 
 	else if (jar->type == t_to_object){
-		struct json_kv **val = (struct json_kv**)jar->value;
+		struct json_kv **val = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
 			out = gen_array_type(out, val[i], is_last, func);
@@ -195,7 +195,7 @@ gen_array(char *out, struct json_array *jar)
 	}
 
 	else if (jar->type == t_to_string){
-		char **val = (char**)jar->value;
+		char **val = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
 			out = gen_array_type(out, val[i], is_last, func);
