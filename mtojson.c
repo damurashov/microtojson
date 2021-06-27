@@ -26,7 +26,6 @@ static char* (* const gen_functions[])(char *, const void *) = {
 };
 
 static size_t rem_len;
-static int nested_object_depth = 0;
 
 static int
 reduce_rem_len(size_t len)
@@ -229,20 +228,15 @@ gen_object(char *out, const void *val)
 {
 	const struct json_kv *kv = (const struct json_kv*)val;
 
-	size_t object_meta_len = 2; // 2 -> {}
-	if (nested_object_depth == 0)
-		object_meta_len = 3; // 3 -> {}\0
-	nested_object_depth++;
-
-	if (!reduce_rem_len(object_meta_len))
-		goto fail;
+	if (!reduce_rem_len(2)) // 2 -> {}
+		return NULL;
 
 	*out++ = '{';
 	while (kv->key){
 		char *key = kv->key;
 		size_t len = strlen(key);
 		if (!reduce_rem_len(len + 4)) // 4 -> "":_
-			goto fail;
+			return NULL;
 
 		*out++ = '"';
 		memcpy(out, key, len);
@@ -254,12 +248,12 @@ gen_object(char *out, const void *val)
 		out = gen_functions[kv->type](out, kv->value);
 
 		if (!out)
-			goto fail;
+			return NULL;
 
 		kv++;
 		if (kv->key){
 			if (!reduce_rem_len(2))
-				goto fail;
+				return NULL;
 			*out++ = ',';
 			*out++ = ' ';
 		}
@@ -267,13 +261,7 @@ gen_object(char *out, const void *val)
 	}
 
 	*out++ = '}';
-	*out = '\0';
-	nested_object_depth--;
 	return out;
-
-fail:
-	nested_object_depth = 0;
-	return NULL;
 }
 
 size_t
@@ -282,10 +270,14 @@ generate_json(char *out, const struct json_kv *kv, size_t len)
 	const char *start = out;
 
 	rem_len = len;
+	if (!reduce_rem_len(1)) // \0
+		return 0;
+
 	out = gen_object(out, kv);
 
 	if (!out)
 		return 0;
 
+	*out = '\0';
 	return (size_t)(out - start);
 }
