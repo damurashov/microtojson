@@ -65,39 +65,33 @@ reduce_rem_len(size_t len)
 }
 
 static char*
-strcpy_val(char *out, char *val, char *wrapper)
+strcpy_val(char *out, char *val, size_t len)
 {
-	size_t wlen = wrapper ? 2 : 0;
-	size_t len = strlen(val);
-
-	if (!reduce_rem_len(len + wlen))
+	if (!reduce_rem_len(len))
 		return NULL;
-	if (wrapper)
-		*out++ = *wrapper;
 	memcpy(out, val, len);
-	out += len;
-	if (wrapper)
-		*out++ = *wrapper;
-	return out;
+	return out + len;
 }
 
 static char*
 gen_boolean(char *out, _Bool *val)
 {
-	char *t = "true";
-	char *f = "false";
-	char *v;
 	if (*val)
-		v = t;
+		return strcpy_val(out, "true", 4);
 	else
-		v = f;
-	return strcpy_val(out, v, NULL);
+		return strcpy_val(out, "false", 5);
 }
 
 static char*
 gen_string(char *out, char *val)
 {
-	return strcpy_val(out, val, "\"");
+	if (!reduce_rem_len(2)) // 2 -> ""
+		return NULL;
+	*out++ = '"';
+	if (!(out = strcpy_val(out, val, strlen(val))))
+		return NULL;
+	*out++ = '"';
+	return out;
 }
 
 static char*
@@ -106,7 +100,7 @@ gen_integer(char *out, int *val)
 	#define INT_STRING_SIZE ((sizeof(int)*CHAR_BIT - 1)*28/93 + 3)
 	char buf[INT_STRING_SIZE];
 	itoa(buf, *val);
-	return strcpy_val(out, buf, NULL);
+	return strcpy_val(out, buf, strlen(buf));
 	#undef INT_STRING_SIZE
 }
 
@@ -116,14 +110,14 @@ gen_uinteger(char *out, unsigned *val)
 	#define INT_STRING_SIZE ((sizeof(int)*CHAR_BIT - 1)*28/93 + 3)
 	char buf[INT_STRING_SIZE];
 	utoa(buf, *val);
-	return strcpy_val(out, buf, NULL);
+	return strcpy_val(out, buf, strlen(buf));
 	#undef INT_STRING_SIZE
 }
 
 static char*
 gen_value(char *out, char *val)
 {
-	return strcpy_val(out, val, NULL);
+	return strcpy_val(out, val, strlen(val));
 }
 
 static char*
