@@ -5,7 +5,6 @@
 
 #include "mtojson.h"
 
-#include <limits.h>
 #include <string.h>
 
 static char* gen_array(char *out, struct json_array *jar);
@@ -28,32 +27,6 @@ char* (*gen_functions[])() = {
 
 static size_t rem_len;
 static int nested_object_depth = 0;
-
-static void
-utoa(char *dst, unsigned n)
-{
-	char *s = dst;
-
-	for (unsigned m = n; m >= 10U;  m /= 10U)
-		s++;
-	s[1] = '\0';
-
-	for ( ; s >= dst; s--, n /= 10)
-		*s = (char)('0' + n % 10);
-}
-
-static void
-itoa(char *dst, int n)
-{
-	unsigned u = (unsigned)n;
-	char *s = dst;
-	if (n < 0){
-		*s++ = '-';
-		u = -(unsigned)n;
-	}
-
-	utoa(s, u);
-}
 
 static int
 reduce_rem_len(size_t len)
@@ -97,21 +70,39 @@ gen_string(char *out, char *val)
 static char*
 gen_integer(char *out, int *val)
 {
-	#define INT_STRING_SIZE ((sizeof(int)*CHAR_BIT - 1)*28/93 + 3)
-	char buf[INT_STRING_SIZE];
-	itoa(buf, *val);
-	return strcpy_val(out, buf, strlen(buf));
-	#undef INT_STRING_SIZE
+	int n = *val;
+	unsigned u = (unsigned)n;
+	if (n < 0){
+		if (!reduce_rem_len(1))
+			return NULL;
+		*out++ = '-';
+		u = -(unsigned)n;
+	}
+
+	if (!(out = gen_uinteger(out, &u)))
+		return NULL;
+	return out;
 }
 
 static char*
 gen_uinteger(char *out, unsigned *val)
 {
-	#define INT_STRING_SIZE ((sizeof(int)*CHAR_BIT - 1)*28/93 + 3)
-	char buf[INT_STRING_SIZE];
-	utoa(buf, *val);
-	return strcpy_val(out, buf, strlen(buf));
-	#undef INT_STRING_SIZE
+	char *s = out;
+	char *r;
+	unsigned n = *val;
+
+	for (unsigned m = n; m >= 10U;  m /= 10U)
+		s++;
+	r = s + 1;
+
+	size_t len = (size_t)(r - out);
+	if (!reduce_rem_len(len))
+		return NULL;
+
+	for ( ; s >= out; s--, n /= 10)
+		*s = '0' + (char)(n % 10);
+
+	return r;
 }
 
 static char*
