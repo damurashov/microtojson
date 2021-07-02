@@ -91,17 +91,17 @@ static void
 tell_single_test(char* test)
 {
 	if (single_test || verbose){
-		printf("Running test: %-30s ", test);
+		printf("Running test: %-35s ", test);
 		if (!verbose)
 			printf("%s", "\n");
 	}
 }
 
 static int
-test_json_string(void)
+test_object_string(void)
 {
 	char *expected = "{\"key\": \"value\"}";
-	char *test = "test_json_string";
+	char *test = "test_object_string";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -114,10 +114,10 @@ test_json_string(void)
 }
 
 static int
-test_json_boolean(void)
+test_object_boolean(void)
 {
 	char *expected = "{\"key\": true}";
-	char *test = "test_json_boolean";
+	char *test = "test_object_boolean";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -131,10 +131,10 @@ test_json_boolean(void)
 }
 
 static int
-test_json_integer(void)
+test_object_integer(void)
 {
 	char *expected = "{\"key\": 1}";
-	char *test = "test_json_integer";
+	char *test = "test_object_integer";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -148,10 +148,10 @@ test_json_integer(void)
 }
 
 static int
-test_json_integer_two(void)
+test_object_integer_two(void)
 {
 	char *expected = "{\"key\": -32767, \"key\": 32767}";
-	char *test = "test_json_integer_two";
+	char *test = "test_object_integer_two";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -167,10 +167,10 @@ test_json_integer_two(void)
 }
 
 static int
-test_json_uinteger(void)
+test_object_uinteger(void)
 {
 	char *expected = "{\"key\": 65535}";
-	char *test = "test_json_uinteger";
+	char *test = "test_object_uinteger";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -185,10 +185,10 @@ test_json_uinteger(void)
 
 
 static int
-test_json_array_integer(void)
+test_object_array_integer(void)
 {
 	char *expected = "{\"array\": [9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100]}";
-	char *test = "test_json_array_integer";
+	char *test = "test_object_array_integer";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -205,10 +205,10 @@ test_json_array_integer(void)
 }
 
 static int
-test_json_array_string(void)
+test_object_array_string(void)
 {
 	char *expected = "{\"array\": [\"1\", \"23\"]}";
-	char *test = "test_json_array_string";
+	char *test = "test_object_array_string";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -225,10 +225,10 @@ test_json_array_string(void)
 }
 
 static int
-test_json_array_boolean(void)
+test_object_array_boolean(void)
 {
 	char *expected = "{\"array\": [true, false]}";
-	char *test = "test_json_array_boolean";
+	char *test = "test_object_array_boolean";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -245,10 +245,10 @@ test_json_array_boolean(void)
 }
 
 static int
-test_json_array_array(void)
+test_object_array_array(void)
 {
 	char *expected = "{\"array\": [[\"1\", \"2\", \"3\"], [\"1\", \"2\", \"3\"]]}";
-	char *test = "test_json_array_array";
+	char *test = "test_object_array_array";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -270,10 +270,10 @@ test_json_array_array(void)
 }
 
 static int
-test_json_array_empty(void)
+test_object_array_empty(void)
 {
 	char *expected = "{\"array\": []}";
-	char *test = "test_json_array_empty";
+	char *test = "test_object_array_empty";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -291,10 +291,10 @@ test_json_array_empty(void)
 }
 
 static int
-test_json_array_empty_one(void)
+test_object_array_empty_one(void)
 {
 	char *expected = "{\"array\": [[], [\"1\", \"2\", \"3\"]]}";
-	char *test = "test_json_array_one_empty";
+	char *test = "test_object_array_one_empty";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -318,10 +318,10 @@ test_json_array_empty_one(void)
 }
 
 static int
-test_json_object_empty(void)
+test_object_empty(void)
 {
 	char *expected = "{}";
-	char *test = "test_json_object_empty";
+	char *test = "test_object_empty";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -333,7 +333,7 @@ test_json_object_empty(void)
 }
 
 static int
-test_json_object(void)
+test_object_object(void)
 {
 	char *expected = "{"
 	                   "\"keys\": {"
@@ -344,7 +344,7 @@ test_json_object(void)
 	                   "\"number_of_keys\": 1"
 	                 "}";
 
-	char *test = "test_json_object";
+	char *test = "test_object_object";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -373,7 +373,7 @@ test_json_object(void)
 }
 
 static int
-test_json_array_object(void)
+test_object_array_object(void)
 {
 	char *expected = "{"
 	                   "\"keys\": [{"
@@ -388,7 +388,7 @@ test_json_array_object(void)
 	                   "\"number_of_keys\": 2"
 	                 "}";
 
-	char *test = "test_json_array_object";
+	char *test = "test_object_array_object";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -433,7 +433,7 @@ test_json_array_object(void)
 }
 
 static int
-test_json_object_object(void)
+test_object_object_object(void)
 {
 	char *expected = "{"
 	                   "\"outer\": {"
@@ -443,7 +443,7 @@ test_json_object_object(void)
 	                   "}"
 	                 "}";
 
-	char *test = "test_json_object_object";
+	char *test = "test_object_object_object";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -469,7 +469,7 @@ test_json_object_object(void)
 }
 
 static int
-test_json_object_nested_empty(void)
+test_object_object_nested_empty(void)
 {
 	char *expected = "{"
 	                   "\"outer\": {"
@@ -479,7 +479,7 @@ test_json_object_nested_empty(void)
 	                   "}"
 	                 "}";
 
-	char *test = "test_json_object_nested_empty";
+	char *test = "test_object_object_nested_empty";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -507,10 +507,10 @@ test_json_object_nested_empty(void)
 }
 
 static int
-test_json_valuetype(void)
+test_object_valuetype(void)
 {
 	char *expected = "{\"key\": This is not valid {}JSON!}";
-	char *test = "test_json_valuetype";
+	char *test = "test_object_valuetype";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -523,7 +523,7 @@ test_json_valuetype(void)
 }
 
 static int
-test_json_int_max(void)
+test_object_int_max(void)
 {
 	char int_max[20];
 	sprintf(int_max, "%d", INT_MAX);
@@ -531,7 +531,7 @@ test_json_int_max(void)
 	strcpy(expected, "{\"key\": ");
 	strcat(strcat(expected, int_max), "}");
 
-	char *test = "test_json_int_max";
+	char *test = "test_object_int_max";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -546,7 +546,7 @@ test_json_int_max(void)
 }
 
 static int
-test_json_int_min(void)
+test_object_int_min(void)
 {
 	char uint_min[20];
 	sprintf(uint_min, "%d", INT_MIN);
@@ -554,7 +554,7 @@ test_json_int_min(void)
 	strcpy(expected, "{\"key\": ");
 	strcat(strcat(expected, uint_min), "}");
 
-	char *test = "test_json_int_min";
+	char *test = "test_object_int_min";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -568,7 +568,7 @@ test_json_int_min(void)
 }
 
 static int
-test_json_uint_max(void)
+test_object_uint_max(void)
 {
 	char uint_max[20];
 	sprintf(uint_max, "%u", UINT_MAX);
@@ -576,7 +576,7 @@ test_json_uint_max(void)
 	strcpy(expected, "{\"key\": ");
 	strcat(strcat(expected, uint_max), "}");
 
-	char *test = "test_json_uint_max";
+	char *test = "test_object_uint_max";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -590,10 +590,10 @@ test_json_uint_max(void)
 }
 
 static int
-test_json_array_uinteger(void)
+test_object_array_uinteger(void)
 {
 	char *expected = "{\"array\": [1, 2]}";
-	char *test = "test_json_array_uinteger";
+	char *test = "test_object_array_uinteger";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
@@ -611,13 +611,13 @@ test_json_array_uinteger(void)
 }
 
 static int
-test_json_array_valuetype(void)
+test_object_array_valuetype(void)
 {
 	char *expected = "{\"key\": ["
 	                            "This is not valid {}JSON!, "
 	                            "This not valid {}JSON!, "
 	                            "]}";
-	char *test = "test_json_array_valuetype";
+	char *test = "test_object_array_valuetype";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
@@ -639,70 +639,70 @@ exec_test(int i)
 {
 	switch (i){
 	case 1:
-		return test_json_integer();
+		return test_object_integer();
 		break;
 	case 2:
-		return test_json_integer_two();
+		return test_object_integer_two();
 		break;
 	case 3:
-		return test_json_string();
+		return test_object_string();
 		break;
 	case 4:
-		return test_json_boolean();
+		return test_object_boolean();
 		break;
 	case 5:
-		return test_json_valuetype();
+		return test_object_valuetype();
 		break;
 	case 6:
-		return test_json_array_integer();
+		return test_object_array_integer();
 		break;
 	case 7:
-		return test_json_array_boolean();
+		return test_object_array_boolean();
 		break;
 	case 8:
-		return test_json_array_string();
+		return test_object_array_string();
 		break;
 	case 9:
-		return test_json_array_array();
+		return test_object_array_array();
 		break;
 	case 10:
-		return test_json_array_empty();
+		return test_object_array_empty();
 		break;
 	case 11:
-		return test_json_array_empty_one();
+		return test_object_array_empty_one();
 		break;
 	case 12:
-		return test_json_object();
+		return test_object_object();
 		break;
 	case 13:
-		return test_json_array_object();
+		return test_object_array_object();
 		break;
 	case 14:
-		return test_json_object_empty();
+		return test_object_empty();
 		break;
 	case 15:
-		return test_json_object_object();
+		return test_object_object_object();
 		break;
 	case 16:
-		return test_json_object_nested_empty();
+		return test_object_object_nested_empty();
 		break;
 	case 17:
-		return test_json_uinteger();
+		return test_object_uinteger();
 		break;
 	case 18:
-		return test_json_int_max();
+		return test_object_int_max();
 		break;
 	case 19:
-		return test_json_int_min();
+		return test_object_int_min();
 		break;
 	case 20:
-		return test_json_uint_max();
+		return test_object_uint_max();
 		break;
 	case 21:
-		return test_json_array_uinteger();
+		return test_object_array_uinteger();
 		break;
 	case 22:
-		return test_json_array_valuetype();
+		return test_object_array_valuetype();
 		break;
 	default:
 		fputs("No such test!\n", stderr);
