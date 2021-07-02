@@ -28,5 +28,4 @@ clean:
 	rm -f mtojson.o test_mtojson.o test_mtojson mtojson.su
 
 cppcheck:
-	cppcheck --suppress=missingIncludeSystem -I. --template gcc \
-		--enable=all --check-config *.[ch] -D MAX_NESTED_OBJECT_DEPTH
+	cppcheck --suppress=missingIncludeSystem -I. --template gcc --enable=all --check-config *.[ch]

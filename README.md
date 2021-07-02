@@ -20,10 +20,6 @@ To create an arbitrary value use `t_to_value` and pass the correctly formatted v
 
 See `test_mtojson.c` for usage.
 
-`microtojson` uses recursion to create JSON from nested objects.
-Define `MAX_NESTED_OBJECT_DEPTH` to limit the recursion level.
-If `MAX_NESTED_OBJECT_DEPTH` is defined, `generate_json()` will fail if it is called more then `MAX_NESTED_OBJECT_DEPTH` times.
-
 Make sure structs are NULL terminated.
 
 This project is mainly developed on [sourcehut](https://sr.ht/~rkta/microtojson/).
