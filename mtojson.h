@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-enum json_value_type {
+enum json_to_type {
 	t_to_array,
 	t_to_boolean,
 	t_to_integer,
@@ -17,13 +17,13 @@ enum json_value_type {
 struct json_kv {
 	char *name;
 	const void *value;
-	enum json_value_type type;
+	enum json_to_type type;
 };
 
 struct json_array {
 	const void *value;
 	size_t count;
-	enum json_value_type type;
+	enum json_to_type type;
 };
 
 /* Returns the length of the generated JSON text or 0 in case of an error. */
