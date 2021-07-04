@@ -648,6 +648,19 @@ test_object_c_array_valuetype(void)
 }
 
 static int
+test_primitive_string(void)
+{
+	char *expected = "\"value\"";
+	char *test = "test_primitive_string";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	rp = result;
+
+	const struct to_json tjs = { .vtype = t_to_string, .value = "value", };
+	return run_test(test, expected, result, &tjs, len);
+}
+
+static int
 exec_test(int i)
 {
 	switch (i){
@@ -717,13 +730,16 @@ exec_test(int i)
 	case 22:
 		return test_object_c_array_valuetype();
 		break;
+	case 23:
+		return test_primitive_string();
+		break;
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 22
+#define MAXTEST 23
 
 int
 main(int argc, char *argv[])

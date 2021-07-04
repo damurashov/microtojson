@@ -5,6 +5,7 @@
 #include <stddef.h>
 
 enum json_to_type {
+	t_to_primitive,
 	t_to_array,
 	t_to_boolean,
 	t_to_integer,

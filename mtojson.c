@@ -11,11 +11,13 @@ static char* gen_boolean(char *, const void *);
 static char* gen_c_array(char *, const void *);
 static char* gen_integer(char *, const void *);
 static char* gen_object(char *, const void *);
+static char* gen_primitive(char *, const void *);
 static char* gen_string(char *, const void *);
 static char* gen_uinteger(char *, const void *);
 static char* gen_value(char *, const void *);
 
 static char* (* const gen_functions[])(char *, const void *) = {
+	gen_primitive,
 	gen_c_array,
 	gen_boolean,
 	gen_integer,
@@ -216,7 +218,11 @@ gen_c_array(char *out, const void *val)
 			if (!out)
 				return NULL;
 		}
+		break;
 	}
+
+	case t_to_primitive:
+		return NULL;
 	}
 
 	*out++ = ']';
@@ -263,6 +269,13 @@ gen_object(char *out, const void *val)
 	return out;
 }
 
+static char*
+gen_primitive(char *out, const void *to_json)
+{
+	const struct to_json *tjs = (const struct to_json *)to_json;
+	return gen_functions[tjs->vtype](out, tjs->value);
+}
+
 size_t
 json_generate(char *out, const struct to_json *tjs, size_t len)
 {
@@ -278,6 +291,9 @@ json_generate(char *out, const struct to_json *tjs, size_t len)
 		break;
 	case t_to_object:
 		out = gen_object(out, tjs);
+		break;
+	case t_to_primitive:
+		out = gen_primitive(out, tjs);
 		break;
 	default:
 		return 0;
