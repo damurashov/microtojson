@@ -9,6 +9,7 @@ enum json_to_type {
 	t_to_array,
 	t_to_boolean,
 	t_to_integer,
+	t_to_null,
 	t_to_object,
 	t_to_string,
 	t_to_uinteger,

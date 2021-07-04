@@ -10,6 +10,7 @@
 static char* gen_boolean(char *, const void *);
 static char* gen_c_array(char *, const void *);
 static char* gen_integer(char *, const void *);
+static char* gen_null(char *, const void *);
 static char* gen_object(char *, const void *);
 static char* gen_primitive(char *, const void *);
 static char* gen_string(char *, const void *);
@@ -21,6 +22,7 @@ static char* (* const gen_functions[])(char *, const void *) = {
 	gen_c_array,
 	gen_boolean,
 	gen_integer,
+	gen_null,
 	gen_object,
 	gen_string,
 	gen_uinteger,
@@ -45,6 +47,13 @@ strcpy_val(char *out, const char *val, size_t len)
 		return NULL;
 	memcpy(out, val, len);
 	return out + len;
+}
+
+static char*
+gen_null(char *out, const void *val)
+{
+	(void)val;
+	return strcpy_val(out, "null", 4);
 }
 
 static char*
@@ -221,6 +230,7 @@ gen_c_array(char *out, const void *val)
 		break;
 	}
 
+	case t_to_null:
 	case t_to_primitive:
 		return NULL;
 	}

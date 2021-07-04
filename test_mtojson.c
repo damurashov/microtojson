@@ -661,6 +661,19 @@ test_primitive_string(void)
 }
 
 static int
+test_primitive_null(void)
+{
+	char *expected = "null";
+	char *test = "test_primitive_null";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	rp = result;
+
+	const struct to_json tjs = { .vtype = t_to_null, };
+	return run_test(test, expected, result, &tjs, len);
+}
+
+static int
 exec_test(int i)
 {
 	switch (i){
@@ -732,6 +745,9 @@ exec_test(int i)
 		break;
 	case 23:
 		return test_primitive_string();
+		break;
+	case 24:
+		return test_primitive_null();
 		break;
 	default:
 		fputs("No such test!\n", stderr);
