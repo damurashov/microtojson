@@ -25,14 +25,14 @@ static char* (* const gen_functions[])(char *, const void *) = {
 	gen_value,
 };
 
-static size_t rem_len;
+static size_t remaining_length;
 
 static int
 reduce_rem_len(size_t len)
 {
-	if (rem_len < len)
+	if (remaining_length < len)
 		return 0;
-	rem_len -= len;
+	remaining_length -= len;
 	return 1;
 }
 
@@ -269,7 +269,7 @@ generate_json(char *out, const struct json_kv *kv, size_t len)
 {
 	const char *start = out;
 
-	rem_len = len;
+	remaining_length = len;
 	if (!reduce_rem_len(1)) // \0
 		return 0;
 
