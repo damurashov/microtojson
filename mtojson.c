@@ -7,15 +7,15 @@
 
 #include <string.h>
 
-static char* gen_array(char *out, struct json_array *jar);
-static char* gen_boolean(char *out, _Bool *val);
-static char* gen_integer(char *out, int *val);
-static char* gen_object(char *out, const struct json_kv *kv);
-static char* gen_string(char *out, char *val);
-static char* gen_uinteger(char *out, unsigned *val);
-static char* gen_value(char *out, char *val);
+static char* gen_array(char *, const void *);
+static char* gen_boolean(char *, const void *);
+static char* gen_integer(char *, const void *);
+static char* gen_object(char *, const void *);
+static char* gen_string(char *, const void *);
+static char* gen_uinteger(char *, const void *);
+static char* gen_value(char *, const void *);
 
-char* (*gen_functions[])() = {
+static char* (* const gen_functions[])(char *, const void *) = {
 	gen_array,
 	gen_boolean,
 	gen_integer,
@@ -38,7 +38,7 @@ reduce_rem_len(size_t len)
 }
 
 static char*
-strcpy_val(char *out, char *val, size_t len)
+strcpy_val(char *out, const char *val, size_t len)
 {
 	if (!reduce_rem_len(len))
 		return NULL;
@@ -47,30 +47,31 @@ strcpy_val(char *out, char *val, size_t len)
 }
 
 static char*
-gen_boolean(char *out, _Bool *val)
+gen_boolean(char *out, const void *val)
 {
-	if (*val)
+	if (*(_Bool*)val)
 		return strcpy_val(out, "true", 4);
 	else
 		return strcpy_val(out, "false", 5);
 }
 
 static char*
-gen_string(char *out, char *val)
+gen_string(char *out, const void *val)
 {
+	const char *v = (const char*)val;
 	if (!reduce_rem_len(2)) // 2 -> ""
 		return NULL;
 	*out++ = '"';
-	if (!(out = strcpy_val(out, val, strlen(val))))
+	if (!(out = strcpy_val(out, v, strlen(v))))
 		return NULL;
 	*out++ = '"';
 	return out;
 }
 
 static char*
-gen_integer(char *out, int *val)
+gen_integer(char *out, const void *val)
 {
-	int n = *val;
+	int n = *(int*)val;
 	unsigned u = (unsigned)n;
 	if (n < 0){
 		if (!reduce_rem_len(1))
@@ -85,11 +86,11 @@ gen_integer(char *out, int *val)
 }
 
 static char*
-gen_uinteger(char *out, unsigned *val)
+gen_uinteger(char *out, const void *val)
 {
 	char *s = out;
 	char *r;
-	unsigned n = *val;
+	unsigned n = *(unsigned*)val;
 
 	for (unsigned m = n; m >= 10U;  m /= 10U)
 		s++;
@@ -106,9 +107,9 @@ gen_uinteger(char *out, unsigned *val)
 }
 
 static char*
-gen_value(char *out, char *val)
+gen_value(char *out, const void *val)
 {
-	return strcpy_val(out, val, strlen(val));
+	return strcpy_val(out, (const char*)val, strlen((const char*)val));
 }
 
 static char*
@@ -127,8 +128,9 @@ gen_array_type(char *out, const void *val, _Bool is_last, char* (*func)())
 }
 
 static char*
-gen_array(char *out, struct json_array *jar)
+gen_array(char *out, const void *val)
 {
+	const struct json_array *jar = (const struct json_array*)val;
 	if (!reduce_rem_len(2)) // 2 -> []
 		return NULL;
 
@@ -142,10 +144,10 @@ gen_array(char *out, struct json_array *jar)
 	char* (*func)() = gen_functions[jar->type];
 	switch (jar->type) {
 	case t_to_array: {
-		struct json_array * const *val = jar->value;
+		struct json_array * const *v = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
-			out = gen_array_type(out, val[i], is_last, func);
+			out = gen_array_type(out, v[i], is_last, func);
 			if (!out)
 				return NULL;
 		}
@@ -153,10 +155,10 @@ gen_array(char *out, struct json_array *jar)
 	}
 
 	case t_to_boolean: {
-		const _Bool *val = jar->value;
+		const _Bool *v = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
-			out = gen_array_type(out, &val[i], is_last, func);
+			out = gen_array_type(out, &v[i], is_last, func);
 			if (!out)
 				return NULL;
 		}
@@ -164,10 +166,10 @@ gen_array(char *out, struct json_array *jar)
 	}
 
 	case t_to_integer: {
-		const int *val = jar->value;
+		const int *v = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
-			out = gen_array_type(out, &val[i], is_last, func);
+			out = gen_array_type(out, &v[i], is_last, func);
 			if (!out)
 				return NULL;
 		}
@@ -175,10 +177,10 @@ gen_array(char *out, struct json_array *jar)
 	}
 
 	case t_to_object: {
-		struct json_kv * const *val = jar->value;
+		struct json_kv * const *v = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
-			out = gen_array_type(out, val[i], is_last, func);
+			out = gen_array_type(out, v[i], is_last, func);
 			if (!out)
 				return NULL;
 		}
@@ -186,10 +188,10 @@ gen_array(char *out, struct json_array *jar)
 	}
 
 	case t_to_string: {
-		char * const *val = jar->value;
+		char * const *v = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
-			out = gen_array_type(out, val[i], is_last, func);
+			out = gen_array_type(out, v[i], is_last, func);
 			if (!out)
 				return NULL;
 		}
@@ -197,10 +199,10 @@ gen_array(char *out, struct json_array *jar)
 	}
 
 	case t_to_uinteger: {
-		const unsigned *val = jar->value;
+		const unsigned *v = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
-			out = gen_array_type(out, &val[i], is_last, func);
+			out = gen_array_type(out, &v[i], is_last, func);
 			if (!out)
 				return NULL;
 		}
@@ -208,10 +210,10 @@ gen_array(char *out, struct json_array *jar)
 	}
 
 	case t_to_value: {
-		const char * const *val = jar->value;
+		const char * const *v = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
-			out = gen_array_type(out, val[i], is_last, func);
+			out = gen_array_type(out, v[i], is_last, func);
 			if (!out)
 				return NULL;
 		}
@@ -223,8 +225,10 @@ gen_array(char *out, struct json_array *jar)
 }
 
 static char*
-gen_object(char *out, const struct json_kv *kv)
+gen_object(char *out, const void *val)
 {
+	const struct json_kv *kv = (const struct json_kv*)val;
+
 	size_t object_meta_len = 2; // 2 -> {}
 	if (nested_object_depth == 0)
 		object_meta_len = 3; // 3 -> {}\0
