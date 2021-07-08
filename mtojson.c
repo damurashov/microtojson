@@ -7,8 +7,8 @@
 
 #include <string.h>
 
-static char* gen_array(char *, const void *);
 static char* gen_boolean(char *, const void *);
+static char* gen_c_array(char *, const void *);
 static char* gen_integer(char *, const void *);
 static char* gen_object(char *, const void *);
 static char* gen_string(char *, const void *);
@@ -16,7 +16,7 @@ static char* gen_uinteger(char *, const void *);
 static char* gen_value(char *, const void *);
 
 static char* (* const gen_functions[])(char *, const void *) = {
-	gen_array,
+	gen_c_array,
 	gen_boolean,
 	gen_integer,
 	gen_object,
@@ -127,7 +127,7 @@ gen_array_type(char *out, const void *val, _Bool is_last, char* (*func)())
 }
 
 static char*
-gen_array(char *out, const void *val)
+gen_c_array(char *out, const void *val)
 {
 	const struct to_json *tjs = (const struct to_json*)val;
 	if (!reduce_rem_len(2)) // 2 -> []
@@ -274,7 +274,7 @@ json_generate(char *out, const struct to_json *tjs, size_t len)
 
 	switch (tjs->stype) {
 	case t_to_array:
-		out = gen_array(out, tjs);
+		out = gen_c_array(out, tjs);
 		break;
 	case t_to_object:
 		out = gen_object(out, tjs);

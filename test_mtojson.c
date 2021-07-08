@@ -185,10 +185,10 @@ test_object_uinteger(void)
 
 
 static int
-test_object_array_integer(void)
+test_object_c_array_integer(void)
 {
 	char *expected = "{\"array\": [9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100]}";
-	char *test = "test_object_array_integer";
+	char *test = "test_object_c_array_integer";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -206,10 +206,10 @@ test_object_array_integer(void)
 }
 
 static int
-test_object_array_string(void)
+test_object_c_array_string(void)
 {
 	char *expected = "{\"array\": [\"1\", \"23\"]}";
-	char *test = "test_object_array_string";
+	char *test = "test_object_c_array_string";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -226,10 +226,10 @@ test_object_array_string(void)
 }
 
 static int
-test_object_array_boolean(void)
+test_object_c_array_boolean(void)
 {
 	char *expected = "{\"array\": [true, false]}";
-	char *test = "test_object_array_boolean";
+	char *test = "test_object_c_array_boolean";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -246,10 +246,10 @@ test_object_array_boolean(void)
 }
 
 static int
-test_object_array_array(void)
+test_object_c_array_array(void)
 {
 	char *expected = "{\"array\": [[\"1\", \"2\", \"3\"], [\"1\", \"2\", \"3\"]]}";
-	char *test = "test_object_array_array";
+	char *test = "test_object_c_array_array";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -271,10 +271,10 @@ test_object_array_array(void)
 }
 
 static int
-test_object_array_empty(void)
+test_object_c_array_empty(void)
 {
 	char *expected = "{\"array\": []}";
-	char *test = "test_object_array_empty";
+	char *test = "test_object_c_array_empty";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -292,10 +292,10 @@ test_object_array_empty(void)
 }
 
 static int
-test_object_array_empty_one(void)
+test_object_c_array_empty_one(void)
 {
 	char *expected = "{\"array\": [[], [\"1\", \"2\", \"3\"]]}";
-	char *test = "test_object_array_one_empty";
+	char *test = "test_object_c_array_one_empty";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -374,7 +374,7 @@ test_object_object(void)
 }
 
 static int
-test_object_array_object(void)
+test_object_c_array_object(void)
 {
 	char *expected = "{"
 	                   "\"names\": [{"
@@ -389,7 +389,7 @@ test_object_array_object(void)
 	                   "\"number_of_names\": 2"
 	                 "}";
 
-	char *test = "test_object_array_object";
+	char *test = "test_object_c_array_object";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
@@ -591,10 +591,10 @@ test_object_uint_max(void)
 }
 
 static int
-test_object_array_uinteger(void)
+test_object_c_array_uinteger(void)
 {
 	char *expected = "{\"array\": [1, 2]}";
-	char *test = "test_object_array_uinteger";
+	char *test = "test_object_c_array_uinteger";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
@@ -612,13 +612,13 @@ test_object_array_uinteger(void)
 }
 
 static int
-test_object_array_valuetype(void)
+test_object_c_array_valuetype(void)
 {
 	char *expected = "{\"name\": ["
 	                            "This is not valid {}JSON!, "
 	                            "This not valid {}JSON!, "
 	                            "]}";
-	char *test = "test_object_array_valuetype";
+	char *test = "test_object_c_array_valuetype";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	memset(result, '\0', len);
@@ -655,28 +655,28 @@ exec_test(int i)
 		return test_object_valuetype();
 		break;
 	case 6:
-		return test_object_array_integer();
+		return test_object_c_array_integer();
 		break;
 	case 7:
-		return test_object_array_boolean();
+		return test_object_c_array_boolean();
 		break;
 	case 8:
-		return test_object_array_string();
+		return test_object_c_array_string();
 		break;
 	case 9:
-		return test_object_array_array();
+		return test_object_c_array_array();
 		break;
 	case 10:
-		return test_object_array_empty();
+		return test_object_c_array_empty();
 		break;
 	case 11:
-		return test_object_array_empty_one();
+		return test_object_c_array_empty_one();
 		break;
 	case 12:
 		return test_object_object();
 		break;
 	case 13:
-		return test_object_array_object();
+		return test_object_c_array_object();
 		break;
 	case 14:
 		return test_object_empty();
@@ -700,10 +700,10 @@ exec_test(int i)
 		return test_object_uint_max();
 		break;
 	case 21:
-		return test_object_array_uinteger();
+		return test_object_c_array_uinteger();
 		break;
 	case 22:
-		return test_object_array_valuetype();
+		return test_object_c_array_valuetype();
 		break;
 	default:
 		fputs("No such test!\n", stderr);
