@@ -15,7 +15,7 @@ enum json_value_type {
 };
 
 struct json_kv {
-	char *key;
+	char *name;
 	const void *value;
 	enum json_value_type type;
 };

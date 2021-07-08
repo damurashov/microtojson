@@ -232,14 +232,14 @@ gen_object(char *out, const void *val)
 		return NULL;
 
 	*out++ = '{';
-	while (kv->key){
-		char *key = kv->key;
-		size_t len = strlen(key);
+	while (kv->name){
+		char *name = kv->name;
+		size_t len = strlen(name);
 		if (!reduce_rem_len(len + 4)) // 4 -> "":_
 			return NULL;
 
 		*out++ = '"';
-		memcpy(out, key, len);
+		memcpy(out, name, len);
 		out += len;
 		*out++ = '"';
 		*out++ = ':';
@@ -251,13 +251,12 @@ gen_object(char *out, const void *val)
 			return NULL;
 
 		kv++;
-		if (kv->key){
+		if (kv->name){
 			if (!reduce_rem_len(2))
 				return NULL;
 			*out++ = ',';
 			*out++ = ' ';
 		}
-
 	}
 
 	*out++ = '}';
