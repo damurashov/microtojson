@@ -1,13 +1,13 @@
 /*
  * Tests for microtojson.h
  *
- * If generate_json DOES NOT detect an EXPECTED buffer overflow, running tests
+ * If json_generate DOES NOT detect an EXPECTED buffer overflow, running tests
  * will be aborted immediately with an exit status 125.
  *
- * If generate_json DOES detect an NON-EXPECTED buffer overflow, running tests
+ * If json_generate DOES detect an NON-EXPECTED buffer overflow, running tests
  * will be aborted immediately with an exit status 124.
  *
- * If generate_json returns the wrong string length, running tests will be
+ * If json_generate returns the wrong string length, running tests will be
  * aborted immediately with an exit status 123.
  *
  * If tests fail exit status is the count of failed tests. All succeeding tests
@@ -48,7 +48,7 @@ run_test(char *test, char *expected, char *result, const struct json_kv *jkv, si
 	tell_single_test(test);
 
 	memset(result, '\0', len);
-	size_t l = generate_json(result, jkv, len);
+	size_t l = json_generate(result, jkv, len);
 	if (!l) {
 		if (verbose)
 			printf("%s\n", "NON-EXPECTED buffer overflow");
@@ -70,13 +70,13 @@ run_test(char *test, char *expected, char *result, const struct json_kv *jkv, si
 	}
 
 	memset(result, '\0', len);
-	if (len >= 10 && generate_json(result, jkv, len - 10))
+	if (len >= 10 && json_generate(result, jkv, len - 10))
 		err += 2;
 	memset(result, '\0', len);
-	if (generate_json(result, jkv, len / 2))
+	if (json_generate(result, jkv, len / 2))
 		err += 4;
 	memset(result, '\0', len);
-	if (generate_json(result, jkv, len - 1))
+	if (json_generate(result, jkv, len - 1))
 		err += 8;
 	if (err > 1) {
 		if (verbose)

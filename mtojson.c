@@ -265,7 +265,7 @@ gen_object(char *out, const void *val)
 }
 
 size_t
-generate_json(char *out, const struct json_kv *kv, size_t len)
+json_generate(char *out, const struct json_kv *kv, size_t len)
 {
 	const char *start = out;
 

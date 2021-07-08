@@ -8,7 +8,7 @@ This is still beta, use at own risk.
 
 Supported types are:
 - array
-- JSON object
+- object
 - string
 - boolean
 - integer
@@ -16,7 +16,7 @@ Supported types are:
 
 To create an arbitrary value use `t_to_value` and pass the correctly formatted value as char array.
 
-`generate_json()` returns the length of the generated JSON or 0 in case of an error.
+`json_generate()` returns the length of the generated JSON text or 0 in case of an error.
 
 See `test_mtojson.c` for usage.
 

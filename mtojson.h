@@ -26,5 +26,6 @@ struct json_array {
 	enum json_value_type type;
 };
 
-size_t generate_json(char *out, const struct json_kv *kv, size_t len);
+/* Returns the length of the generated JSON text or 0 in case of an error. */
+size_t json_generate(char *out, const struct json_kv *kv, size_t len);
 #endif
