@@ -14,18 +14,14 @@ enum json_to_type {
 	t_to_value,
 };
 
-struct json_kv {
+struct to_json {
 	char *name;
 	const void *value;
-	enum json_to_type type;
-};
-
-struct json_array {
-	const void *value;
-	size_t count;
-	enum json_to_type type;
+	size_t count;            // Number of elements in a C array
+	enum json_to_type stype; // Type of the struct
+	enum json_to_type vtype; // Type of '.value'
 };
 
 /* Returns the length of the generated JSON text or 0 in case of an error. */
-size_t json_generate(char *out, const struct json_kv *kv, size_t len);
+size_t json_generate(char *out, const struct to_json *tjs, size_t len);
 #endif

@@ -41,14 +41,14 @@ const char *rp;
 static void tell_single_test();
 
 static int
-run_test(char *test, char *expected, char *result, const struct json_kv *jkv, size_t len)
+run_test(char *test, char *expected, char *result, const struct to_json *tjs, size_t len)
 {
 	int err = 0;
 
 	tell_single_test(test);
 
 	memset(result, '\0', len);
-	size_t l = json_generate(result, jkv, len);
+	size_t l = json_generate(result, tjs, len);
 	if (!l) {
 		if (verbose)
 			printf("%s\n", "NON-EXPECTED buffer overflow");
@@ -70,13 +70,13 @@ run_test(char *test, char *expected, char *result, const struct json_kv *jkv, si
 	}
 
 	memset(result, '\0', len);
-	if (len >= 10 && json_generate(result, jkv, len - 10))
+	if (len >= 10 && json_generate(result, tjs, len - 10))
 		err += 2;
 	memset(result, '\0', len);
-	if (json_generate(result, jkv, len / 2))
+	if (json_generate(result, tjs, len / 2))
 		err += 4;
 	memset(result, '\0', len);
-	if (json_generate(result, jkv, len - 1))
+	if (json_generate(result, tjs, len - 1))
 		err += 8;
 	if (err > 1) {
 		if (verbose)
@@ -106,11 +106,11 @@ test_object_string(void)
 	char result[len];
 	rp = result;
 
-	const struct json_kv jkv[] = {
-		{ .name = "name", .value = "value", .type = t_to_string, },
+	const struct to_json tjs[] = {
+		{ .name = "name", .value = "value", .vtype = t_to_string, .stype = t_to_object, },
 		{ NULL },
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -123,11 +123,11 @@ test_object_boolean(void)
 	rp = result;
 
 	const _Bool value = true;
-	const struct json_kv jkv[] = {
-		{ .name = "name", .value = &value, .type = t_to_boolean, },
+	const struct to_json tjs[] = {
+		{ .name = "name", .value = &value, .vtype = t_to_boolean, .stype = t_to_object, },
 		{ NULL },
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -140,11 +140,11 @@ test_object_integer(void)
 	rp = result;
 
 	const int n = 1;
-	const struct json_kv jkv[] = {
-		{ .name = "name", .value = &n, .type = t_to_integer, },
+	const struct to_json tjs[] = {
+		{ .name = "name", .value = &n, .vtype = t_to_integer, .stype = t_to_object, },
 		{ NULL },
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -158,12 +158,12 @@ test_object_integer_two(void)
 
 	const int ns[] = {-32767, 32767};
 
-	const struct json_kv jkv[] = {
-		{ .type = t_to_integer, .name = "name", .value = &ns[0], },
-		{ .type = t_to_integer, .name = "name", .value = &ns[1], },
+	const struct to_json tjs[] = {
+		{ .vtype = t_to_integer, .name = "name", .value = &ns[0], .stype = t_to_object, },
+		{ .vtype = t_to_integer, .name = "name", .value = &ns[1], },
 		{ NULL }
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -176,11 +176,11 @@ test_object_uinteger(void)
 	rp = result;
 
 	const int n = 65535;
-	const struct json_kv jkv[] = {
-		{ .name = "name", .value = &n, .type = t_to_uinteger, },
+	const struct to_json tjs[] = {
+		{ .name = "name", .value = &n, .vtype = t_to_uinteger, .stype = t_to_object, },
 		{ NULL },
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 
@@ -194,14 +194,15 @@ test_object_array_integer(void)
 	rp = result;
 
 	const int arr[] = {9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100};
-	const struct json_array jar = {
-		.value = arr, .count = sizeof(arr)/sizeof(arr[0]), .type = t_to_integer };
+	const struct to_json jar = {
+		.value = arr, .count = sizeof(arr)/sizeof(arr[0]), .vtype = t_to_integer, .stype = t_to_object,
+	};
 
-	const struct json_kv jkv[] = {
-		{ .name = "array", .value = &jar, .type = t_to_array, },
+	const struct to_json tjs[] = {
+		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
 		{ NULL }
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -214,14 +215,14 @@ test_object_array_string(void)
 	rp = result;
 
 	const char *arr[8] = {"1", "23"};
-	const struct json_array jar = {
-		.value = arr, .count = 2, .type = t_to_string };
+	const struct to_json jar = {
+		.value = arr, .count = 2, .vtype = t_to_string, .stype = t_to_object, };
 
-	const struct json_kv jkv[] = {
-		{ .name = "array", .value = &jar, .type = t_to_array, },
+	const struct to_json tjs[] = {
+		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
 		{ NULL }
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -234,14 +235,14 @@ test_object_array_boolean(void)
 	rp = result;
 
 	const _Bool arr [] = {true, false};
-	const struct json_array jar = {
-		.value = arr, .count = 2, .type = t_to_boolean };
+	const struct to_json jar = {
+		.value = arr, .count = 2, .vtype = t_to_boolean, .stype = t_to_object, };
 
-	const struct json_kv jkv[] = {
-		{ .name = "array", .value = &jar, .type = t_to_array, },
+	const struct to_json tjs[] = {
+		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
 		{ NULL }
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -254,19 +255,19 @@ test_object_array_array(void)
 	rp = result;
 
 	const char *arr[] = {"1", "2", "3"};
-	const struct json_array inner_jar_arr = {
-		.value = arr, .count = 3, .type = t_to_string };
+	const struct to_json inner_jar_arr = {
+		.value = arr, .count = 3, .vtype = t_to_string, .stype = t_to_object, };
 
-	const struct json_array *inner_jar[] = { &inner_jar_arr, &inner_jar_arr };
-	const struct json_array jar = {
-		.value = inner_jar, .count = 2, .type = t_to_array };
+	const struct to_json *inner_jar[] = { &inner_jar_arr, &inner_jar_arr };
+	const struct to_json jar = {
+		.value = inner_jar, .count = 2, .vtype = t_to_array, .stype = t_to_object, };
 
-	const struct json_kv jkv[] = {
-		{ .name = "array", .value = &jar, .type = t_to_array, },
+	const struct to_json tjs[] = {
+		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
 		{ NULL }
 	};
 
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -279,15 +280,15 @@ test_object_array_empty(void)
 	rp = result;
 
 	const char *arr[1];
-	const struct json_array jar = {
-		.value = arr, .count = 0, .type = t_to_string };
+	const struct to_json jar = {
+		.value = arr, .count = 0, .vtype = t_to_string, .stype = t_to_object, };
 
-	const struct json_kv jkv[] = {
-		{ .name = "array", .value = &jar, .type = t_to_array, },
+	const struct to_json tjs[] = {
+		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
 		{ NULL }
 	};
 
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -300,21 +301,21 @@ test_object_array_empty_one(void)
 	rp = result;
 
 	const char *arr[] = {"1", "2", "3"};
-	const struct json_array inner_jar_arr = {
-		.value = arr, .count = 3, .type = t_to_string };
-	const struct json_array inner_jar_empty = {
-		.value = NULL, .count = 0, .type = t_to_string };
+	const struct to_json inner_jar_arr = {
+		.value = arr, .count = 3, .vtype = t_to_string, .stype = t_to_object, };
+	const struct to_json inner_jar_empty = {
+		.value = NULL, .count = 0, .vtype = t_to_string, .stype = t_to_object, };
 
-	const struct json_array *inner_jar[] = { &inner_jar_empty, &inner_jar_arr };
-	const struct json_array jar = {
-		.value = inner_jar, .count = 2, .type = t_to_array };
+	const struct to_json *inner_jar[] = { &inner_jar_empty, &inner_jar_arr };
+	const struct to_json jar = {
+		.value = inner_jar, .count = 2, .vtype = t_to_array, .stype = t_to_object, };
 
-	const struct json_kv jkv[] = {
-		{ .name = "array", .value = &jar, .type = t_to_array, },
+	const struct to_json tjs[] = {
+		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
 		{ NULL }
 	};
 
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -326,10 +327,10 @@ test_object_empty(void)
 	char result[len];
 	rp = result;
 
-	struct json_kv jkv[] = {
-		{ NULL },
+	struct to_json tjs[] = {
+		{ .stype = t_to_object },
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -350,26 +351,26 @@ test_object_object(void)
 	rp = result;
 
 	const char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
-	const struct json_array addarr = {
-		.value = addresses, .count = 3, .type = t_to_string };
+	const struct to_json addarr = {
+		.value = addresses, .count = 3, .vtype = t_to_string, .stype = t_to_array, };
 
 	const int nid = 1;
 	const int cnt = 3;
-	const struct json_kv names[] = {
-		{ .name = "name_id", .value = &nid,    .type = t_to_integer },
-		{ .name = "count",  .value = &cnt,    .type = t_to_integer },
-		{ .name = "values", .value = &addarr, .type = t_to_array },
+	const struct to_json names[] = {
+		{ .name = "name_id", .value = &nid,    .vtype = t_to_integer, .stype = t_to_object, },
+		{ .name = "count",  .value = &cnt,    .vtype = t_to_integer, },
+		{ .name = "values", .value = &addarr, .vtype = t_to_array, },
 		{ NULL }
 	};
 
 	const int non = 1;
-	const struct json_kv jkv[] = {
-		{ .name = "names",           .value = &names, .type = t_to_object },
-		{ .name = "number_of_names", .value = &non,  .type = t_to_integer},
+	const struct to_json tjs[] = {
+		{ .name = "names",           .value = &names, .vtype = t_to_object, .stype = t_to_object, },
+		{ .name = "number_of_names", .value = &non,  .vtype = t_to_integer},
 		{ NULL }
 	};
 
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -394,42 +395,42 @@ test_object_array_object(void)
 	rp = result;
 
 	const char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
-	const struct json_array addarr = {
-		.value = addresses, .count = 3, .type = t_to_string };
+	const struct to_json addarr = {
+		.value = addresses, .count = 3, .vtype = t_to_string, .stype = t_to_object, };
 
 	const char *array2[] = {"DEADFEED"};
-	const struct json_array arr2 = {
-		.value = array2, .count = 1, .type = t_to_string };
+	const struct to_json arr2 = {
+		.value = array2, .count = 1, .vtype = t_to_string, .stype = t_to_object, };
 
 	const int nid[] = { 1, 2 };
 	const int cnt[] = { 3, 1 };
-	const struct json_kv names_kv[][4] = {
+	const struct to_json names_kv[][4] = {
 		{
-			{ .name = "name_id", .value = &nid[0], .type = t_to_integer },
-			{ .name = "count",  .value = &cnt[0], .type = t_to_integer },
-			{ .name = "values", .value = &addarr, .type = t_to_array },
+			{ .name = "name_id", .value = &nid[0], .vtype = t_to_integer, .stype = t_to_object, },
+			{ .name = "count",  .value = &cnt[0], .vtype = t_to_integer, },
+			{ .name = "values", .value = &addarr, .vtype = t_to_array, },
 			{ NULL }
 		}, {
 			{ NULL }
 		}, {
-			{ .name = "name_id", .value = &nid[1], .type = t_to_integer },
-			{ .name = "count",  .value = &cnt[1], .type = t_to_integer },
-			{ .name = "values", .value = &arr2,   .type = t_to_array },
+			{ .name = "name_id", .value = &nid[1], .vtype = t_to_integer, .stype = t_to_object, },
+			{ .name = "count",  .value = &cnt[1], .vtype = t_to_integer, },
+			{ .name = "values", .value = &arr2,   .vtype = t_to_array, },
 			{ NULL }
 		}
 	};
 
 	const int non = 2;
-	const struct json_kv *names_ptr[] = { names_kv[0], names_kv[1], names_kv[2] };
-	const struct json_array names = {
-		.value = names_ptr, .count = 3, .type = t_to_object };
-	const struct json_kv jkv[] = {
-		{ .name = "names",           .value = &names, .type = t_to_array },
-		{ .name = "number_of_names", .value = &non,  .type = t_to_integer},
+	const struct to_json *names_ptr[] = { names_kv[0], names_kv[1], names_kv[2] };
+	const struct to_json names = {
+		.value = names_ptr, .count = 3, .vtype = t_to_object, .stype = t_to_object, };
+	const struct to_json tjs[] = {
+		{ .name = "names",           .value = &names, .vtype = t_to_array, .stype = t_to_object, },
+		{ .name = "number_of_names", .value = &non,  .vtype = t_to_integer},
 		{ NULL }
 	};
 
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -450,22 +451,22 @@ test_object_object_object(void)
 
 	const _Bool value = true;
 
-	const struct json_kv inner[] = {
-		{ .name = "inner", .value = &value, .type = t_to_boolean },
+	const struct to_json inner[] = {
+		{ .name = "inner", .value = &value, .vtype = t_to_boolean, .stype = t_to_object, },
 		{ NULL }
 	};
 
-	const struct json_kv middle[] = {
-		{ .name = "middle", .value = &inner, .type = t_to_object },
+	const struct to_json middle[] = {
+		{ .name = "middle", .value = &inner, .vtype = t_to_object, .stype = t_to_object, },
 		{ NULL }
 	};
 
-	const struct json_kv jkv[] = {
-		{ .name = "outer", .value = &middle, .type = t_to_object },
+	const struct to_json tjs[] = {
+		{ .name = "outer", .value = &middle, .vtype = t_to_object, .stype = t_to_object, },
 		{ NULL }
 	};
 
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -484,26 +485,26 @@ test_object_object_nested_empty(void)
 	char result[len];
 	rp = result;
 
-	const struct json_kv value[] = {
+	const struct to_json value[] = {
 		{ NULL },
 	};
 
-	const struct json_kv inner[] = {
-		{ .name = "inner", .value = &value, .type = t_to_object },
+	const struct to_json inner[] = {
+		{ .name = "inner", .value = &value, .vtype = t_to_object, .stype = t_to_object, },
 		{ NULL }
 	};
 
-	const struct json_kv middle[] = {
-		{ .name = "middle", .value = &inner, .type = t_to_object },
+	const struct to_json middle[] = {
+		{ .name = "middle", .value = &inner, .vtype = t_to_object, .stype = t_to_object, },
 		{ NULL }
 	};
 
-	const struct json_kv jkv[] = {
-		{ .name = "outer", .value = &middle, .type = t_to_object },
+	const struct to_json tjs[] = {
+		{ .name = "outer", .value = &middle, .vtype = t_to_object, .stype = t_to_object, },
 		{ NULL }
 	};
 
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -515,11 +516,11 @@ test_object_valuetype(void)
 	char result[len];
 	rp = result;
 
-	const struct json_kv jkv[] = {
-		{ .name = "name", .value = "This is not valid {}JSON!", .type = t_to_value, },
+	const struct to_json tjs[] = {
+		{ .name = "name", .value = "This is not valid {}JSON!", .vtype = t_to_value, .stype = t_to_object, },
 		{ NULL },
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -537,11 +538,11 @@ test_object_int_max(void)
 	rp = result;
 
 	const int n = INT_MAX;
-	const struct json_kv jkv[] = {
-		{ .name = "name", .value = &n, .type = t_to_integer, },
+	const struct to_json tjs[] = {
+		{ .name = "name", .value = &n, .vtype = t_to_integer, .stype = t_to_object, },
 		{ NULL },
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 
 }
 
@@ -560,11 +561,11 @@ test_object_int_min(void)
 	rp = result;
 
 	int n = INT_MIN;
-	const struct json_kv jkv[] = {
-		{ .name = "name", .value = &n, .type = t_to_integer, },
+	const struct to_json tjs[] = {
+		{ .name = "name", .value = &n, .vtype = t_to_integer, .stype = t_to_object, },
 		{ NULL },
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -582,11 +583,11 @@ test_object_uint_max(void)
 	rp = result;
 
 	const unsigned n = UINT_MAX;
-	const struct json_kv jkv[] = {
-		{ .name = "name", .value = &n, .type = t_to_uinteger, },
+	const struct to_json tjs[] = {
+		{ .name = "name", .value = &n, .vtype = t_to_uinteger, .stype = t_to_object, },
 		{ NULL },
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -600,14 +601,14 @@ test_object_array_uinteger(void)
 	rp = result;
 
 	const unsigned arr[] = {1, 2};
-	const struct json_array jar = {
-		.value = arr, .count = 2, .type = t_to_uinteger };
+	const struct to_json jar = {
+		.value = arr, .count = 2, .vtype = t_to_uinteger, .stype = t_to_object, };
 
-	const struct json_kv jkv[] = {
-		{ .name = "array", .value = &jar, .type = t_to_array, },
+	const struct to_json tjs[] = {
+		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
 		{ NULL }
 	};
-	return run_test(test, expected, result, jkv, len);
+	return run_test(test, expected, result, tjs, len);
 }
 
 static int
@@ -624,11 +625,11 @@ test_object_array_valuetype(void)
 	rp = result;
 
 	const char *arr[] = {"This is not valid {}JSON!", "This not valid {}JSON!, "};
-	const struct json_array jar = {
-		.value = arr, .count = 2, .type = t_to_value, };
+	const struct to_json jar = {
+		.value = arr, .count = 2, .vtype = t_to_value, };
 
-	const struct json_kv jkv[] = {
-		{ .name = "name", .value = &jar, .type = t_to_array, },
+	const struct to_json jkv[] = {
+		{ .name = "name", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
 		{ NULL },
 	};
 	return run_test(test, expected, result, jkv, len);

@@ -129,23 +129,23 @@ gen_array_type(char *out, const void *val, _Bool is_last, char* (*func)())
 static char*
 gen_array(char *out, const void *val)
 {
-	const struct json_array *jar = (const struct json_array*)val;
+	const struct to_json *tjs = (const struct to_json*)val;
 	if (!reduce_rem_len(2)) // 2 -> []
 		return NULL;
 
 	*out++ = '[';
-	if (jar->count == 0){
+	if (tjs->count == 0){
 		*out++ = ']';
 		return out;
 	}
 
 	_Bool is_last;
-	char* (*func)() = gen_functions[jar->type];
-	switch (jar->type) {
+	char* (*func)() = gen_functions[tjs->vtype];
+	switch (tjs->vtype) {
 	case t_to_array: {
-		struct json_array * const *v = jar->value;
-		for (size_t i = 0; i < jar->count; i++){
-			is_last = (i + 1 == jar->count);
+		struct json_array * const *v = tjs->value;
+		for (size_t i = 0; i < tjs->count; i++){
+			is_last = (i + 1 == tjs->count);
 			out = gen_array_type(out, v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -154,9 +154,9 @@ gen_array(char *out, const void *val)
 	}
 
 	case t_to_boolean: {
-		const _Bool *v = jar->value;
-		for (size_t i = 0; i < jar->count; i++){
-			is_last = (i + 1 == jar->count);
+		const _Bool *v = tjs->value;
+		for (size_t i = 0; i < tjs->count; i++){
+			is_last = (i + 1 == tjs->count);
 			out = gen_array_type(out, &v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -165,9 +165,9 @@ gen_array(char *out, const void *val)
 	}
 
 	case t_to_integer: {
-		const int *v = jar->value;
-		for (size_t i = 0; i < jar->count; i++){
-			is_last = (i + 1 == jar->count);
+		const int *v = tjs->value;
+		for (size_t i = 0; i < tjs->count; i++){
+			is_last = (i + 1 == tjs->count);
 			out = gen_array_type(out, &v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -176,9 +176,9 @@ gen_array(char *out, const void *val)
 	}
 
 	case t_to_object: {
-		struct json_kv * const *v = jar->value;
-		for (size_t i = 0; i < jar->count; i++){
-			is_last = (i + 1 == jar->count);
+		struct json_kv * const *v = tjs->value;
+		for (size_t i = 0; i < tjs->count; i++){
+			is_last = (i + 1 == tjs->count);
 			out = gen_array_type(out, v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -187,9 +187,9 @@ gen_array(char *out, const void *val)
 	}
 
 	case t_to_string: {
-		char * const *v = jar->value;
-		for (size_t i = 0; i < jar->count; i++){
-			is_last = (i + 1 == jar->count);
+		char * const *v = tjs->value;
+		for (size_t i = 0; i < tjs->count; i++){
+			is_last = (i + 1 == tjs->count);
 			out = gen_array_type(out, v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -198,9 +198,9 @@ gen_array(char *out, const void *val)
 	}
 
 	case t_to_uinteger: {
-		const unsigned *v = jar->value;
-		for (size_t i = 0; i < jar->count; i++){
-			is_last = (i + 1 == jar->count);
+		const unsigned *v = tjs->value;
+		for (size_t i = 0; i < tjs->count; i++){
+			is_last = (i + 1 == tjs->count);
 			out = gen_array_type(out, &v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -209,9 +209,9 @@ gen_array(char *out, const void *val)
 	}
 
 	case t_to_value: {
-		const char * const *v = jar->value;
-		for (size_t i = 0; i < jar->count; i++){
-			is_last = (i + 1 == jar->count);
+		const char * const *v = tjs->value;
+		for (size_t i = 0; i < tjs->count; i++){
+			is_last = (i + 1 == tjs->count);
 			out = gen_array_type(out, v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -226,14 +226,14 @@ gen_array(char *out, const void *val)
 static char*
 gen_object(char *out, const void *val)
 {
-	const struct json_kv *kv = (const struct json_kv*)val;
+	const struct to_json *tjs = (const struct to_json*)val;
 
 	if (!reduce_rem_len(2)) // 2 -> {}
 		return NULL;
 
 	*out++ = '{';
-	while (kv->name){
-		char *name = kv->name;
+	while (tjs->name){
+		char *name = tjs->name;
 		size_t len = strlen(name);
 		if (!reduce_rem_len(len + 4)) // 4 -> "":_
 			return NULL;
@@ -245,13 +245,13 @@ gen_object(char *out, const void *val)
 		*out++ = ':';
 		*out++ = ' ';
 
-		out = gen_functions[kv->type](out, kv->value);
+		out = gen_functions[tjs->vtype](out, tjs->value);
 
 		if (!out)
 			return NULL;
 
-		kv++;
-		if (kv->name){
+		tjs++;
+		if (tjs->name){
 			if (!reduce_rem_len(2))
 				return NULL;
 			*out++ = ',';
@@ -264,7 +264,7 @@ gen_object(char *out, const void *val)
 }
 
 size_t
-json_generate(char *out, const struct json_kv *kv, size_t len)
+json_generate(char *out, const struct to_json *tjs, size_t len)
 {
 	const char *start = out;
 
@@ -272,7 +272,16 @@ json_generate(char *out, const struct json_kv *kv, size_t len)
 	if (!reduce_rem_len(1)) // \0
 		return 0;
 
-	out = gen_object(out, kv);
+	switch (tjs->stype) {
+	case t_to_array:
+		out = gen_array(out, tjs);
+		break;
+	case t_to_object:
+		out = gen_object(out, tjs);
+		break;
+	default:
+		return 0;
+	}
 
 	if (!out)
 		return 0;
