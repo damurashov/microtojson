@@ -324,6 +324,23 @@ test_object_empty(void)
 }
 
 static int
+test_object_object_null(void)
+{
+	char *expected = "{\"name\": null}";
+	char *test = "test_object_object_null";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	rp = result;
+
+	struct to_json tjs[] = {
+		{ .name = "name", .value = NULL, .vtype = t_to_object, .stype = t_to_object, },
+		{ NULL }
+	}
+;
+	return run_test(test, expected, result, tjs, len);
+}
+
+static int
 test_object_object(void)
 {
 	char *expected = "{"
@@ -845,6 +862,34 @@ test_array_from_rfc8259(void)
 	return run_test(test, expected, result, tjs, len);
 }
 
+static int
+test_object_null_value(void)
+{
+	char *expected = "{\"name\": null}";
+	char *test = "test_object_null_value";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	rp = result;
+
+	_Bool tmp = verbose;
+	tell_single_test(test);
+	verbose = 0;
+
+	struct to_json tjs[] = {
+		{ .name = "name", .stype = t_to_object, },
+		{ NULL }
+	};
+
+	int err = 0;
+	for (int i = 1; !err && i < t_to_value; i++) {
+		tjs[0].vtype = (enum json_to_type)i;
+		if (run_test(test, expected, result, tjs, len))
+			err = i;
+	}
+
+	verbose = tmp;
+	return err;
+}
 
 static int
 exec_test(int i)
@@ -923,22 +968,28 @@ exec_test(int i)
 		return test_primitive_null();
 		break;
 	case 25:
-		return test_array_integer();
+		return test_object_object_null();
 		break;
 	case 26:
-		return test_array_mixed();
+		return test_array_integer();
 		break;
 	case 27:
-		return test_c_array_integer();
+		return test_array_mixed();
 		break;
 	case 28:
-		return test_primitive_string_escape_chars();
+		return test_c_array_integer();
 		break;
 	case 29:
-		return test_object_from_rfc8259();
+		return test_primitive_string_escape_chars();
 		break;
 	case 30:
+		return test_object_from_rfc8259();
+		break;
+	case 31:
 		return test_array_from_rfc8259();
+		break;
+	case 32:
+		return test_object_null_value();
 		break;
 	default:
 		fputs("No such test!\n", stderr);
@@ -946,7 +997,7 @@ exec_test(int i)
 	}
 	return 1;
 }
-#define MAXTEST 30
+#define MAXTEST 32
 
 int
 main(int argc, char *argv[])

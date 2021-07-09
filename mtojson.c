@@ -61,6 +61,9 @@ gen_null(char *out, const void *val)
 static char*
 gen_boolean(char *out, const void *val)
 {
+	if (!val)
+		return gen_null(out, val);
+
 	if (*(_Bool*)val)
 		return strcpy_val(out, "true", 4);
 	else
@@ -70,6 +73,9 @@ gen_boolean(char *out, const void *val)
 static char*
 gen_string(char *out, const void *val)
 {
+	if (!val)
+		return gen_null(out, val);
+
 	if (!reduce_rem_len(2)) // 2 -> ""
 		return NULL;
 
@@ -114,6 +120,9 @@ gen_string(char *out, const void *val)
 static char*
 gen_integer(char *out, const void *val)
 {
+	if (!val)
+		return gen_null(out, val);
+
 	int n = *(int*)val;
 	unsigned u = (unsigned)n;
 	if (n < 0){
@@ -131,6 +140,9 @@ gen_integer(char *out, const void *val)
 static char*
 gen_uinteger(char *out, const void *val)
 {
+	if (!val)
+		return gen_null(out, val);
+
 	char *s = out;
 	char *r;
 	unsigned n = *(unsigned*)val;
@@ -275,6 +287,9 @@ gen_c_array(char *out, const void *val)
 static char*
 gen_array(char *out, const void *val)
 {
+	if (!val)
+		return gen_null(out, val);
+
 	const struct to_json *tjs = (const struct to_json*)val;
 	if (!reduce_rem_len(2)) // 2 -> []
 		return NULL;
@@ -302,6 +317,9 @@ gen_array(char *out, const void *val)
 static char*
 gen_object(char *out, const void *val)
 {
+	if (!val)
+		return gen_null(out, val);
+
 	const struct to_json *tjs = (const struct to_json*)val;
 
 	if (!reduce_rem_len(2)) // 2 -> {}

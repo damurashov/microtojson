@@ -57,6 +57,8 @@ Use `make example` to build all four variations of `example.c`.
 
 To create an arbitrary value use `t_to_value` and pass the correctly formatted value as char array.
 
+NULL pointers passed as value are converted to literal 'null'.
+
 Make sure struct arrays are NULL terminated!
 
 ---
