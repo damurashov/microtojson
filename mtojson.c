@@ -233,7 +233,7 @@ gen_object(char *out, const void *val)
 
 	*out++ = '{';
 	while (tjs->name){
-		char *name = tjs->name;
+		const char *name = tjs->name;
 		size_t len = strlen(name);
 		if (!reduce_rem_len(len + 4)) // 4 -> "":_
 			return NULL;
