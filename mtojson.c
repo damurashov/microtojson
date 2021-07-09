@@ -7,9 +7,11 @@
 
 #include <string.h>
 
+static char* gen_array(char *, const void *);
 static char* gen_boolean(char *, const void *);
 static char* gen_c_array(char *, const void *);
 static char* gen_integer(char *, const void *);
+static char* gen_json(char *, const void *);
 static char* gen_null(char *, const void *);
 static char* gen_object(char *, const void *);
 static char* gen_primitive(char *, const void *);
@@ -19,7 +21,7 @@ static char* gen_value(char *, const void *);
 
 static char* (* const gen_functions[])(char *, const void *) = {
 	gen_primitive,
-	gen_c_array,
+	gen_array,
 	gen_boolean,
 	gen_integer,
 	gen_null,
@@ -240,6 +242,33 @@ gen_c_array(char *out, const void *val)
 }
 
 static char*
+gen_array(char *out, const void *val)
+{
+	const struct to_json *tjs = (const struct to_json*)val;
+	if (!reduce_rem_len(2)) // 2 -> []
+		return NULL;
+
+	*out++ = '[';
+	while (tjs->value){
+		if (tjs->count)
+			out = gen_c_array(out, tjs);
+		else
+			out = gen_functions[tjs->vtype](out, tjs->value);
+		if (!out)
+			return NULL;
+		tjs++;
+		if (tjs->value){
+			if (!reduce_rem_len(2))
+				return NULL;
+			*out++ = ',';
+			*out++ = ' ';
+		}
+	}
+	*out++ = ']';
+	return out;
+}
+
+static char*
 gen_object(char *out, const void *val)
 {
 	const struct to_json *tjs = (const struct to_json*)val;
@@ -261,7 +290,7 @@ gen_object(char *out, const void *val)
 		*out++ = ':';
 		*out++ = ' ';
 
-		out = gen_functions[tjs->vtype](out, tjs->value);
+		out = gen_json(out, tjs);
 
 		if (!out)
 			return NULL;
@@ -283,6 +312,19 @@ static char*
 gen_primitive(char *out, const void *to_json)
 {
 	const struct to_json *tjs = (const struct to_json *)to_json;
+	if (tjs->count)
+		return gen_c_array(out, tjs);
+
+	return gen_functions[tjs->vtype](out, tjs->value);
+}
+
+static char*
+gen_json(char *out, const void *to_json)
+{
+	const struct to_json *tjs = (const struct to_json *)to_json;
+	if (tjs->count)
+		return gen_c_array(out, tjs);
+
 	return gen_functions[tjs->vtype](out, tjs->value);
 }
 
@@ -297,7 +339,7 @@ json_generate(char *out, const struct to_json *tjs, size_t len)
 
 	switch (tjs->stype) {
 	case t_to_array:
-		out = gen_c_array(out, tjs);
+		out = gen_array(out, tjs);
 		break;
 	case t_to_object:
 		out = gen_object(out, tjs);
@@ -305,6 +347,13 @@ json_generate(char *out, const struct to_json *tjs, size_t len)
 	case t_to_primitive:
 		out = gen_primitive(out, tjs);
 		break;
+	/* These are not valid ctypes */
+	case t_to_boolean:
+	case t_to_integer:
+	case t_to_null:
+	case t_to_string:
+	case t_to_uinteger:
+	case t_to_value:
 	default:
 		return 0;
 	}
