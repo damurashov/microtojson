@@ -134,7 +134,7 @@ gen_c_array(char *out, const void *val)
 		return NULL;
 
 	*out++ = '[';
-	if (tjs->count == 0){
+	if (*tjs->count == 0){
 		*out++ = ']';
 		return out;
 	}
@@ -144,8 +144,8 @@ gen_c_array(char *out, const void *val)
 	switch (tjs->vtype) {
 	case t_to_array: {
 		struct json_array * const *v = tjs->value;
-		for (size_t i = 0; i < tjs->count; i++){
-			is_last = (i + 1 == tjs->count);
+		for (size_t i = 0; i < *tjs->count; i++){
+			is_last = (i + 1 == *tjs->count);
 			out = gen_array_type(out, v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -155,8 +155,8 @@ gen_c_array(char *out, const void *val)
 
 	case t_to_boolean: {
 		const _Bool *v = tjs->value;
-		for (size_t i = 0; i < tjs->count; i++){
-			is_last = (i + 1 == tjs->count);
+		for (size_t i = 0; i < *tjs->count; i++){
+			is_last = (i + 1 == *tjs->count);
 			out = gen_array_type(out, &v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -166,8 +166,8 @@ gen_c_array(char *out, const void *val)
 
 	case t_to_integer: {
 		const int *v = tjs->value;
-		for (size_t i = 0; i < tjs->count; i++){
-			is_last = (i + 1 == tjs->count);
+		for (size_t i = 0; i < *tjs->count; i++){
+			is_last = (i + 1 == *tjs->count);
 			out = gen_array_type(out, &v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -176,9 +176,9 @@ gen_c_array(char *out, const void *val)
 	}
 
 	case t_to_object: {
-		struct json_kv * const *v = tjs->value;
-		for (size_t i = 0; i < tjs->count; i++){
-			is_last = (i + 1 == tjs->count);
+		struct to_json * const *v = tjs->value;
+		for (size_t i = 0; i < *tjs->count; i++){
+			is_last = (i + 1 == *tjs->count);
 			out = gen_array_type(out, v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -188,8 +188,8 @@ gen_c_array(char *out, const void *val)
 
 	case t_to_string: {
 		char * const *v = tjs->value;
-		for (size_t i = 0; i < tjs->count; i++){
-			is_last = (i + 1 == tjs->count);
+		for (size_t i = 0; i < *tjs->count; i++){
+			is_last = (i + 1 == *tjs->count);
 			out = gen_array_type(out, v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -199,8 +199,8 @@ gen_c_array(char *out, const void *val)
 
 	case t_to_uinteger: {
 		const unsigned *v = tjs->value;
-		for (size_t i = 0; i < tjs->count; i++){
-			is_last = (i + 1 == tjs->count);
+		for (size_t i = 0; i < *tjs->count; i++){
+			is_last = (i + 1 == *tjs->count);
 			out = gen_array_type(out, &v[i], is_last, func);
 			if (!out)
 				return NULL;
@@ -210,8 +210,8 @@ gen_c_array(char *out, const void *val)
 
 	case t_to_value: {
 		const char * const *v = tjs->value;
-		for (size_t i = 0; i < tjs->count; i++){
-			is_last = (i + 1 == tjs->count);
+		for (size_t i = 0; i < *tjs->count; i++){
+			is_last = (i + 1 == *tjs->count);
 			out = gen_array_type(out, v[i], is_last, func);
 			if (!out)
 				return NULL;

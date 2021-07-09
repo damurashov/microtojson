@@ -17,7 +17,7 @@ enum json_to_type {
 struct to_json {
 	const char *name;
 	const void *value;
-	size_t count;            // Number of elements in a C array
+	const size_t *count;     // Number of elements in a C array
 	enum json_to_type stype; // Type of the struct
 	enum json_to_type vtype; // Type of '.value'
 };

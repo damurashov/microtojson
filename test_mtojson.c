@@ -194,8 +194,9 @@ test_object_c_array_integer(void)
 	rp = result;
 
 	const int arr[] = {9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100};
+	const size_t cnt = sizeof(arr)/sizeof(arr[0]);
 	const struct to_json jar = {
-		.value = arr, .count = sizeof(arr)/sizeof(arr[0]), .vtype = t_to_integer, .stype = t_to_object,
+		.value = arr, .count = &cnt, .vtype = t_to_integer, .stype = t_to_object,
 	};
 
 	const struct to_json tjs[] = {
@@ -214,9 +215,10 @@ test_object_c_array_string(void)
 	char result[len];
 	rp = result;
 
-	const char *arr[8] = {"1", "23"};
+	const char *arr[] = {"1", "23"};
+	const size_t cnt = sizeof(arr) / sizeof(arr[0]);
 	const struct to_json jar = {
-		.value = arr, .count = 2, .vtype = t_to_string, .stype = t_to_object, };
+		.value = arr, .count = &cnt, .vtype = t_to_string, .stype = t_to_object, };
 
 	const struct to_json tjs[] = {
 		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
@@ -234,9 +236,10 @@ test_object_c_array_boolean(void)
 	char result[len];
 	rp = result;
 
-	const _Bool arr [] = {true, false};
+	const _Bool arr[] = {true, false};
+	const size_t cnt = sizeof(arr) / sizeof(arr[0]);
 	const struct to_json jar = {
-		.value = arr, .count = 2, .vtype = t_to_boolean, .stype = t_to_object, };
+		.value = arr, .count = &cnt, .vtype = t_to_boolean, .stype = t_to_object, };
 
 	const struct to_json tjs[] = {
 		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
@@ -255,12 +258,14 @@ test_object_c_array_array(void)
 	rp = result;
 
 	const char *arr[] = {"1", "2", "3"};
+	const size_t cnt = sizeof(arr) / sizeof(arr[0]);
 	const struct to_json inner_jar_arr = {
-		.value = arr, .count = 3, .vtype = t_to_string, .stype = t_to_object, };
+		.value = arr, .count = &cnt, .vtype = t_to_string, .stype = t_to_object, };
 
 	const struct to_json *inner_jar[] = { &inner_jar_arr, &inner_jar_arr };
+	const size_t icnt = 2;
 	const struct to_json jar = {
-		.value = inner_jar, .count = 2, .vtype = t_to_array, .stype = t_to_object, };
+		.value = inner_jar, .count = &icnt, .vtype = t_to_array, .stype = t_to_object, };
 
 	const struct to_json tjs[] = {
 		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
@@ -280,8 +285,9 @@ test_object_c_array_empty(void)
 	rp = result;
 
 	const char *arr[1];
+	const size_t cnt = 0;
 	const struct to_json jar = {
-		.value = arr, .count = 0, .vtype = t_to_string, .stype = t_to_object, };
+		.value = arr, .count = &cnt, .vtype = t_to_string, .stype = t_to_object, };
 
 	const struct to_json tjs[] = {
 		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
@@ -301,14 +307,16 @@ test_object_c_array_empty_one(void)
 	rp = result;
 
 	const char *arr[] = {"1", "2", "3"};
+	const size_t cnt[] = {0, 3};
 	const struct to_json inner_jar_arr = {
-		.value = arr, .count = 3, .vtype = t_to_string, .stype = t_to_object, };
+		.value = arr, .count = &cnt[1], .vtype = t_to_string, .stype = t_to_object, };
 	const struct to_json inner_jar_empty = {
-		.value = NULL, .count = 0, .vtype = t_to_string, .stype = t_to_object, };
+		.value = NULL, .count = &cnt[0], .vtype = t_to_string, .stype = t_to_object, };
 
 	const struct to_json *inner_jar[] = { &inner_jar_empty, &inner_jar_arr };
+	const size_t icnt = 2;
 	const struct to_json jar = {
-		.value = inner_jar, .count = 2, .vtype = t_to_array, .stype = t_to_object, };
+		.value = inner_jar, .count = &icnt, .vtype = t_to_array, .stype = t_to_object, };
 
 	const struct to_json tjs[] = {
 		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
@@ -351,8 +359,9 @@ test_object_object(void)
 	rp = result;
 
 	const char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
+	const size_t count = sizeof(addresses) / sizeof(addresses[0]);
 	const struct to_json addarr = {
-		.value = addresses, .count = 3, .vtype = t_to_string, .stype = t_to_array, };
+		.value = addresses, .count = &count, .vtype = t_to_string, .stype = t_to_array, };
 
 	const int nid = 1;
 	const int cnt = 3;
@@ -394,16 +403,17 @@ test_object_c_array_object(void)
 	char result[len];
 	rp = result;
 
+	const int cnt[] = { 3, 1 };
+	const size_t c[] = {1, 2, 3};
 	const char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
 	const struct to_json addarr = {
-		.value = addresses, .count = 3, .vtype = t_to_string, .stype = t_to_object, };
+		.value = addresses, .count = &c[2], .vtype = t_to_string, .stype = t_to_object, };
 
 	const char *array2[] = {"DEADFEED"};
 	const struct to_json arr2 = {
-		.value = array2, .count = 1, .vtype = t_to_string, .stype = t_to_object, };
+		.value = array2, .count = &c[0], .vtype = t_to_string, .stype = t_to_object, };
 
 	const int nid[] = { 1, 2 };
-	const int cnt[] = { 3, 1 };
 	const struct to_json names_kv[][4] = {
 		{
 			{ .name = "name_id", .value = &nid[0], .vtype = t_to_integer, .stype = t_to_object, },
@@ -423,7 +433,7 @@ test_object_c_array_object(void)
 	const int non = 2;
 	const struct to_json *names_ptr[] = { names_kv[0], names_kv[1], names_kv[2] };
 	const struct to_json names = {
-		.value = names_ptr, .count = 3, .vtype = t_to_object, .stype = t_to_object, };
+		.value = names_ptr, .count = &c[2], .vtype = t_to_object, .stype = t_to_object, };
 	const struct to_json tjs[] = {
 		{ .name = "names",           .value = &names, .vtype = t_to_array, .stype = t_to_object, },
 		{ .name = "number_of_names", .value = &non,  .vtype = t_to_integer},
@@ -600,9 +610,10 @@ test_object_c_array_uinteger(void)
 	memset(result, '\0', len);
 	rp = result;
 
+	const size_t cnt = 2;
 	const unsigned arr[] = {1, 2};
 	const struct to_json jar = {
-		.value = arr, .count = 2, .vtype = t_to_uinteger, .stype = t_to_object, };
+		.value = arr, .count = &cnt, .vtype = t_to_uinteger, .stype = t_to_object, };
 
 	const struct to_json tjs[] = {
 		{ .name = "array", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
@@ -625,8 +636,9 @@ test_object_c_array_valuetype(void)
 	rp = result;
 
 	const char *arr[] = {"This is not valid {}JSON!", "This not valid {}JSON!, "};
+	const size_t cnt = sizeof(arr) / sizeof(arr[0]);;
 	const struct to_json jar = {
-		.value = arr, .count = 2, .vtype = t_to_value, };
+		.value = arr, .count = &cnt, .vtype = t_to_value, };
 
 	const struct to_json jkv[] = {
 		{ .name = "name", .value = &jar, .vtype = t_to_array, .stype = t_to_object, },
