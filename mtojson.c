@@ -267,14 +267,14 @@ gen_object(char *out, const struct json_kv *kv)
 		if (!out)
 			goto fail;
 
-		if ((kv + 1)->key){
+		kv++;
+		if (kv->key){
 			if (!reduce_rem_len(2))
 				goto fail;
 			*out++ = ',';
 			*out++ = ' ';
 		}
 
-		kv++;
 	}
 
 	*out++ = '}';
