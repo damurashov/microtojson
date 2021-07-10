@@ -590,6 +590,27 @@ test_json_uint_max(void)
 }
 
 static int
+test_json_array_uinteger(void)
+{
+	char *expected = "{\"array\": [1, 2]}";
+	char *test = "test_json_array_uinteger";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
+	rp = result;
+
+	const unsigned arr[] = {1, 2};
+	const struct json_array jar = {
+		.value = arr, .count = 2, .type = t_to_uinteger };
+
+	const struct json_kv jkv[] = {
+		{ .key = "array", .value = &jar, .type = t_to_array, },
+		{ NULL }
+	};
+	return run_test(test, expected, result, jkv, len);
+}
+
+static int
 exec_test(int i)
 {
 	switch (i){
@@ -653,13 +674,16 @@ exec_test(int i)
 	case 20:
 		return test_json_uint_max();
 		break;
+	case 21:
+		return test_json_array_uinteger();
+		break;
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 20
+#define MAXTEST 21
 
 int
 main(int argc, char *argv[])

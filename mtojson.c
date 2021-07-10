@@ -205,6 +205,16 @@ gen_array(char *out, struct json_array *jar)
 		}
 	}
 
+	else if (jar->type == t_to_uinteger){
+		const unsigned *val = jar->value;
+		for (size_t i = 0; i < jar->count; i++){
+			is_last = (i + 1 == jar->count);
+			out = gen_array_type(out, &val[i], is_last, func);
+			if (!out)
+				return NULL;
+		}
+	}
+
 	*out++ = ']';
 	return out;
 }
