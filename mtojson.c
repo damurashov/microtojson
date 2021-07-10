@@ -155,7 +155,8 @@ gen_array(char *out, struct json_array *jar)
 
 	_Bool is_last;
 	char* (*func)() = gen_functions[jar->type];
-	if (jar->type == t_to_array){
+	switch (jar->type) {
+	case t_to_array: {
 		struct json_array * const *val = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
@@ -163,9 +164,10 @@ gen_array(char *out, struct json_array *jar)
 			if (!out)
 				return NULL;
 		}
+		break;
 	}
 
-	else if (jar->type == t_to_boolean){
+	case t_to_boolean: {
 		const _Bool *val = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
@@ -173,9 +175,10 @@ gen_array(char *out, struct json_array *jar)
 			if (!out)
 				return NULL;
 		}
+		break;
 	}
 
-	else if (jar->type == t_to_integer){
+	case t_to_integer: {
 		const int *val = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
@@ -183,9 +186,10 @@ gen_array(char *out, struct json_array *jar)
 			if (!out)
 				return NULL;
 		}
+		break;
 	}
 
-	else if (jar->type == t_to_object){
+	case t_to_object: {
 		struct json_kv * const *val = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
@@ -193,9 +197,10 @@ gen_array(char *out, struct json_array *jar)
 			if (!out)
 				return NULL;
 		}
+		break;
 	}
 
-	else if (jar->type == t_to_string){
+	case t_to_string: {
 		char * const *val = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
@@ -203,9 +208,10 @@ gen_array(char *out, struct json_array *jar)
 			if (!out)
 				return NULL;
 		}
+		break;
 	}
 
-	else if (jar->type == t_to_uinteger){
+	case t_to_uinteger: {
 		const unsigned *val = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
@@ -213,9 +219,10 @@ gen_array(char *out, struct json_array *jar)
 			if (!out)
 				return NULL;
 		}
+		break;
 	}
 
-	else if (jar->type == t_to_value){
+	case t_to_value: {
 		const char * const *val = jar->value;
 		for (size_t i = 0; i < jar->count; i++){
 			is_last = (i + 1 == jar->count);
@@ -223,6 +230,7 @@ gen_array(char *out, struct json_array *jar)
 			if (!out)
 				return NULL;
 		}
+	}
 	}
 
 	*out++ = ']';
