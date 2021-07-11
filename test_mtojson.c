@@ -40,26 +40,14 @@ const char *rp;
 
 static void tell_single_test();
 
-static void
-run_test(char *test, char *result, const struct json_kv *jkv, size_t len)
+static int
+run_test(char *test, char *expected, char *result, const struct json_kv *jkv, size_t len)
 {
+	int err = 0;
+
 	tell_single_test(test);
 
-	int err = 0;
-	if (len >= 10 && generate_json(result, jkv, len - 10))
-		err++;
-	if (generate_json(result, jkv, len / 2))
-		err++;
-	if (generate_json(result, jkv, 1))
-		err++;
-	if (generate_json(result, jkv, len - 1))
-		err++;
-	if (err) {
-		if (verbose)
-			printf("%s, %d\n", "UNDETECTED buffer overflow", err);
-		exit(125);
-	}
-
+	memset(result, '\0', len);
 	size_t l = generate_json(result, jkv, len);
 	if (!l) {
 		if (verbose)
@@ -72,18 +60,31 @@ run_test(char *test, char *result, const struct json_kv *jkv, size_t len)
 			printf("%s\n", "String length mismatch");
 		exit(123);
 	}
-}
 
-static int
-check_result(char *test, char *expected, char *result)
-{
-	int r = strcmp(result, expected);
-	if (r != 0){
+	err = (strcmp(result, expected) != 0);
+	if (err){
 		fprintf(stderr, "\nFAILED: %s\n", test);
 		fprintf(stderr, "Expected : %s\n", expected);
 		fprintf(stderr, "Generated: %s\n", result);
+		return err;
 	}
-	return r != 0;
+
+	memset(result, '\0', len);
+	if (len >= 10 && generate_json(result, jkv, len - 10))
+		err += 2;
+	memset(result, '\0', len);
+	if (generate_json(result, jkv, len / 2))
+		err += 4;
+	memset(result, '\0', len);
+	if (generate_json(result, jkv, len - 1))
+		err += 8;
+	if (err > 1) {
+		if (verbose)
+			printf("%s, %d\n", "UNDETECTED buffer overflow", err);
+		exit(125);
+	}
+
+	return err;
 }
 
 static void
@@ -103,15 +104,13 @@ test_json_string(void)
 	char *test = "test_json_string";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const struct json_kv jkv[] = {
 		{ .key = "key", .value = "value", .type = t_to_string, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -121,7 +120,6 @@ test_json_boolean(void)
 	char *test = "test_json_boolean";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const _Bool value = true;
@@ -129,8 +127,7 @@ test_json_boolean(void)
 		{ .key = "key", .value = &value, .type = t_to_boolean, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -140,7 +137,6 @@ test_json_integer(void)
 	char *test = "test_json_integer";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const int n = 1;
@@ -148,8 +144,7 @@ test_json_integer(void)
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -159,7 +154,6 @@ test_json_integer_two(void)
 	char *test = "test_json_integer_two";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const int ns[] = {-32767, 32767};
@@ -169,8 +163,7 @@ test_json_integer_two(void)
 		{ .type = t_to_integer, .key = "key", .value = &ns[1], },
 		{ NULL }
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -180,7 +173,6 @@ test_json_uinteger(void)
 	char *test = "test_json_uinteger";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const int n = 65535;
@@ -188,8 +180,7 @@ test_json_uinteger(void)
 		{ .key = "key", .value = &n, .type = t_to_uinteger, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 
@@ -200,7 +191,6 @@ test_json_array_integer(void)
 	char *test = "test_json_array_integer";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const int arr[] = {1, 2};
@@ -211,8 +201,7 @@ test_json_array_integer(void)
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -222,7 +211,6 @@ test_json_array_string(void)
 	char *test = "test_json_array_string";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const char *arr[8] = {"1", "23"};
@@ -233,8 +221,7 @@ test_json_array_string(void)
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -244,7 +231,6 @@ test_json_array_boolean(void)
 	char *test = "test_json_array_boolean";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const _Bool arr [] = {true, false};
@@ -255,8 +241,7 @@ test_json_array_boolean(void)
 		{ .key = "array", .value = &jar, .type = t_to_array, },
 		{ NULL }
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -266,7 +251,6 @@ test_json_array_array(void)
 	char *test = "test_json_array_array";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const char *arr[] = {"1", "2", "3"};
@@ -282,8 +266,7 @@ test_json_array_array(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -293,7 +276,6 @@ test_json_array_empty(void)
 	char *test = "test_json_array_empty";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const char *arr[1];
@@ -305,8 +287,7 @@ test_json_array_empty(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -316,7 +297,6 @@ test_json_array_empty_one(void)
 	char *test = "test_json_array_one_empty";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const char *arr[] = {"1", "2", "3"};
@@ -334,8 +314,7 @@ test_json_array_empty_one(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -345,14 +324,12 @@ test_json_object_empty(void)
 	char *test = "test_json_object_empty";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	struct json_kv jkv[] = {
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -370,7 +347,6 @@ test_json_object(void)
 	char *test = "test_json_object";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
@@ -393,8 +369,7 @@ test_json_object(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -416,7 +391,6 @@ test_json_array_object(void)
 	char *test = "test_json_array_object";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
@@ -455,8 +429,7 @@ test_json_array_object(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -473,7 +446,6 @@ test_json_object_object(void)
 	char *test = "test_json_object_object";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const _Bool value = true;
@@ -493,8 +465,7 @@ test_json_object_object(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -511,7 +482,6 @@ test_json_object_nested_empty(void)
 	char *test = "test_json_object_nested_empty";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const struct json_kv value[] = {
@@ -533,8 +503,7 @@ test_json_object_nested_empty(void)
 		{ NULL }
 	};
 
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -544,15 +513,13 @@ test_json_valuetype(void)
 	char *test = "test_json_valuetype";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const struct json_kv jkv[] = {
 		{ .key = "key", .value = "This is not valid {}JSON!", .type = t_to_value, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -567,7 +534,6 @@ test_json_int_max(void)
 	char *test = "test_json_int_max";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const int n = INT_MAX;
@@ -575,8 +541,7 @@ test_json_int_max(void)
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 
 }
 
@@ -592,7 +557,6 @@ test_json_int_min(void)
 	char *test = "test_json_int_min";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	int n = INT_MIN;
@@ -600,8 +564,7 @@ test_json_int_min(void)
 		{ .key = "key", .value = &n, .type = t_to_integer, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
@@ -616,7 +579,6 @@ test_json_uint_max(void)
 	char *test = "test_json_uint_max";
 	size_t len = strlen(expected) + 1;
 	char result[len];
-	memset(result, '\0', len);
 	rp = result;
 
 	const unsigned n = UINT_MAX;
@@ -624,8 +586,7 @@ test_json_uint_max(void)
 		{ .key = "key", .value = &n, .type = t_to_uinteger, },
 		{ NULL },
 	};
-	run_test(test, result, jkv, len);
-	return check_result(test, expected, result);
+	return run_test(test, expected, result, jkv, len);
 }
 
 static int
