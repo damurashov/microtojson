@@ -611,6 +611,30 @@ test_json_array_uinteger(void)
 }
 
 static int
+test_json_array_valuetype(void)
+{
+	char *expected = "{\"key\": ["
+	                            "This is not valid {}JSON!, "
+	                            "This not valid {}JSON!, "
+	                            "]}";
+	char *test = "test_json_array_valuetype";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	memset(result, '\0', len);
+	rp = result;
+
+	const char *arr[] = {"This is not valid {}JSON!", "This not valid {}JSON!, "};
+	const struct json_array jar = {
+		.value = arr, .count = 2, .type = t_to_value, };
+
+	const struct json_kv jkv[] = {
+		{ .key = "key", .value = &jar, .type = t_to_array, },
+		{ NULL },
+	};
+	return run_test(test, expected, result, jkv, len);
+}
+
+static int
 exec_test(int i)
 {
 	switch (i){
@@ -677,13 +701,16 @@ exec_test(int i)
 	case 21:
 		return test_json_array_uinteger();
 		break;
+	case 22:
+		return test_json_array_valuetype();
+		break;
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 21
+#define MAXTEST 22
 
 int
 main(int argc, char *argv[])
