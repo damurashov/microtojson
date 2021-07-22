@@ -696,6 +696,21 @@ test_c_array_integer(void)
 }
 
 static int
+test_primitive_string_escape_chars(void)
+{
+	char *expected = "\"1\\\"2\\\\3\\\\4\\\"\"";
+	char *test = "test_primitive_string_escape_chars";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	rp = result;
+
+	const struct to_json tjs = {
+		.vtype = t_to_string, .value = "1\"2\\3\\4\"",
+	};
+	return run_test(test, expected, result, &tjs, len);
+}
+
+static int
 exec_test(int i)
 {
 	switch (i){
@@ -780,13 +795,16 @@ exec_test(int i)
 	case 27:
 		return test_c_array_integer();
 		break;
+	case 28:
+		return test_primitive_string_escape_chars();
+		break;
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 27
+#define MAXTEST 28
 
 int
 main(int argc, char *argv[])

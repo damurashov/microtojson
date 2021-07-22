@@ -70,12 +70,43 @@ gen_boolean(char *out, const void *val)
 static char*
 gen_string(char *out, const void *val)
 {
-	const char *v = (const char*)val;
 	if (!reduce_rem_len(2)) // 2 -> ""
 		return NULL;
+
+	char chars_to_escape[] = "\"\\";
+	const char *begin = (const char*)val;
+	const char *end = begin + strlen(begin);
+
 	*out++ = '"';
-	if (!(out = strcpy_val(out, v, strlen(v))))
-		return NULL;
+	char *esc;
+	do {
+		esc = NULL;
+		for (int i = 0; i < 2; i++) {
+			char *tmp;
+			if ((tmp = strchr(begin, chars_to_escape[i]))) {
+				if (!esc)
+					esc = tmp;
+				else
+					esc = esc < tmp ? esc : tmp;
+			}
+		}
+
+		size_t len = esc ? (size_t)(esc - begin) : (size_t)(end - begin);
+
+		if (!(out = strcpy_val(out, begin, len)))
+			return NULL;
+
+		if (esc) {
+			char s[2];
+			s[0] = '\\';
+			s[1] = *esc;
+			if (!(out = strcpy_val(out, s, 2)))
+				return NULL;
+			begin = esc + 1;
+		}
+
+	} while (esc && *begin);
+
 	*out++ = '"';
 	return out;
 }

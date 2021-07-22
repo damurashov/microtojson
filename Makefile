@@ -10,7 +10,7 @@ ASAN = -fsanitize=address,undefined -fno-omit-frame-pointer
 CFLAGS += $(ASAN)
 
 ifndef ASAN
-WSTACK = -Wstack-usage=64 -fstack-usage
+WSTACK = -Wstack-usage=80 -fstack-usage
 endif
 
 .PHONY: all
