@@ -1,6 +1,6 @@
 /*
    SPDX-License-Identifier: BSD-2-Clause
-   This file is Copyright (c) 2020 by Rene Kita
+   This file is Copyright (c) 2020, 2021 by Rene Kita
 */
 
 #include "mtojson.h"

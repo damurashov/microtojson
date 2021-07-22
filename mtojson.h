@@ -1,3 +1,8 @@
+/*
+   SPDX-License-Identifier: BSD-2-Clause
+   This file is Copyright (c) 2020, 2021 by Rene Kita
+*/
+
 #ifndef RKTA_MTOJSON_H
 #define RKTA_MTOJSON_H
 
