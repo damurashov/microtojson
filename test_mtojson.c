@@ -711,6 +711,142 @@ test_primitive_string_escape_chars(void)
 }
 
 static int
+test_object_from_rfc8259(void)
+{
+	char *expected = "{"
+	                    "\"Image\": {"
+	                        "\"Width\": 800, "
+	                        "\"Height\": 600, "
+	                        "\"Title\": \"View from 15th Floor\", "
+	                        "\"Thumbnail\": {"
+	                            "\"Url\": \"http://www.example.com/image/481989943\", "
+	                            "\"Height\": 125, "
+	                            "\"Width\": 100"
+	                        "}, "
+	                        "\"Animated\": false, "
+	                        "\"IDs\": [116, 943, 234, 38793]"
+	                      "}"
+	                 "}";
+	char *test = "test_object_from_rfc8259";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	rp = result;
+
+	_Bool animated = 0;
+	unsigned ids[] = { 116, 943, 234, 38793 };
+	size_t num_ids = sizeof(ids)/sizeof(ids[0]);
+
+	char thumbnail_url[] = "http://www.example.com/image/481989943";
+	unsigned thumbnail_height = 125;
+	unsigned thumbnail_width = 100;
+
+	unsigned image_width = 800;
+	unsigned image_height = 600;
+	char image_title[] = "View from 15th Floor";
+
+	struct to_json thumbnail_tjs[] = {
+		{. name = "Url", .value = &thumbnail_url, .vtype = t_to_string, .stype = t_to_object, },
+		{ .name = "Height", .value = &thumbnail_height, .vtype = t_to_uinteger, },
+		{ .name = "Width", .value = &thumbnail_width, .vtype = t_to_uinteger, },
+		{ NULL }
+	};
+
+	struct to_json image_tjs[] = {
+		{ .name = "Width", .value = &image_width, .vtype = t_to_uinteger, .stype = t_to_object, },
+		{ .name = "Height", .value = &image_height, .vtype = t_to_uinteger, },
+		{ .name = "Title", .value = image_title, .vtype = t_to_string, },
+		{ .name = "Thumbnail", .value = thumbnail_tjs, .vtype = t_to_object, },
+		{ .name = "Animated", .value = &animated, .vtype = t_to_boolean, },
+		{ .name = "IDs", .value = &ids, .vtype = t_to_uinteger, .count = &num_ids, },
+		{ NULL }
+	};
+
+	struct to_json tjs[] = {
+		{ .name = "Image", .value = image_tjs, .vtype = t_to_object, .stype = t_to_object, },
+		{ NULL }
+	};
+
+	return run_test(test, expected, result, tjs, len);
+}
+
+static int
+test_array_from_rfc8259(void)
+{
+	char *expected = "["
+	                   "{"
+	                      "\"precision\": \"zip\", "
+	                      "\"Latitude\": 37.7668, "
+	                      "\"Longitude\": -122.3959, "
+	                      "\"Address\": \"\", "
+	                      "\"City\": \"SAN FRANCISCO\", "
+	                      "\"State\": \"CA\", "
+	                      "\"Zip\": \"94107\", "
+	                      "\"Country\": \"US\""
+	                   "}, "
+	                   "{"
+	                      "\"precision\": \"zip\", "
+	                      "\"Latitude\": 37.371991, "
+	                      "\"Longitude\": -122.026020, "
+	                      "\"Address\": \"\", "
+	                      "\"City\": \"SUNNYVALE\", "
+	                      "\"State\": \"CA\", "
+	                      "\"Zip\": \"94085\", "
+	                      "\"Country\": \"US\""
+	                   "}"
+	                 "]";
+	char *test = "test_array_from_rfc8259";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	rp = result;
+
+	/*
+	 * Since we do not have support for floating point values yet, we help
+	 * ourselfs here by using t_to_value.
+	 */
+	char *precision[] = { "zip", "zip" };
+	char *latitude[] = { "37.7668", "37.371991" };
+	char *longitude[] = { "-122.3959", "-122.026020" };
+	char *address[] = { "", "" };
+	char *city[] = { "SAN FRANCISCO", "SUNNYVALE" };
+	char *state[] = { "CA", "CA" };
+	char *zip[] = { "94107", "94085" };
+	char *country[] = { "US", "US" };
+
+	struct to_json data_tjs[2][9] = {
+		{
+			{ .name = "precision", .value = precision[0], .vtype = t_to_string, .stype = t_to_array, },
+			{ .name = "Latitude", .value = latitude[0], .vtype = t_to_value, },
+			{ .name = "Longitude", .value = longitude[0], .vtype = t_to_value, },
+			{ .name = "Address", .value = address[0], .vtype = t_to_string, },
+			{ .name = "City", .value = city[0], .vtype = t_to_string, },
+			{ .name = "State", .value = state[0], .vtype = t_to_string, },
+			{ .name = "Zip", .value = zip[0], .vtype = t_to_string, },
+			{ .name = "Country", .value = country[0], .vtype = t_to_string, },
+			{ NULL }
+		}, {
+			{ .name = "precision", .value = precision[1], .vtype = t_to_string, .stype = t_to_array, },
+			{ .name = "Latitude", .value = latitude[1], .vtype = t_to_value, },
+			{ .name = "Longitude", .value = longitude[1], .vtype = t_to_value, },
+			{ .name = "Address", .value = address[1], .vtype = t_to_string, },
+			{ .name = "City", .value = city[1], .vtype = t_to_string, },
+			{ .name = "State", .value = state[1], .vtype = t_to_string, },
+			{ .name = "Zip", .value = zip[1], .vtype = t_to_string, },
+			{ .name = "Country", .value = country[1], .vtype = t_to_string, },
+			{ NULL }
+		}
+	};
+
+	struct to_json tjs[] = {
+		{ .value = data_tjs[0], .vtype = t_to_object, .stype = t_to_array, },
+		{ .value = data_tjs[1], .vtype = t_to_object, },
+		{ NULL }
+	};
+
+	return run_test(test, expected, result, tjs, len);
+}
+
+
+static int
 exec_test(int i)
 {
 	switch (i){
@@ -798,13 +934,19 @@ exec_test(int i)
 	case 28:
 		return test_primitive_string_escape_chars();
 		break;
+	case 29:
+		return test_object_from_rfc8259();
+		break;
+	case 30:
+		return test_array_from_rfc8259();
+		break;
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 28
+#define MAXTEST 30
 
 int
 main(int argc, char *argv[])
