@@ -187,15 +187,15 @@ test_json_uinteger(void)
 static int
 test_json_array_integer(void)
 {
-	char *expected = "{\"array\": [1, 2]}";
+	char *expected = "{\"array\": [9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100]}";
 	char *test = "test_json_array_integer";
 	size_t len = strlen(expected) + 1;
 	char result[len];
 	rp = result;
 
-	const int arr[] = {1, 2};
+	const int arr[] = {9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100};
 	const struct json_array jar = {
-		.value = arr, .count = 2, .type = t_to_integer };
+		.value = arr, .count = sizeof(arr)/sizeof(arr[0]), .type = t_to_integer };
 
 	const struct json_kv jkv[] = {
 		{ .key = "array", .value = &jar, .type = t_to_array, },

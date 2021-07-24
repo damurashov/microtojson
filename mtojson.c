@@ -34,7 +34,7 @@ utoa(char *dst, unsigned n)
 {
 	char *s = dst;
 
-	for (unsigned m = n; m > 10U;  m /= 10U)
+	for (unsigned m = n; m >= 10U;  m /= 10U)
 		s++;
 	s[1] = '\0';
 
