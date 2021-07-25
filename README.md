@@ -50,13 +50,14 @@ main()
 }
 ```
 
+See `example.c` and `test_mtojson.c` for more usage examples.
+Use `make example` to build all four variations of `example.c`.
+
 `json_generate()` returns the length of the generated JSON text or 0 in case of an error.
 
 To create an arbitrary value use `t_to_value` and pass the correctly formatted value as char array.
 
 Make sure struct arrays are NULL terminated!
-
-See `test_mtojson.c` for more usage examples.
 
 ---
 
