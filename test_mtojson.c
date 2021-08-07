@@ -66,7 +66,6 @@ run_test(char *test, char *expected, char *result, const struct to_json *tjs, si
 		fprintf(stderr, "\nFAILED: %s\n", test);
 		fprintf(stderr, "Expected : %s\n", expected);
 		fprintf(stderr, "Generated: %s\n", result);
-		return err;
 	}
 
 	memset(result, '\0', len);
@@ -722,8 +721,9 @@ test_primitive_string_escape_chars(void)
 	rp = result;
 
 	const struct to_json tjs = {
-		.vtype = t_to_string, .value = "1\"2\\3\\4\"",
+		.vtype = t_to_string, .value = "1\"2\\3\\4\""
 	};
+
 	return run_test(test, expected, result, &tjs, len);
 }
 
