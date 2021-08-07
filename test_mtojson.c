@@ -66,6 +66,7 @@ run_test(char *test, char *expected, char *result, const struct to_json *tjs, si
 		fprintf(stderr, "\nFAILED: %s\n", test);
 		fprintf(stderr, "Expected : %s\n", expected);
 		fprintf(stderr, "Generated: %s\n", result);
+		return err;
 	}
 
 	memset(result, '\0', len);
