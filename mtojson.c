@@ -10,6 +10,7 @@
 static char* gen_array(char *, const void *);
 static char* gen_boolean(char *, const void *);
 static char* gen_c_array(char *, const void *);
+static char* gen_hex(char *, const void *);
 static char* gen_integer(char *, const void *);
 static char* gen_json(char *, const void *);
 static char* gen_null(char *, const void *);
@@ -23,6 +24,7 @@ static char* (* const gen_functions[])(char *, const void *) = {
 	gen_primitive,
 	gen_array,
 	gen_boolean,
+	gen_hex,
 	gen_integer,
 	gen_null,
 	gen_object,
@@ -118,6 +120,43 @@ gen_string(char *out, const void *val)
 }
 
 static char*
+utoa(char *dst, unsigned n, unsigned base)
+{
+	char *s = dst;
+	char *e;
+
+	for (unsigned m = n; m >= base;  m /= base)
+		s++;
+	e = s + 1;
+
+	size_t len = (size_t)(e - dst);
+	if (!reduce_rem_len(len))
+		return NULL;
+
+	for ( ; s >= dst; s--, n /= base)
+		*s = "0123456789ABCDEF"[n % base];
+	return e;
+
+}
+
+static char*
+gen_hex(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	if (!reduce_rem_len(2)) // 2 -> ""
+		return NULL;
+
+	*out++ = '"';
+	if (!(out =  utoa(out, *(unsigned*)val, 16)))
+		return NULL;
+	*out++ = '"';
+
+	return out;
+}
+
+static char*
 gen_integer(char *out, const void *val)
 {
 	if (!val)
@@ -132,7 +171,7 @@ gen_integer(char *out, const void *val)
 		u = -(unsigned)n;
 	}
 
-	if (!(out = gen_uinteger(out, &u)))
+	if (!(out = utoa(out, u, 10)))
 		return NULL;
 	return out;
 }
@@ -143,22 +182,7 @@ gen_uinteger(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	char *s = out;
-	char *r;
-	unsigned n = *(unsigned*)val;
-
-	for (unsigned m = n; m >= 10U;  m /= 10U)
-		s++;
-	r = s + 1;
-
-	size_t len = (size_t)(r - out);
-	if (!reduce_rem_len(len))
-		return NULL;
-
-	for ( ; s >= out; s--, n /= 10)
-		*s = '0' + (char)(n % 10);
-
-	return r;
+	return utoa(out, *(unsigned*)val, 10);
 }
 
 static char*
@@ -211,6 +235,17 @@ gen_c_array(char *out, const void *val)
 
 	case t_to_boolean: {
 		const _Bool *v = tjs->value;
+		for (size_t i = 0; i < *tjs->count; i++){
+			is_last = (i + 1 == *tjs->count);
+			out = gen_array_type(out, &v[i], is_last, func);
+			if (!out)
+				return NULL;
+		}
+		break;
+	}
+
+	case t_to_hex: {
+		const unsigned *v = tjs->value;
 		for (size_t i = 0; i < *tjs->count; i++){
 			is_last = (i + 1 == *tjs->count);
 			out = gen_array_type(out, &v[i], is_last, func);

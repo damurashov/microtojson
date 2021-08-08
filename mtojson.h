@@ -13,6 +13,7 @@ enum json_to_type {
 	t_to_primitive,
 	t_to_array,
 	t_to_boolean,
+	t_to_hex,
 	t_to_integer,
 	t_to_null,
 	t_to_object,

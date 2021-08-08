@@ -893,6 +893,38 @@ test_object_null_value(void)
 }
 
 static int
+test_primitive_hex(void)
+{
+	char *expected = "\"F\"";
+	char *test = "test_primitive_hex";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	rp = result;
+
+	unsigned n = 15;
+	const struct to_json tjs = { .value = &n, .vtype = t_to_hex, };
+	return run_test(test, expected, result, &tjs, len);
+}
+
+static int
+test_c_array_hex(void)
+{
+	char *expected = "[\"9\", \"A\", \"B\", \"F\", \"10\", \"11\", \"FE\", \"FF\", \"100\", \"FFF\", \"1000\", \"1001\", \"1010\", \"FFFE\", \"FFFF\"]";
+	char *test = "test_c_array_hex";
+	size_t len = strlen(expected) + 1;
+	char result[len];
+	rp = result;
+
+	unsigned arr[] = { 9, 10, 11, 15, 16, 17, 254, 255, 256, 4095, 4096, 4097, 4112, 65534, 65535 };
+	const size_t cnt = sizeof(arr) / sizeof(arr[0]);
+	const struct to_json tjs = {
+		.value = arr, .vtype = t_to_hex, .count = &cnt,
+	};
+
+	return run_test(test, expected, result, &tjs, len);
+}
+
+static int
 exec_test(int i)
 {
 	switch (i){
@@ -992,7 +1024,13 @@ exec_test(int i)
 	case 32:
 		return test_object_null_value();
 		break;
-#define MAXTEST 33
+	case 33:
+		return test_primitive_hex();
+		break;
+	case 34:
+		return test_c_array_hex();
+		break;
+#define MAXTEST 35
 	case MAXTEST:
 		return 0;
 	default:

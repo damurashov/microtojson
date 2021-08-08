@@ -91,6 +91,9 @@ There is a shortcut to make this more convenient.
 Instead of creating an explicit array type, use a primitive and provide a count:
 ` const struct to_json tjs = { .value = int_arr, .count = 2, .vtype = t_to_integer };`
 
+### Integer to hexadecimal notation
+Use `.vtype = t_to_hex` to convert unsigned integers to strings with hexadecimal notation.
+
 ---
 
 ## Deviations from RFC8259 / TODOs:
