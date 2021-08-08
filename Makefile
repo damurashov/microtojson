@@ -13,8 +13,7 @@ ifndef ASAN
 WSTACK = -Wstack-usage=64 -fstack-usage
 endif
 
-.PHONY: all clean
-
+.PHONY: all
 all: mtojson.o test_mtojson
 	@./test_mtojson
 
@@ -24,8 +23,10 @@ mtojson.o: mtojson.c mtojson.h
 test_mtojson: test_mtojson.o mtojson.o
 	$(CC) $(CFLAGS) -o test_mtojson test_mtojson.o mtojson.o
 
+.PHONY: clean
 clean:
 	rm -f mtojson.o test_mtojson.o test_mtojson mtojson.su
 
+.PHONY: cppcheck
 cppcheck:
 	cppcheck --suppress=missingIncludeSystem -I. --template gcc --enable=all --check-config *.[ch]
