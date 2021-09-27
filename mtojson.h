@@ -4,27 +4,26 @@
 #include <stdint.h>
 #include <stddef.h>
 
-enum json_value_type {
+enum json_to_type {
+	t_to_primitive,
 	t_to_array,
 	t_to_boolean,
 	t_to_integer,
+	t_to_null,
 	t_to_object,
 	t_to_string,
 	t_to_uinteger,
 	t_to_value,
 };
 
-struct json_kv {
-	char *key;
+struct to_json {
+	const char *name;
 	const void *value;
-	enum json_value_type type;
+	const size_t *count;     // Number of elements in a C array
+	enum json_to_type stype; // Type of the struct
+	enum json_to_type vtype; // Type of '.value'
 };
 
-struct json_array {
-	const void *value;
-	size_t count;
-	enum json_value_type type;
-};
-
-size_t generate_json(char *out, const struct json_kv *kv, size_t len);
+/* Returns the length of the generated JSON text or 0 in case of an error. */
+size_t json_generate(char *out, const struct to_json *tjs, size_t len);
 #endif

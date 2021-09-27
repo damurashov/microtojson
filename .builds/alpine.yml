@@ -2,9 +2,9 @@ image: alpine/edge
 sources:
 - https://git.sr.ht/~rkta/microtojson
 tasks:
-- check: |
+- tests: |
     cd microtojson
     CFLAGS=-Werror make ASAN= -s
-- recursion: |
+- example: |
     cd microtojson
-    CFLAGS=-Werror,-DMAX_RECURSION_LEVEL=1 make ASAN= -s
+    make ASAN= -s example
