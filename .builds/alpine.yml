@@ -1,6 +1,10 @@
 image: alpine/edge
 sources:
 - https://git.sr.ht/~rkta/microtojson
+triggers:
+  - action: email
+    condition: failure
+    to: mail@rkta.de
 tasks:
 - tests: |
     cd microtojson
