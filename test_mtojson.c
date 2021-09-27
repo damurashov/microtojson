@@ -992,13 +992,15 @@ exec_test(int i)
 	case 32:
 		return test_object_null_value();
 		break;
+#define MAXTEST 33
+	case MAXTEST:
+		return 0;
 	default:
 		fputs("No such test!\n", stderr);
 		return 1;
 	}
 	return 1;
 }
-#define MAXTEST 32
 
 int
 main(int argc, char *argv[])
