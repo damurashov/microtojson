@@ -1,45 +1,47 @@
 CC=gcc
 
-CFLAGS += -std=c99
-CFLAGS += -g
-CFLAGS += -O2
-CFLAGS += -Wall
-CFLAGS += -Wextra
-CFLAGS += -Wpedantic
+DEFAULTS = -std=c99
+DEFAULTS += -g
+DEFAULTS += -O2
+DEFAULTS += -Wall
+DEFAULTS += -Wextra
+DEFAULTS += -Wpedantic
 
-CFLAGS += -Wconversion
-CFLAGS += -Wduplicated-cond
-CFLAGS += -Wformat=2
-CFLAGS += -Wjump-misses-init
-CFLAGS += -Wmissing-declarations
-CFLAGS += -Wnull-dereference
-CFLAGS += -Wshadow
+DEFAULTS += -Wconversion
+DEFAULTS += -Wduplicated-cond
+DEFAULTS += -Wformat=2
+DEFAULTS += -Wjump-misses-init
+DEFAULTS += -Wmissing-declarations
+DEFAULTS += -Wnull-dereference
+DEFAULTS += -Wshadow
 
-CFLAGS += -fno-common
+DEFAULTS += -fno-common
 
 ASAN = -fsanitize=address,undefined -fno-omit-frame-pointer
-CFLAGS += $(ASAN)
-
 ifndef ASAN
 WSTACK = -Wstack-usage=80 -fstack-usage
 endif
+
+BUILD_FLAGS += $(ASAN)
+BUILD_FLAGS = $(DEFAULTS)
+BUILD_FLAGS += $(CFLAGS)
 
 .PHONY: all
 all: mtojson.o test_mtojson
 	@./test_mtojson
 
 mtojson.o: mtojson.c mtojson.h
-	$(CC) $(CFLAGS) $(WSTACK) -c -o mtojson.o mtojson.c
+	$(CC) $(WSTACK) $(BUILD_FLAGS) -c -o mtojson.o mtojson.c
 
 test_mtojson: test_mtojson.o mtojson.o
-	$(CC) $(CFLAGS) -o test_mtojson test_mtojson.o mtojson.o
+	$(CC) $(BUILD_FLAGS) -o test_mtojson test_mtojson.o mtojson.o
 
 .PHONY: example
 example: mtojson.o example.c
-	$(CC) -Werror $(CFLAGS) -DOBJECT -o $@_OBJECT $^
-	$(CC) -Werror $(CFLAGS) -DARRAY -o $@_ARRAY $^
-	$(CC) -Werror $(CFLAGS) -DC_ARRAY -o $@_C_ARRAY $^
-	$(CC) -Werror $(CFLAGS) -DPRIMITIVE -o $@_PRIMITIVE $^
+	$(CC) -Werror $(BUILD_FLAGS) -DOBJECT -o $@_OBJECT $^
+	$(CC) -Werror $(BUILD_FLAGS) -DARRAY -o $@_ARRAY $^
+	$(CC) -Werror $(BUILD_FLAGS) -DC_ARRAY -o $@_C_ARRAY $^
+	$(CC) -Werror $(BUILD_FLAGS) -DPRIMITIVE -o $@_PRIMITIVE $^
 
 .PHONY: clean
 clean:
