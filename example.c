@@ -5,7 +5,7 @@
 volatile char *rp;
 
 int
-main()
+main(void)
 {
 	int data[] = { 0, 1, 2, 3 };
 
