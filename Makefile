@@ -14,6 +14,8 @@ DEFAULTS += -Wjump-misses-init
 DEFAULTS += -Wmissing-declarations
 DEFAULTS += -Wnull-dereference
 DEFAULTS += -Wshadow
+DEFAULTS += -Wstrict-prototypes
+DEFAULTS += -Wvla
 
 DEFAULTS += -fno-common
 
