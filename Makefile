@@ -1,10 +1,21 @@
 CC=gcc
 
 CFLAGS += -std=c99
-CFLAGS += -Wall -Wextra -Wpedantic
-CFLAGS += -Wformat=2 -Wduplicated-cond -Wjump-misses-init -Wnull-dereference
-CFLAGS += -fno-common -Wshadow -Wconversion -Wmissing-declarations
-CFLAGS += -g -O2
+CFLAGS += -g
+CFLAGS += -O2
+CFLAGS += -Wall
+CFLAGS += -Wextra
+CFLAGS += -Wpedantic
+
+CFLAGS += -Wconversion
+CFLAGS += -Wduplicated-cond
+CFLAGS += -Wformat=2
+CFLAGS += -Wjump-misses-init
+CFLAGS += -Wmissing-declarations
+CFLAGS += -Wnull-dereference
+CFLAGS += -Wshadow
+
+CFLAGS += -fno-common
 
 ASAN = -fsanitize=address,undefined -fno-omit-frame-pointer
 CFLAGS += $(ASAN)
