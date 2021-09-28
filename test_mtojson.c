@@ -38,7 +38,7 @@ int verbose = 0;
 // Helper pointer, use 'display rp' inside gdb to see the string grow
 const char *rp;
 
-static void tell_single_test();
+static void tell_single_test(char *);
 
 static int
 run_test(char *test, char *expected, char *result, const struct to_json *tjs, size_t len)

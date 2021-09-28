@@ -192,7 +192,7 @@ gen_value(char *out, const void *val)
 }
 
 static char*
-gen_array_type(char *out, const void *val, _Bool is_last, char* (*func)())
+gen_array_type(char *out, const void *val, _Bool is_last, char* (*func)(char *, const void *))
 {
 	out = (*func)(out, val);
 	if (!out)
@@ -220,7 +220,7 @@ gen_c_array(char *out, const void *val)
 	}
 
 	_Bool is_last;
-	char* (*func)() = gen_functions[tjs->vtype];
+	char* (*func)(char *, const void *) = gen_functions[tjs->vtype];
 	switch (tjs->vtype) {
 	case t_to_array: {
 		struct json_array * const *v = tjs->value;
