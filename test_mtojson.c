@@ -24,6 +24,7 @@
 
 #include "mtojson.h"
 
+#include <assert.h>
 #include <getopt.h>
 #include <limits.h>
 #include <stdbool.h>
@@ -31,6 +32,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+enum { MAXLEN = 512 };
 
 _Bool single_test = 0;
 int verbose = 0;
@@ -103,7 +106,8 @@ test_object_string(void)
 	char *expected = "{\"name\": \"value\"}";
 	char *test = "test_object_string";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const struct to_json tjs[] = {
@@ -119,7 +123,8 @@ test_object_boolean(void)
 	char *expected = "{\"name\": true}";
 	char *test = "test_object_boolean";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const _Bool value = true;
@@ -136,7 +141,8 @@ test_object_integer(void)
 	char *expected = "{\"name\": 1}";
 	char *test = "test_object_integer";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const int n = 1;
@@ -153,7 +159,8 @@ test_object_integer_two(void)
 	char *expected = "{\"name\": -32767, \"name\": 32767}";
 	char *test = "test_object_integer_two";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const int ns[] = {-32767, 32767};
@@ -172,7 +179,8 @@ test_object_uinteger(void)
 	char *expected = "{\"name\": 65535}";
 	char *test = "test_object_uinteger";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const int n = 65535;
@@ -190,7 +198,8 @@ test_object_c_array_integer(void)
 	char *expected = "{\"array\": [9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100]}";
 	char *test = "test_object_c_array_integer";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const int arr[] = {9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100};
@@ -208,7 +217,8 @@ test_object_c_array_string(void)
 	char *expected = "{\"array\": [\"1\", \"23\"]}";
 	char *test = "test_object_c_array_string";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const char *arr[] = {"1", "23"};
@@ -226,7 +236,8 @@ test_object_c_array_boolean(void)
 	char *expected = "{\"array\": [true, false]}";
 	char *test = "test_object_c_array_boolean";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const _Bool arr[] = {true, false};
@@ -244,7 +255,8 @@ test_object_array_array(void)
 	char *expected = "{\"array\": [[\"1\", \"2\", \"3\"], [\"1\", \"2\", \"3\"]]}";
 	char *test = "test_object_array_array";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const char *arr[] = {"1", "2", "3"};
@@ -269,7 +281,8 @@ test_object_c_array_empty(void)
 	char *expected = "{\"array\": []}";
 	char *test = "test_object_c_array_empty";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const char *arr[1];
@@ -288,7 +301,8 @@ test_object_array_empty_one(void)
 	char *expected = "{\"array\": [[], [\"1\", \"2\", \"3\"]]}";
 	char *test = "test_object_array_one_empty";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const char *arr[] = {"1", "2", "3"};
@@ -314,7 +328,8 @@ test_object_empty(void)
 	char *expected = "{}";
 	char *test = "test_object_empty";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	struct to_json tjs[] = {
@@ -329,7 +344,8 @@ test_object_object_null(void)
 	char *expected = "{\"name\": null}";
 	char *test = "test_object_object_null";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	struct to_json tjs[] = {
@@ -354,7 +370,8 @@ test_object_object(void)
 
 	char *test = "test_object_object";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const char *addresses[] = {"DEADBEEF", "1337BEEF", "0000BEEF"};
@@ -397,7 +414,8 @@ test_object_c_array_object(void)
 
 	char *test = "test_object_c_array_object";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const size_t count[] = {1, 2, 3};
@@ -447,7 +465,8 @@ test_object_object_object(void)
 
 	char *test = "test_object_object_object";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const _Bool value = true;
@@ -483,7 +502,8 @@ test_object_object_nested_empty(void)
 
 	char *test = "test_object_object_nested_empty";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const struct to_json value[] = {
@@ -514,7 +534,8 @@ test_object_valuetype(void)
 	char *expected = "{\"name\": This is not valid {}JSON!}";
 	char *test = "test_object_valuetype";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const struct to_json tjs[] = {
@@ -535,7 +556,8 @@ test_object_int_max(void)
 
 	char *test = "test_object_int_max";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const int n = INT_MAX;
@@ -558,7 +580,8 @@ test_object_int_min(void)
 
 	char *test = "test_object_int_min";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	int n = INT_MIN;
@@ -580,7 +603,8 @@ test_object_uint_max(void)
 
 	char *test = "test_object_uint_max";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const unsigned n = UINT_MAX;
@@ -597,7 +621,8 @@ test_object_c_array_uinteger(void)
 	char *expected = "{\"array\": [1, 2]}";
 	char *test = "test_object_c_array_uinteger";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	memset(result, '\0', len);
 	rp = result;
 
@@ -619,7 +644,8 @@ test_object_c_array_valuetype(void)
 	                            "]}";
 	char *test = "test_object_c_array_valuetype";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	memset(result, '\0', len);
 	rp = result;
 
@@ -638,7 +664,8 @@ test_primitive_string(void)
 	char *expected = "\"value\"";
 	char *test = "test_primitive_string";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const struct to_json tjs = { .vtype = t_to_string, .value = "value", };
@@ -651,7 +678,8 @@ test_primitive_null(void)
 	char *expected = "null";
 	char *test = "test_primitive_null";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const struct to_json tjs = { .vtype = t_to_null, };
@@ -664,7 +692,8 @@ test_array_integer(void)
 	char *expected = "[1, 2]";
 	char *test = "test_array_integer";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const int arr[] = {1, 2};
@@ -682,7 +711,8 @@ test_array_mixed(void)
 	char *expected = "[1, \"2\"]";
 	char *test = "test_array_mixed";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const int i = 1;
@@ -701,7 +731,8 @@ test_c_array_integer(void)
 	char *expected = "[1, 2]";
 	char *test = "test_c_array_integer";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const int arr[] = {1, 2};
@@ -718,7 +749,8 @@ test_primitive_string_escape_chars(void)
 	char *expected = "\"1\\\"2\\\\3\\\\4\\\"\"";
 	char *test = "test_primitive_string_escape_chars";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	const struct to_json tjs = {
@@ -747,7 +779,8 @@ test_object_from_rfc8259(void)
 	                 "}";
 	char *test = "test_object_from_rfc8259";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	_Bool animated = 0;
@@ -814,7 +847,8 @@ test_array_from_rfc8259(void)
 	                 "]";
 	char *test = "test_array_from_rfc8259";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	/*
@@ -869,7 +903,8 @@ test_object_null_value(void)
 	char *expected = "{\"name\": null}";
 	char *test = "test_object_null_value";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	_Bool tmp = verbose;
@@ -898,7 +933,8 @@ test_primitive_hex(void)
 	char *expected = "\"F\"";
 	char *test = "test_primitive_hex";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	unsigned n = 15;
@@ -912,7 +948,8 @@ test_c_array_hex(void)
 	char *expected = "[\"9\", \"A\", \"B\", \"F\", \"10\", \"11\", \"FE\", \"FF\", \"100\", \"FFF\", \"1000\", \"1001\", \"1010\", \"FFFE\", \"FFFF\"]";
 	char *test = "test_c_array_hex";
 	size_t len = strlen(expected) + 1;
-	char result[len];
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
 	rp = result;
 
 	unsigned arr[] = { 9, 10, 11, 15, 16, 17, 254, 255, 256, 4095, 4096, 4097, 4112, 65534, 65535 };
