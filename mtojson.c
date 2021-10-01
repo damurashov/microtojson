@@ -221,17 +221,6 @@ gen_c_array(char *out, const void *val)
 	_Bool is_last;
 	char* (*func)(char *, const void *) = gen_functions[tjs->vtype];
 	switch (tjs->vtype) {
-	case t_to_array: {
-		struct json_array * const *v = tjs->value;
-		for (size_t i = 0; i < *tjs->count; i++){
-			is_last = (i + 1 == *tjs->count);
-			out = gen_array_type(out, v[i], is_last, func);
-			if (!out)
-				return NULL;
-		}
-		break;
-	}
-
 	case t_to_boolean: {
 		const _Bool *v = tjs->value;
 		for (size_t i = 0; i < *tjs->count; i++){
@@ -287,6 +276,7 @@ gen_c_array(char *out, const void *val)
 		break;
 	}
 
+	case t_to_array:
 	case t_to_null:
 	case t_to_primitive:
 	case t_to_string:
