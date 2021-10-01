@@ -191,21 +191,6 @@ gen_value(char *out, const void *val)
 }
 
 static char*
-gen_array_type(char *out, const void *val, _Bool is_last, char* (*func)(char *, const void *))
-{
-	out = (*func)(out, val);
-	if (!out)
-		return NULL;
-	if (!is_last){
-		if (!reduce_rem_len(2))
-			return NULL;
-		*out++ = ',';
-		*out++ = ' ';
-	}
-	return out;
-}
-
-static char*
 gen_c_array(char *out, const void *val)
 {
 	const struct to_json *tjs = (const struct to_json*)val;
@@ -218,63 +203,25 @@ gen_c_array(char *out, const void *val)
 		return out;
 	}
 
-	_Bool is_last;
+	size_t incr = 0;
 	char* (*func)(char *, const void *) = gen_functions[tjs->vtype];
 	switch (tjs->vtype) {
-	case t_to_boolean: {
-		const _Bool *v = tjs->value;
-		for (size_t i = 0; i < *tjs->count; i++){
-			is_last = (i + 1 == *tjs->count);
-			out = gen_array_type(out, &v[i], is_last, func);
-			if (!out)
-				return NULL;
-		}
+	case t_to_boolean:
+		incr = sizeof(_Bool);
 		break;
-	}
 
-	case t_to_hex: {
-		const unsigned *v = tjs->value;
-		for (size_t i = 0; i < *tjs->count; i++){
-			is_last = (i + 1 == *tjs->count);
-			out = gen_array_type(out, &v[i], is_last, func);
-			if (!out)
-				return NULL;
-		}
+	case t_to_int:
+		incr = sizeof(int);
 		break;
-	}
 
-	case t_to_int: {
-		const int *v = tjs->value;
-		for (size_t i = 0; i < *tjs->count; i++){
-			is_last = (i + 1 == *tjs->count);
-			out = gen_array_type(out, &v[i], is_last, func);
-			if (!out)
-				return NULL;
-		}
+	case t_to_object:
+		incr = sizeof(struct to_json);
 		break;
-	}
 
-	case t_to_object: {
-		struct to_json * const *v = tjs->value;
-		for (size_t i = 0; i < *tjs->count; i++){
-			is_last = (i + 1 == *tjs->count);
-			out = gen_array_type(out, v[i], is_last, func);
-			if (!out)
-				return NULL;
-		}
+	case t_to_hex:
+	case t_to_uint:
+		incr = sizeof(unsigned);
 		break;
-	}
-
-	case t_to_uint: {
-		const unsigned *v = tjs->value;
-		for (size_t i = 0; i < *tjs->count; i++){
-			is_last = (i + 1 == *tjs->count);
-			out = gen_array_type(out, &v[i], is_last, func);
-			if (!out)
-				return NULL;
-		}
-		break;
-	}
 
 	case t_to_array:
 	case t_to_null:
@@ -283,6 +230,21 @@ gen_c_array(char *out, const void *val)
 	case t_to_value:
 		return NULL;
 	}
+
+	const char *p = tjs->value;
+	for (size_t i = 0; i < *tjs->count - 1; i++){
+		if (!(out = (*func)(out, p)))
+			return NULL;
+		if (!reduce_rem_len(2))
+			return NULL;
+		*out++ = ',';
+		*out++ = ' ';
+
+		p += incr;
+	}
+
+	if (!(out = (*func)(out, p)))
+		return NULL;
 
 	*out++ = ']';
 	return out;
