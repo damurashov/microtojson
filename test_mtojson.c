@@ -140,63 +140,6 @@ test_object_boolean(void)
 }
 
 static int
-test_object_int(void)
-{
-	char *expected = "{\"name\": 1}";
-	char *test = "test_object_int";
-	size_t len = strlen(expected) + 1;
-	assert(len <= MAXLEN);
-	char result[MAXLEN];
-	rp = result;
-
-	const int n = 1;
-	const struct to_json tjs[] = {
-		{ .name = "name", .value = &n, .vtype = t_to_int, .stype = t_to_object, },
-		{ NULL },
-	};
-	return run_test(test, expected, result, tjs, len);
-}
-
-static int
-test_object_int_two(void)
-{
-	char *expected = "{\"name\": -32767, \"name\": 32767}";
-	char *test = "test_object_int_two";
-	size_t len = strlen(expected) + 1;
-	assert(len <= MAXLEN);
-	char result[MAXLEN];
-	rp = result;
-
-	const int ns[] = {-32767, 32767};
-
-	const struct to_json tjs[] = {
-		{ .vtype = t_to_int, .name = "name", .value = &ns[0], .stype = t_to_object, },
-		{ .vtype = t_to_int, .name = "name", .value = &ns[1], },
-		{ NULL }
-	};
-	return run_test(test, expected, result, tjs, len);
-}
-
-static int
-test_object_uint(void)
-{
-	char *expected = "{\"name\": 65535}";
-	char *test = "test_object_uint";
-	size_t len = strlen(expected) + 1;
-	assert(len <= MAXLEN);
-	char result[MAXLEN];
-	rp = result;
-
-	const int n = 65535;
-	const struct to_json tjs[] = {
-		{ .name = "name", .value = &n, .vtype = t_to_uint, .stype = t_to_object, },
-		{ NULL },
-	};
-	return run_test(test, expected, result, tjs, len);
-}
-
-
-static int
 test_object_c_array_int(void)
 {
 	char *expected = "{\"array\": [9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100]}";
@@ -550,76 +493,6 @@ test_object_valuetype(void)
 }
 
 static int
-test_object_int_max(void)
-{
-	char int_max[20];
-	sprintf(int_max, "%d", INT_MAX);
-	char expected[30];
-	strcpy(expected, "{\"name\": ");
-	strcat(strcat(expected, int_max), "}");
-
-	char *test = "test_object_int_max";
-	size_t len = strlen(expected) + 1;
-	assert(len <= MAXLEN);
-	char result[MAXLEN];
-	rp = result;
-
-	const int n = INT_MAX;
-	const struct to_json tjs[] = {
-		{ .name = "name", .value = &n, .vtype = t_to_int, .stype = t_to_object, },
-		{ NULL },
-	};
-	return run_test(test, expected, result, tjs, len);
-
-}
-
-static int
-test_object_int_min(void)
-{
-	char uint_min[20];
-	sprintf(uint_min, "%d", INT_MIN);
-	char expected[30];
-	strcpy(expected, "{\"name\": ");
-	strcat(strcat(expected, uint_min), "}");
-
-	char *test = "test_object_int_min";
-	size_t len = strlen(expected) + 1;
-	assert(len <= MAXLEN);
-	char result[MAXLEN];
-	rp = result;
-
-	int n = INT_MIN;
-	const struct to_json tjs[] = {
-		{ .name = "name", .value = &n, .vtype = t_to_int, .stype = t_to_object, },
-		{ NULL },
-	};
-	return run_test(test, expected, result, tjs, len);
-}
-
-static int
-test_object_uint_max(void)
-{
-	char uint_max[20];
-	sprintf(uint_max, "%u", UINT_MAX);
-	char expected[30];
-	strcpy(expected, "{\"name\": ");
-	strcat(strcat(expected, uint_max), "}");
-
-	char *test = "test_object_uint_max";
-	size_t len = strlen(expected) + 1;
-	assert(len <= MAXLEN);
-	char result[MAXLEN];
-	rp = result;
-
-	const unsigned n = UINT_MAX;
-	const struct to_json tjs[] = {
-		{ .name = "name", .value = &n, .vtype = t_to_uint, .stype = t_to_object, },
-		{ NULL },
-	};
-	return run_test(test, expected, result, tjs, len);
-}
-
-static int
 test_object_c_array_uint(void)
 {
 	char *expected = "{\"array\": [1, 2]}";
@@ -966,112 +839,125 @@ test_c_array_hex(void)
 }
 
 static int
+test_array_primitive_all_int_types(void)
+{
+	char expected[100];
+	char *test = "test_array_primitive_all_int_types";
+
+	int max_int = INT_MAX;
+	int min_int = INT_MIN;
+	unsigned int max_uint = UINT_MAX;
+
+	sprintf(expected, "[%d, %d, %u]", \
+	                    max_int, min_int, max_uint \
+	       );
+
+	size_t len = strlen(expected) + 1;
+	assert(len <= MAXLEN);
+	char result[MAXLEN];
+	rp = result;
+
+	const struct to_json tjs[] = {
+		{ .value = &max_int, .vtype = t_to_int, .stype = t_to_array },
+		{ .value = &min_int, .vtype = t_to_int },
+		{ .value = &max_uint, .vtype = t_to_uint },
+		{ NULL }
+	};
+	return run_test(test, expected, result, tjs, len);
+}
+
+static int
 exec_test(int i)
 {
 	switch (i){
 	case 1:
-		return test_object_int();
+		return test_array_primitive_all_int_types();
 		break;
 	case 2:
-		return test_object_int_two();
-		break;
-	case 3:
 		return test_object_string();
 		break;
-	case 4:
+	case 3:
 		return test_object_boolean();
 		break;
-	case 5:
+	case 4:
 		return test_object_valuetype();
 		break;
-	case 6:
+	case 5:
 		return test_object_c_array_int();
 		break;
-	case 7:
+	case 6:
 		return test_object_c_array_boolean();
 		break;
-	case 8:
+	case 7:
 		return test_object_c_array_string();
 		break;
-	case 9:
+	case 8:
 		return test_object_array_array();
 		break;
-	case 10:
+	case 9:
 		return test_object_c_array_empty();
 		break;
-	case 11:
+	case 10:
 		return test_object_array_empty_one();
 		break;
-	case 12:
+	case 11:
 		return test_object_object();
 		break;
-	case 13:
+	case 12:
 		return test_object_c_array_object();
 		break;
-	case 14:
+	case 13:
 		return test_object_empty();
 		break;
-	case 15:
+	case 14:
 		return test_object_object_object();
 		break;
-	case 16:
+	case 15:
 		return test_object_object_nested_empty();
 		break;
-	case 17:
-		return test_object_uint();
-		break;
-	case 18:
-		return test_object_int_max();
-		break;
-	case 19:
-		return test_object_int_min();
-		break;
-	case 20:
-		return test_object_uint_max();
-		break;
-	case 21:
+	case 16:
 		return test_object_c_array_uint();
 		break;
-	case 22:
+	case 17:
 		return test_object_c_array_valuetype();
 		break;
-	case 23:
+	case 18:
 		return test_primitive_string();
 		break;
-	case 24:
+	case 19:
 		return test_primitive_null();
 		break;
-	case 25:
+	case 20:
 		return test_object_object_null();
 		break;
-	case 26:
+	case 21:
 		return test_array_int();
 		break;
-	case 27:
+	case 22:
 		return test_array_mixed();
 		break;
-	case 28:
+	case 23:
 		return test_c_array_int();
 		break;
-	case 29:
+	case 24:
 		return test_primitive_string_escape_chars();
 		break;
-	case 30:
+	case 25:
 		return test_object_from_rfc8259();
 		break;
-	case 31:
+	case 26:
 		return test_array_from_rfc8259();
 		break;
-	case 32:
+	case 27:
 		return test_object_null_value();
 		break;
-	case 33:
+	case 28:
 		return test_primitive_hex();
 		break;
-	case 34:
+	case 29:
 		return test_c_array_hex();
 		break;
-#define MAXTEST 35
+#define MAXTEST 30
 	case MAXTEST:
 		return 0;
 	default:
