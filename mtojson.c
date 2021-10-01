@@ -12,11 +12,15 @@ static char* gen_boolean(char *, const void *);
 static char* gen_c_array(char *, const void *);
 static char* gen_hex(char *, const void *);
 static char* gen_int(char *, const void *);
+static char* gen_long(char *, const void *);
+static char* gen_longlong(char *, const void *);
 static char* gen_null(char *, const void *);
 static char* gen_object(char *, const void *);
 static char* gen_primitive(char *, const void *);
 static char* gen_string(char *, const void *);
 static char* gen_uint(char *, const void *);
+static char* gen_ulong(char *, const void *);
+static char* gen_ulonglong(char *, const void *);
 static char* gen_value(char *, const void *);
 
 static char* (* const gen_functions[])(char *, const void *) = {
@@ -25,10 +29,14 @@ static char* (* const gen_functions[])(char *, const void *) = {
 	gen_boolean,
 	gen_hex,
 	gen_int,
+	gen_long,
+	gen_longlong,
 	gen_null,
 	gen_object,
 	gen_string,
 	gen_uint,
+	gen_ulong,
+	gen_ulonglong,
 	gen_value,
 };
 
@@ -135,7 +143,44 @@ utoa(char *dst, unsigned n, unsigned base)
 	for ( ; s >= dst; s--, n /= base)
 		*s = "0123456789ABCDEF"[n % base];
 	return e;
+}
 
+static char*
+ultoa(char *dst, unsigned long n, unsigned base)
+{
+	char *s = dst;
+	char *e;
+
+	for (unsigned long m = n; m >= base;  m /= base)
+		s++;
+	e = s + 1;
+
+	size_t len = (size_t)(e - dst);
+	if (!reduce_rem_len(len))
+		return NULL;
+
+	for ( ; s >= dst; s--, n /= base)
+		*s = "0123456789ABCDEF"[n % base];
+	return e;
+}
+
+static char*
+ulltoa(char *dst, unsigned long long n, unsigned base)
+{
+	char *s = dst;
+	char *e;
+
+	for (unsigned long long m = n; m >= base;  m /= base)
+		s++;
+	e = s + 1;
+
+	size_t len = (size_t)(e - dst);
+	if (!reduce_rem_len(len))
+		return NULL;
+
+	for ( ; s >= dst; s--, n /= base)
+		*s = "0123456789ABCDEF"[n % base];
+	return e;
 }
 
 static char*
@@ -185,6 +230,65 @@ gen_uint(char *out, const void *val)
 }
 
 static char*
+gen_long(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	long n = *(long*)val;
+	unsigned long u = (unsigned long)n;
+	if (n < 0){
+		if (!reduce_rem_len(1))
+			return NULL;
+		*out++ = '-';
+		u = -(unsigned long)n;
+	}
+
+	if (!(out = ultoa(out, u, 10)))
+		return NULL;
+	return out;
+}
+
+static char*
+gen_longlong(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	long long n = *(long long*)val;
+	unsigned long long u = (unsigned long long)n;
+	if (n < 0){
+		if (!reduce_rem_len(1))
+			return NULL;
+		*out++ = '-';
+		u = -(unsigned long long)n;
+	}
+
+	if (!(out = ulltoa(out, u, 10)))
+		return NULL;
+	return out;
+}
+
+
+static char*
+gen_ulong(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	return ultoa(out, *(unsigned long*)val, 10);
+}
+
+static char*
+gen_ulonglong(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	return ulltoa(out, *(unsigned long long*)val, 10);
+}
+
+static char*
 gen_value(char *out, const void *val)
 {
 	return strcpy_val(out, (const char*)val, strlen((const char*)val));
@@ -214,6 +318,14 @@ gen_c_array(char *out, const void *val)
 		incr = sizeof(int);
 		break;
 
+	case t_to_long:
+		incr = sizeof(unsigned long);
+		break;
+
+	case t_to_longlong:
+		incr = sizeof(unsigned long long);
+		break;
+
 	case t_to_object:
 		incr = sizeof(struct to_json);
 		break;
@@ -221,6 +333,14 @@ gen_c_array(char *out, const void *val)
 	case t_to_hex:
 	case t_to_uint:
 		incr = sizeof(unsigned);
+		break;
+
+	case t_to_ulong:
+		incr = sizeof(unsigned long);
+		break;
+
+	case t_to_ulonglong:
+		incr = sizeof(unsigned long long);
 		break;
 
 	case t_to_array:

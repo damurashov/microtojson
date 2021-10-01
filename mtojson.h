@@ -14,10 +14,14 @@ enum json_to_type {
 	t_to_boolean,
 	t_to_hex,
 	t_to_int,
+	t_to_long,
+	t_to_longlong,
 	t_to_null,
 	t_to_object,
 	t_to_string,
 	t_to_uint,
+	t_to_ulong,
+	t_to_ulonglong,
 	t_to_value,
 };
 

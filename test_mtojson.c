@@ -719,15 +719,25 @@ test_c_array_hex(void)
 static int
 test_array_primitive_all_int_types(void)
 {
-	char expected[100];
+	char expected[256];
 	char *test = "test_array_primitive_all_int_types";
 
 	int max_int = INT_MAX;
 	int min_int = INT_MIN;
 	unsigned int max_uint = UINT_MAX;
 
-	sprintf(expected, "[%d, %d, %u]", \
-	                    max_int, min_int, max_uint \
+	long max_long = LONG_MAX;
+	long min_long = LONG_MIN;
+	unsigned long max_ulong = ULONG_MAX;
+
+	long long max_longlong = LLONG_MAX;
+	long long min_longlong = LLONG_MIN;
+	unsigned long long max_ulonglong = ULLONG_MAX;
+
+	sprintf(expected, "[%d, %d, %u, %ld, %ld, %lu, %lld, %lld, %llu]", \
+	                    max_int, min_int, max_uint, \
+	                    max_long, min_long, max_ulong, \
+	                    max_longlong, min_longlong, max_ulonglong \
 	       );
 
 	size_t len = strlen(expected) + 1;
@@ -739,6 +749,12 @@ test_array_primitive_all_int_types(void)
 		{ .value = &max_int, .vtype = t_to_int, .stype = t_to_array },
 		{ .value = &min_int, .vtype = t_to_int },
 		{ .value = &max_uint, .vtype = t_to_uint },
+		{ .value = &max_long, .vtype = t_to_long },
+		{ .value = &min_long, .vtype = t_to_long },
+		{ .value = &max_ulong, .vtype = t_to_ulong },
+		{ .value = &max_longlong, .vtype = t_to_longlong },
+		{ .value = &min_longlong, .vtype = t_to_longlong },
+		{ .value = &max_ulonglong, .vtype = t_to_ulonglong },
 		{ NULL }
 	};
 	return run_test(test, expected, result, tjs, len);
