@@ -140,29 +140,10 @@ test_object_boolean(void)
 }
 
 static int
-test_object_c_array_int(void)
+test_c_array_boolean(void)
 {
-	char *expected = "{\"array\": [9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100]}";
-	char *test = "test_object_c_array_int";
-	size_t len = strlen(expected) + 1;
-	assert(len <= MAXLEN);
-	char result[MAXLEN];
-	rp = result;
-
-	const int arr[] = {9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100};
-	const size_t cnt = sizeof(arr) / sizeof(arr[0]);
-	const struct to_json tjs[] = {
-		{ .name = "array", .value = arr, .count = &cnt, .vtype = t_to_int, .stype = t_to_object, },
-		{ NULL }
-	};
-	return run_test(test, expected, result, tjs, len);
-}
-
-static int
-test_object_c_array_boolean(void)
-{
-	char *expected = "{\"array\": [true, false]}";
-	char *test = "test_object_c_array_boolean";
+	char *expected = "[true, false]";
+	char *test = "test_c_array_boolean";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
 	char result[MAXLEN];
@@ -170,11 +151,8 @@ test_object_c_array_boolean(void)
 
 	const _Bool arr[] = {true, false};
 	const size_t cnt = sizeof(arr) / sizeof(arr[0]);
-	const struct to_json tjs[] = {
-		{ .name = "array", .value = arr, .count = &cnt, .vtype = t_to_boolean, .stype = t_to_object, },
-		{ NULL }
-	};
-	return run_test(test, expected, result, tjs, len);
+	const struct to_json tjs = { .value = arr, .count = &cnt, .vtype = t_to_boolean, };
+	return run_test(test, expected, result, &tjs, len);
 }
 
 static int
@@ -204,10 +182,10 @@ test_object_array_c_array(void)
 }
 
 static int
-test_object_c_array_empty(void)
+test_c_array_empty(void)
 {
-	char *expected = "{\"array\": []}";
-	char *test = "test_object_c_array_empty";
+	char *expected = "[]";
+	char *test = "test_c_array_empty";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
 	char result[MAXLEN];
@@ -215,12 +193,8 @@ test_object_c_array_empty(void)
 
 	const char *arr[1];
 	const size_t cnt = 0;
-	const struct to_json tjs[] = {
-		{ .name = "array", .value = arr, .count = &cnt, .vtype = t_to_array, .stype = t_to_object, },
-		{ NULL }
-	};
-
-	return run_test(test, expected, result, tjs, len);
+	const struct to_json tjs = { .value = arr, .count = &cnt, .vtype = t_to_array, };
+	return run_test(test, expected, result, &tjs, len);
 }
 
 static int
@@ -423,10 +397,10 @@ test_object_valuetype(void)
 }
 
 static int
-test_object_c_array_uint(void)
+test_c_array_uint(void)
 {
-	char *expected = "{\"array\": [1, 2]}";
-	char *test = "test_object_c_array_uint";
+	char *expected = "[1, 2]";
+	char *test = "test_c_array_uint";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
 	char result[MAXLEN];
@@ -435,11 +409,8 @@ test_object_c_array_uint(void)
 
 	const unsigned arr[] = {1, 2};
 	const size_t cnt = sizeof(arr) / sizeof(arr[0]);
-	const struct to_json tjs[] = {
-		{ .name = "array", .value = arr, .count = &cnt, .vtype = t_to_uint, .stype = t_to_object, },
-		{ NULL }
-	};
-	return run_test(test, expected, result, tjs, len);
+	const struct to_json tjs = { .value = arr, .count = &cnt, .vtype = t_to_uint, };
+	return run_test(test, expected, result, &tjs, len);
 }
 
 static int
@@ -790,16 +761,16 @@ exec_test(int i)
 		return test_object_valuetype();
 		break;
 	case 5:
-		return test_object_c_array_int();
+		return test_c_array_int();
 		break;
 	case 6:
-		return test_object_c_array_boolean();
+		return test_c_array_boolean();
 		break;
 	case 7:
 		return test_object_array_c_array();
 		break;
 	case 8:
-		return test_object_c_array_empty();
+		return test_c_array_empty();
 		break;
 	case 9:
 		return test_object_array_one_empty();
@@ -817,7 +788,7 @@ exec_test(int i)
 		return test_object_object_nested_empty();
 		break;
 	case 14:
-		return test_object_c_array_uint();
+		return test_c_array_uint();
 		break;
 	case 15:
 		return test_primitive_string();
@@ -835,27 +806,24 @@ exec_test(int i)
 		return test_array_mixed();
 		break;
 	case 20:
-		return test_c_array_int();
-		break;
-	case 21:
 		return test_primitive_string_escape_chars();
 		break;
-	case 22:
+	case 21:
 		return test_object_from_rfc8259();
 		break;
-	case 23:
+	case 22:
 		return test_array_from_rfc8259();
 		break;
-	case 24:
+	case 23:
 		return test_object_null_value();
 		break;
-	case 25:
+	case 24:
 		return test_primitive_hex();
 		break;
-	case 26:
+	case 25:
 		return test_c_array_hex();
 		break;
-#define MAXTEST 27
+#define MAXTEST 26
 	case MAXTEST:
 		return 0;
 	default:
