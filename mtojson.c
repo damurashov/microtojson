@@ -276,17 +276,6 @@ gen_c_array(char *out, const void *val)
 		break;
 	}
 
-	case t_to_string: {
-		char * const *v = tjs->value;
-		for (size_t i = 0; i < *tjs->count; i++){
-			is_last = (i + 1 == *tjs->count);
-			out = gen_array_type(out, v[i], is_last, func);
-			if (!out)
-				return NULL;
-		}
-		break;
-	}
-
 	case t_to_uint: {
 		const unsigned *v = tjs->value;
 		for (size_t i = 0; i < *tjs->count; i++){
@@ -298,19 +287,10 @@ gen_c_array(char *out, const void *val)
 		break;
 	}
 
-	case t_to_value: {
-		const char * const *v = tjs->value;
-		for (size_t i = 0; i < *tjs->count; i++){
-			is_last = (i + 1 == *tjs->count);
-			out = gen_array_type(out, v[i], is_last, func);
-			if (!out)
-				return NULL;
-		}
-		break;
-	}
-
 	case t_to_null:
 	case t_to_primitive:
+	case t_to_string:
+	case t_to_value:
 		return NULL;
 	}
 
