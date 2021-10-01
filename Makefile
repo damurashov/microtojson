@@ -35,6 +35,9 @@ all: mtojson.o test_mtojson
 mtojson.o: mtojson.c mtojson.h
 	$(CC) $(WSTACK) $(BUILD_FLAGS) -c -o mtojson.o mtojson.c
 
+%.o: %.c
+	$(CC) $(BUILD_FLAGS) -c -o $@ $<
+
 test_mtojson: test_mtojson.o mtojson.o
 	$(CC) $(BUILD_FLAGS) -o test_mtojson test_mtojson.o mtojson.o
 
