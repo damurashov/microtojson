@@ -140,10 +140,10 @@ test_object_boolean(void)
 }
 
 static int
-test_object_integer(void)
+test_object_int(void)
 {
 	char *expected = "{\"name\": 1}";
-	char *test = "test_object_integer";
+	char *test = "test_object_int";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
 	char result[MAXLEN];
@@ -151,17 +151,17 @@ test_object_integer(void)
 
 	const int n = 1;
 	const struct to_json tjs[] = {
-		{ .name = "name", .value = &n, .vtype = t_to_integer, .stype = t_to_object, },
+		{ .name = "name", .value = &n, .vtype = t_to_int, .stype = t_to_object, },
 		{ NULL },
 	};
 	return run_test(test, expected, result, tjs, len);
 }
 
 static int
-test_object_integer_two(void)
+test_object_int_two(void)
 {
 	char *expected = "{\"name\": -32767, \"name\": 32767}";
-	char *test = "test_object_integer_two";
+	char *test = "test_object_int_two";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
 	char result[MAXLEN];
@@ -170,18 +170,18 @@ test_object_integer_two(void)
 	const int ns[] = {-32767, 32767};
 
 	const struct to_json tjs[] = {
-		{ .vtype = t_to_integer, .name = "name", .value = &ns[0], .stype = t_to_object, },
-		{ .vtype = t_to_integer, .name = "name", .value = &ns[1], },
+		{ .vtype = t_to_int, .name = "name", .value = &ns[0], .stype = t_to_object, },
+		{ .vtype = t_to_int, .name = "name", .value = &ns[1], },
 		{ NULL }
 	};
 	return run_test(test, expected, result, tjs, len);
 }
 
 static int
-test_object_uinteger(void)
+test_object_uint(void)
 {
 	char *expected = "{\"name\": 65535}";
-	char *test = "test_object_uinteger";
+	char *test = "test_object_uint";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
 	char result[MAXLEN];
@@ -189,7 +189,7 @@ test_object_uinteger(void)
 
 	const int n = 65535;
 	const struct to_json tjs[] = {
-		{ .name = "name", .value = &n, .vtype = t_to_uinteger, .stype = t_to_object, },
+		{ .name = "name", .value = &n, .vtype = t_to_uint, .stype = t_to_object, },
 		{ NULL },
 	};
 	return run_test(test, expected, result, tjs, len);
@@ -197,10 +197,10 @@ test_object_uinteger(void)
 
 
 static int
-test_object_c_array_integer(void)
+test_object_c_array_int(void)
 {
 	char *expected = "{\"array\": [9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100]}";
-	char *test = "test_object_c_array_integer";
+	char *test = "test_object_c_array_int";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
 	char result[MAXLEN];
@@ -209,7 +209,7 @@ test_object_c_array_integer(void)
 	const int arr[] = {9, 10, 11, 99, 100, 101, 110, 1000, 1001, 1010, 1100};
 	const size_t cnt = sizeof(arr) / sizeof(arr[0]);
 	const struct to_json tjs[] = {
-		{ .name = "array", .value = arr, .count = &cnt, .vtype = t_to_integer, .stype = t_to_object, },
+		{ .name = "array", .value = arr, .count = &cnt, .vtype = t_to_int, .stype = t_to_object, },
 		{ NULL }
 	};
 	return run_test(test, expected, result, tjs, len);
@@ -382,8 +382,8 @@ test_object_object(void)
 	const size_t cnt = sizeof(addresses) / sizeof(addresses[0]);
 	const int nid = 1;
 	const struct to_json names[] = {
-		{ .name = "name_id", .value = &nid, .vtype = t_to_integer, .stype = t_to_object, },
-		{ .name = "count",  .value = &cnt, .vtype = t_to_integer, },
+		{ .name = "name_id", .value = &nid, .vtype = t_to_int, .stype = t_to_object, },
+		{ .name = "count",  .value = &cnt, .vtype = t_to_int, },
 		{ .name = "values", .count = &cnt, .value = addresses, .vtype = t_to_string, },
 		{ NULL }
 	};
@@ -391,7 +391,7 @@ test_object_object(void)
 	const int non = 1;
 	const struct to_json tjs[] = {
 		{ .name = "names",           .value = &names, .vtype = t_to_object, .stype = t_to_object, },
-		{ .name = "number_of_names", .value = &non,   .vtype = t_to_integer, .stype = t_to_object, },
+		{ .name = "number_of_names", .value = &non,   .vtype = t_to_int, .stype = t_to_object, },
 		{ NULL }
 	};
 
@@ -428,8 +428,8 @@ test_object_c_array_object(void)
 	const int nid[] = {1, 2};
 	const struct to_json names[][4] = {
 		{
-		{ .name = "name_id", .value = &nid[0], .vtype = t_to_integer, .stype = t_to_object, },
-		{ .name = "count",  .value = &cnt, .vtype = t_to_integer, },
+		{ .name = "name_id", .value = &nid[0], .vtype = t_to_int, .stype = t_to_object, },
+		{ .name = "count",  .value = &cnt, .vtype = t_to_int, },
 		{ .name = "values", .value = addresses, .count = &count[2], .vtype = t_to_string, },
 		{ NULL }
 		},
@@ -438,8 +438,8 @@ test_object_c_array_object(void)
 			{ NULL }
 		},
 		{
-		{ .name = "name_id", .value = &nid[1], .vtype = t_to_integer, .stype = t_to_object, },
-		{ .name = "count",  .value = &count[0], .vtype = t_to_integer, },
+		{ .name = "name_id", .value = &nid[1], .vtype = t_to_int, .stype = t_to_object, },
+		{ .name = "count",  .value = &count[0], .vtype = t_to_int, },
 		{ .name = "values", .value = &addresses[0], .count = &count[0], .vtype = t_to_string, },
 		{ NULL }
 		},
@@ -449,7 +449,7 @@ test_object_c_array_object(void)
 	const struct to_json *names_ptr[] = { names[0], names[1], names[2], };
 	const struct to_json tjs[] = {
 		{ .name = "names",           .value = &names_ptr, .count = &count[2], .vtype = t_to_object, .stype = t_to_object , },
-		{ .name = "number_of_names", .value = &non,   .vtype = t_to_integer, .stype = t_to_object, },
+		{ .name = "number_of_names", .value = &non,   .vtype = t_to_int, .stype = t_to_object, },
 		{ NULL }
 	};
 
@@ -566,7 +566,7 @@ test_object_int_max(void)
 
 	const int n = INT_MAX;
 	const struct to_json tjs[] = {
-		{ .name = "name", .value = &n, .vtype = t_to_integer, .stype = t_to_object, },
+		{ .name = "name", .value = &n, .vtype = t_to_int, .stype = t_to_object, },
 		{ NULL },
 	};
 	return run_test(test, expected, result, tjs, len);
@@ -590,7 +590,7 @@ test_object_int_min(void)
 
 	int n = INT_MIN;
 	const struct to_json tjs[] = {
-		{ .name = "name", .value = &n, .vtype = t_to_integer, .stype = t_to_object, },
+		{ .name = "name", .value = &n, .vtype = t_to_int, .stype = t_to_object, },
 		{ NULL },
 	};
 	return run_test(test, expected, result, tjs, len);
@@ -613,17 +613,17 @@ test_object_uint_max(void)
 
 	const unsigned n = UINT_MAX;
 	const struct to_json tjs[] = {
-		{ .name = "name", .value = &n, .vtype = t_to_uinteger, .stype = t_to_object, },
+		{ .name = "name", .value = &n, .vtype = t_to_uint, .stype = t_to_object, },
 		{ NULL },
 	};
 	return run_test(test, expected, result, tjs, len);
 }
 
 static int
-test_object_c_array_uinteger(void)
+test_object_c_array_uint(void)
 {
 	char *expected = "{\"array\": [1, 2]}";
-	char *test = "test_object_c_array_uinteger";
+	char *test = "test_object_c_array_uint";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
 	char result[MAXLEN];
@@ -633,7 +633,7 @@ test_object_c_array_uinteger(void)
 	const unsigned arr[] = {1, 2};
 	const size_t cnt = sizeof(arr) / sizeof(arr[0]);
 	const struct to_json tjs[] = {
-		{ .name = "array", .value = arr, .count = &cnt, .vtype = t_to_uinteger, .stype = t_to_object, },
+		{ .name = "array", .value = arr, .count = &cnt, .vtype = t_to_uint, .stype = t_to_object, },
 		{ NULL }
 	};
 	return run_test(test, expected, result, tjs, len);
@@ -691,10 +691,10 @@ test_primitive_null(void)
 }
 
 static int
-test_array_integer(void)
+test_array_int(void)
 {
 	char *expected = "[1, 2]";
-	char *test = "test_array_integer";
+	char *test = "test_array_int";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
 	char result[MAXLEN];
@@ -702,8 +702,8 @@ test_array_integer(void)
 
 	const int arr[] = {1, 2};
 	const struct to_json tjs[] = {
-		{ .value = &arr[0], .vtype = t_to_integer, .stype = t_to_array, },
-		{ .value = &arr[1], .vtype = t_to_integer, .stype = t_to_array, },
+		{ .value = &arr[0], .vtype = t_to_int, .stype = t_to_array, },
+		{ .value = &arr[1], .vtype = t_to_int, .stype = t_to_array, },
 		{ NULL }
 	};
 	return run_test(test, expected, result, tjs, len);
@@ -722,7 +722,7 @@ test_array_mixed(void)
 	const int i = 1;
 	const char *c = "2";
 	const struct to_json tjs[] = {
-		{ .value = &i, .vtype = t_to_integer, .stype = t_to_array, },
+		{ .value = &i, .vtype = t_to_int, .stype = t_to_array, },
 		{ .value = c, .vtype = t_to_string, .stype = t_to_array, },
 		{ NULL }
 	};
@@ -730,10 +730,10 @@ test_array_mixed(void)
 }
 
 static int
-test_c_array_integer(void)
+test_c_array_int(void)
 {
 	char *expected = "[1, 2]";
-	char *test = "test_c_array_integer";
+	char *test = "test_c_array_int";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
 	char result[MAXLEN];
@@ -742,7 +742,7 @@ test_c_array_integer(void)
 	const int arr[] = {1, 2};
 	const size_t cnt = sizeof(arr) / sizeof(arr[0]);
 	const struct to_json tjs = {
-		.value = arr, .count = &cnt, .vtype = t_to_integer,
+		.value = arr, .count = &cnt, .vtype = t_to_int,
 	};
 	return run_test(test, expected, result, &tjs, len);
 }
@@ -801,18 +801,18 @@ test_object_from_rfc8259(void)
 
 	struct to_json thumbnail_tjs[] = {
 		{. name = "Url", .value = &thumbnail_url, .vtype = t_to_string, .stype = t_to_object, },
-		{ .name = "Height", .value = &thumbnail_height, .vtype = t_to_uinteger, },
-		{ .name = "Width", .value = &thumbnail_width, .vtype = t_to_uinteger, },
+		{ .name = "Height", .value = &thumbnail_height, .vtype = t_to_uint, },
+		{ .name = "Width", .value = &thumbnail_width, .vtype = t_to_uint, },
 		{ NULL }
 	};
 
 	struct to_json image_tjs[] = {
-		{ .name = "Width", .value = &image_width, .vtype = t_to_uinteger, .stype = t_to_object, },
-		{ .name = "Height", .value = &image_height, .vtype = t_to_uinteger, },
+		{ .name = "Width", .value = &image_width, .vtype = t_to_uint, .stype = t_to_object, },
+		{ .name = "Height", .value = &image_height, .vtype = t_to_uint, },
 		{ .name = "Title", .value = image_title, .vtype = t_to_string, },
 		{ .name = "Thumbnail", .value = thumbnail_tjs, .vtype = t_to_object, },
 		{ .name = "Animated", .value = &animated, .vtype = t_to_boolean, },
-		{ .name = "IDs", .value = &ids, .vtype = t_to_uinteger, .count = &num_ids, },
+		{ .name = "IDs", .value = &ids, .vtype = t_to_uint, .count = &num_ids, },
 		{ NULL }
 	};
 
@@ -970,10 +970,10 @@ exec_test(int i)
 {
 	switch (i){
 	case 1:
-		return test_object_integer();
+		return test_object_int();
 		break;
 	case 2:
-		return test_object_integer_two();
+		return test_object_int_two();
 		break;
 	case 3:
 		return test_object_string();
@@ -985,7 +985,7 @@ exec_test(int i)
 		return test_object_valuetype();
 		break;
 	case 6:
-		return test_object_c_array_integer();
+		return test_object_c_array_int();
 		break;
 	case 7:
 		return test_object_c_array_boolean();
@@ -1018,7 +1018,7 @@ exec_test(int i)
 		return test_object_object_nested_empty();
 		break;
 	case 17:
-		return test_object_uinteger();
+		return test_object_uint();
 		break;
 	case 18:
 		return test_object_int_max();
@@ -1030,7 +1030,7 @@ exec_test(int i)
 		return test_object_uint_max();
 		break;
 	case 21:
-		return test_object_c_array_uinteger();
+		return test_object_c_array_uint();
 		break;
 	case 22:
 		return test_object_c_array_valuetype();
@@ -1045,13 +1045,13 @@ exec_test(int i)
 		return test_object_object_null();
 		break;
 	case 26:
-		return test_array_integer();
+		return test_array_int();
 		break;
 	case 27:
 		return test_array_mixed();
 		break;
 	case 28:
-		return test_c_array_integer();
+		return test_c_array_int();
 		break;
 	case 29:
 		return test_primitive_string_escape_chars();

@@ -20,7 +20,7 @@ main(void)
 	const struct to_json json[] = {
 		{ .name = "received_data",
 			.value = data,
-			.vtype = t_to_integer,
+			.vtype = t_to_int,
 			.count = &len,
 			.stype = t_to_object
 		},
@@ -32,10 +32,10 @@ main(void)
 #ifdef ARRAY
 	/* Define the JSON array */
 	const struct to_json json[] = {
-		{ .value = &data[0], .vtype = t_to_integer, .stype = t_to_array, },
-		{ .value = &data[1], .vtype = t_to_integer, },
-		{ .value = &data[2], .vtype = t_to_integer, },
-		{ .value = &data[3], .vtype = t_to_integer, },
+		{ .value = &data[0], .vtype = t_to_int, .stype = t_to_array, },
+		{ .value = &data[1], .vtype = t_to_int, },
+		{ .value = &data[2], .vtype = t_to_int, },
+		{ .value = &data[3], .vtype = t_to_int, },
 		{ NULL }
 	};
 	json_len = json_generate(json_text, json, MAX_STRING_LEN);
@@ -45,7 +45,7 @@ main(void)
 	size_t len = sizeof(data)/sizeof(data[0]);
 	/* Define the JSON array */
 	const struct to_json json = {
-		.value = data, .vtype = t_to_integer, .count = &len,
+		.value = data, .vtype = t_to_int, .count = &len,
 	};
 	json_len = json_generate(json_text, &json, MAX_STRING_LEN);
 #endif
@@ -53,7 +53,7 @@ main(void)
 #ifdef PRIMITIVE
 	/* Define the JSON primitive */
 	const struct to_json json = {
-		.value = &data[0], .vtype = t_to_integer,
+		.value = &data[0], .vtype = t_to_int,
 	};
 	json_len = json_generate(json_text, &json, MAX_STRING_LEN);
 #endif

@@ -11,12 +11,12 @@ static char* gen_array(char *, const void *);
 static char* gen_boolean(char *, const void *);
 static char* gen_c_array(char *, const void *);
 static char* gen_hex(char *, const void *);
-static char* gen_integer(char *, const void *);
+static char* gen_int(char *, const void *);
 static char* gen_null(char *, const void *);
 static char* gen_object(char *, const void *);
 static char* gen_primitive(char *, const void *);
 static char* gen_string(char *, const void *);
-static char* gen_uinteger(char *, const void *);
+static char* gen_uint(char *, const void *);
 static char* gen_value(char *, const void *);
 
 static char* (* const gen_functions[])(char *, const void *) = {
@@ -24,11 +24,11 @@ static char* (* const gen_functions[])(char *, const void *) = {
 	gen_array,
 	gen_boolean,
 	gen_hex,
-	gen_integer,
+	gen_int,
 	gen_null,
 	gen_object,
 	gen_string,
-	gen_uinteger,
+	gen_uint,
 	gen_value,
 };
 
@@ -156,7 +156,7 @@ gen_hex(char *out, const void *val)
 }
 
 static char*
-gen_integer(char *out, const void *val)
+gen_int(char *out, const void *val)
 {
 	if (!val)
 		return gen_null(out, val);
@@ -176,7 +176,7 @@ gen_integer(char *out, const void *val)
 }
 
 static char*
-gen_uinteger(char *out, const void *val)
+gen_uint(char *out, const void *val)
 {
 	if (!val)
 		return gen_null(out, val);
@@ -254,7 +254,7 @@ gen_c_array(char *out, const void *val)
 		break;
 	}
 
-	case t_to_integer: {
+	case t_to_int: {
 		const int *v = tjs->value;
 		for (size_t i = 0; i < *tjs->count; i++){
 			is_last = (i + 1 == *tjs->count);
@@ -287,7 +287,7 @@ gen_c_array(char *out, const void *val)
 		break;
 	}
 
-	case t_to_uinteger: {
+	case t_to_uint: {
 		const unsigned *v = tjs->value;
 		for (size_t i = 0; i < *tjs->count; i++){
 			is_last = (i + 1 == *tjs->count);
@@ -425,10 +425,10 @@ json_generate(char *out, const struct to_json *tjs, size_t len)
 		break;
 	/* These are not valid ctypes */
 	case t_to_boolean:
-	case t_to_integer:
+	case t_to_int:
 	case t_to_null:
 	case t_to_string:
-	case t_to_uinteger:
+	case t_to_uint:
 	case t_to_value:
 	default:
 		return 0;

@@ -35,7 +35,7 @@ main()
 	const struct to_json json[] = {
 		{ .name = "received_data",
 			.value = data,
-			.vtype = t_to_integer,
+			.vtype = t_to_int,
 			.count = &len,
 			.stype = t_to_object
 		},
@@ -66,18 +66,18 @@ Make sure struct arrays are NULL terminated!
 ## About types
 
 ### Describing a single primitive type:
-` const struct to_json tjs = { .value = &val, .vtype = t_to_integer };`
+` const struct to_json tjs = { .value = &val, .vtype = t_to_int };`
 This is the simplest case, all other members are either not needed or initialized to the correct default value.
 
 ### Describing a structured type:
 ```
 const struct to_json tjs[] = {
-  { .value = &val, .vtype = t_to_integer, .stype = t_to_array },
+  { .value = &val, .vtype = t_to_int, .stype = t_to_array },
   { NULL }
 };
 
 const struct to_json tjs[] = {
-  { .name = "name", .value = &val, .vtype = t_to_integer, .stype = t_to_object },
+  { .name = "name", .value = &val, .vtype = t_to_int, .stype = t_to_object },
   { NULL }
 };
 ```
@@ -89,7 +89,7 @@ Additionally we need to set `.stype` to tell what type of structured type we wan
 Probably the most common case when creating an array is using values from an C array.
 There is a shortcut to make this more convenient.
 Instead of creating an explicit array type, use a primitive and provide a count:
-` const struct to_json tjs = { .value = int_arr, .count = 2, .vtype = t_to_integer };`
+` const struct to_json tjs = { .value = int_arr, .count = 2, .vtype = t_to_int };`
 
 ### Integer to hexadecimal notation
 Use `.vtype = t_to_hex` to convert unsigned integers to strings with hexadecimal notation.
