@@ -28,6 +28,7 @@
 #include <getopt.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -719,7 +720,7 @@ test_c_array_hex(void)
 static int
 test_array_primitive_all_int_types(void)
 {
-	char expected[256];
+	char expected[512];
 	char *test = "test_array_primitive_all_int_types";
 
 	int max_int = INT_MAX;
@@ -734,10 +735,43 @@ test_array_primitive_all_int_types(void)
 	long long min_longlong = LLONG_MIN;
 	unsigned long long max_ulonglong = ULLONG_MAX;
 
-	sprintf(expected, "[%d, %d, %u, %ld, %ld, %lu, %lld, %lld, %llu]", \
-	                    max_int, min_int, max_uint, \
-	                    max_long, min_long, max_ulong, \
-	                    max_longlong, min_longlong, max_ulonglong \
+	int8_t max_int8_t = INT8_MAX;
+	int8_t min_int8_t = INT8_MIN;
+	uint8_t max_uint8_t = UINT8_MAX;
+
+	int16_t max_int16_t = INT16_MAX;
+	int16_t min_int16_t = INT16_MIN;
+	uint16_t max_uint16_t = UINT16_MAX;
+
+	int32_t max_int32_t = INT32_MAX;
+	int32_t min_int32_t = INT32_MIN;
+	uint32_t max_uint32_t = UINT32_MAX;
+
+	int64_t max_int64_t = INT64_MAX;
+	int64_t min_int64_t = INT64_MIN;
+	uint64_t max_uint64_t = UINT64_MAX;
+
+	uint8_t max_hex_uint8_t = UINT8_MAX;
+	uint16_t max_hex_uint16_t = UINT16_MAX;
+	uint32_t max_hex_uint32_t = UINT32_MAX;
+	uint64_t max_hex_uint64_t = UINT64_MAX;
+
+	sprintf(expected, "[%d, %d, %u,"
+	                  " %ld, %ld, %lu,"
+	                  " %lld, %lld, %llu,"
+	                  " %d, %d, %u,"
+	                  " %d, %d, %u,"
+	                  " %ld, %ld, %lu,"
+	                  " %lld, %lld, %llu,"
+	                  " \"%X\", \"%X\", \"%lX\", \"%llX\"]",
+	                    max_int, min_int, max_uint,
+	                    max_long, min_long, max_ulong,
+	                    max_longlong, min_longlong, max_ulonglong,
+	                    max_int8_t, min_int8_t, max_uint8_t,
+	                    max_int16_t, min_int16_t, max_uint16_t,
+	                    (long)max_int32_t, (long)min_int32_t, (unsigned long)max_uint32_t,
+	                    (long long)max_int64_t, (long long)min_int64_t, (unsigned long long)max_uint64_t,
+	                    max_hex_uint8_t, max_hex_uint16_t, (unsigned long)max_hex_uint32_t, (unsigned long long)max_hex_uint64_t
 	       );
 
 	size_t len = strlen(expected) + 1;
@@ -755,6 +789,22 @@ test_array_primitive_all_int_types(void)
 		{ .value = &max_longlong, .vtype = t_to_longlong },
 		{ .value = &min_longlong, .vtype = t_to_longlong },
 		{ .value = &max_ulonglong, .vtype = t_to_ulonglong },
+		{ .value = &max_int8_t, .vtype = t_to_int8_t },
+		{ .value = &min_int8_t, .vtype = t_to_int8_t },
+		{ .value = &max_uint8_t, .vtype = t_to_uint8_t },
+		{ .value = &max_int16_t, .vtype = t_to_int16_t },
+		{ .value = &min_int16_t, .vtype = t_to_int16_t },
+		{ .value = &max_uint16_t, .vtype = t_to_uint16_t },
+		{ .value = &max_int32_t, .vtype = t_to_int32_t },
+		{ .value = &min_int32_t, .vtype = t_to_int32_t },
+		{ .value = &max_uint32_t, .vtype = t_to_uint32_t },
+		{ .value = &max_int64_t, .vtype = t_to_int64_t },
+		{ .value = &min_int64_t, .vtype = t_to_int64_t },
+		{ .value = &max_uint64_t, .vtype = t_to_uint64_t },
+		{ .value = &max_hex_uint8_t, .vtype = t_to_hex_u8 },
+		{ .value = &max_hex_uint16_t, .vtype = t_to_hex_u16 },
+		{ .value = &max_hex_uint32_t, .vtype = t_to_hex_u32 },
+		{ .value = &max_hex_uint64_t, .vtype = t_to_hex_u64 },
 		{ NULL }
 	};
 	return run_test(test, expected, result, tjs, len);

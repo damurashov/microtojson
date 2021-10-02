@@ -5,13 +5,22 @@
 
 #include "mtojson.h"
 
+#include <stdint.h>
 #include <string.h>
 
 static char* gen_array(char *, const void *);
 static char* gen_boolean(char *, const void *);
 static char* gen_c_array(char *, const void *);
 static char* gen_hex(char *, const void *);
+static char* gen_hex_u8(char *, const void *);
+static char* gen_hex_u16(char *, const void *);
+static char* gen_hex_u32(char *, const void *);
+static char* gen_hex_u64(char *, const void *);
 static char* gen_int(char *, const void *);
+static char* gen_int8_t(char *, const void *);
+static char* gen_int16_t(char *, const void *);
+static char* gen_int32_t(char *, const void *);
+static char* gen_int64_t(char *, const void *);
 static char* gen_long(char *, const void *);
 static char* gen_longlong(char *, const void *);
 static char* gen_null(char *, const void *);
@@ -19,6 +28,10 @@ static char* gen_object(char *, const void *);
 static char* gen_primitive(char *, const void *);
 static char* gen_string(char *, const void *);
 static char* gen_uint(char *, const void *);
+static char* gen_uint8_t(char *, const void *);
+static char* gen_uint16_t(char *, const void *);
+static char* gen_uint32_t(char *, const void *);
+static char* gen_uint64_t(char *, const void *);
 static char* gen_ulong(char *, const void *);
 static char* gen_ulonglong(char *, const void *);
 static char* gen_value(char *, const void *);
@@ -28,13 +41,25 @@ static char* (* const gen_functions[])(char *, const void *) = {
 	gen_array,
 	gen_boolean,
 	gen_hex,
+	gen_hex_u8,
+	gen_hex_u16,
+	gen_hex_u32,
+	gen_hex_u64,
 	gen_int,
+	gen_int8_t,
+	gen_int16_t,
+	gen_int32_t,
+	gen_int64_t,
 	gen_long,
 	gen_longlong,
 	gen_null,
 	gen_object,
 	gen_string,
 	gen_uint,
+	gen_uint8_t,
+	gen_uint16_t,
+	gen_uint32_t,
+	gen_uint64_t,
 	gen_ulong,
 	gen_ulonglong,
 	gen_value,
@@ -201,6 +226,74 @@ gen_hex(char *out, const void *val)
 }
 
 static char*
+gen_hex_u8(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	if (!reduce_rem_len(2)) // 2 -> ""
+		return NULL;
+
+	*out++ = '"';
+	if (!(out =  utoa(out, *(uint8_t*)val, 16)))
+		return NULL;
+	*out++ = '"';
+
+	return out;
+}
+
+static char*
+gen_hex_u16(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	if (!reduce_rem_len(2)) // 2 -> ""
+		return NULL;
+
+	*out++ = '"';
+	if (!(out =  utoa(out, *(uint16_t*)val, 16)))
+		return NULL;
+	*out++ = '"';
+
+	return out;
+}
+
+static char*
+gen_hex_u32(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	if (!reduce_rem_len(2)) // 2 -> ""
+		return NULL;
+
+	*out++ = '"';
+	if (!(out =  ultoa(out, *(uint32_t*)val, 16)))
+		return NULL;
+	*out++ = '"';
+
+	return out;
+}
+
+static char*
+gen_hex_u64(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	if (!reduce_rem_len(2)) // 2 -> ""
+		return NULL;
+
+	*out++ = '"';
+	if (!(out =  ulltoa(out, *(uint64_t*)val, 16)))
+		return NULL;
+	*out++ = '"';
+
+	return out;
+}
+
+static char*
 gen_int(char *out, const void *val)
 {
 	if (!val)
@@ -221,12 +314,128 @@ gen_int(char *out, const void *val)
 }
 
 static char*
+gen_int8_t(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	int n = *(int8_t*)val;
+	unsigned u = (unsigned)n;
+	if (n < 0){
+		if (!reduce_rem_len(1))
+			return NULL;
+		*out++ = '-';
+		u = -(unsigned)n;
+	}
+
+	if (!(out = utoa(out, u, 10)))
+		return NULL;
+	return out;
+}
+
+static char*
+gen_int16_t(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	int n = *(int16_t*)val;
+	unsigned u = (unsigned)n;
+	if (n < 0){
+		if (!reduce_rem_len(1))
+			return NULL;
+		*out++ = '-';
+		u = -(unsigned)n;
+	}
+
+	if (!(out = utoa(out, u, 10)))
+		return NULL;
+	return out;
+}
+
+static char*
+gen_int32_t(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	int n = *(int*)val;
+	unsigned u = (unsigned)n;
+	if (n < 0){
+		if (!reduce_rem_len(1))
+			return NULL;
+		*out++ = '-';
+		u = -(unsigned)n;
+	}
+
+	if (!(out = utoa(out, u, 10)))
+		return NULL;
+	return out;
+}
+
+static char*
+gen_int64_t(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	int64_t n = *(int64_t*)val;
+	uint64_t u = (uint64_t)n;
+	if (n < 0){
+		if (!reduce_rem_len(1))
+			return NULL;
+		*out++ = '-';
+		u = -(uint64_t)n;
+	}
+
+	if (!(out = ulltoa(out, u, 10)))
+		return NULL;
+	return out;
+}
+
+static char*
 gen_uint(char *out, const void *val)
 {
 	if (!val)
 		return gen_null(out, val);
 
 	return utoa(out, *(unsigned*)val, 10);
+}
+
+static char*
+gen_uint8_t(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	return utoa(out, *(uint8_t*)val, 10);
+}
+
+static char*
+gen_uint16_t(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	return utoa(out, *(uint16_t*)val, 10);
+}
+
+static char*
+gen_uint32_t(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	return ultoa(out, *(uint32_t*)val, 10);
+}
+
+static char*
+gen_uint64_t(char *out, const void *val)
+{
+	if (!val)
+		return gen_null(out, val);
+
+	return ulltoa(out, *(uint64_t*)val, 10);
 }
 
 static char*
@@ -318,6 +527,22 @@ gen_c_array(char *out, const void *val)
 		incr = sizeof(int);
 		break;
 
+	case t_to_int8_t:
+		incr = sizeof(int8_t);
+		break;
+
+	case t_to_int16_t:
+		incr = sizeof(int16_t);
+		break;
+
+	case t_to_int32_t:
+		incr = sizeof(int32_t);
+		break;
+
+	case t_to_int64_t:
+		incr = sizeof(int64_t);
+		break;
+
 	case t_to_long:
 		incr = sizeof(unsigned long);
 		break;
@@ -333,6 +558,26 @@ gen_c_array(char *out, const void *val)
 	case t_to_hex:
 	case t_to_uint:
 		incr = sizeof(unsigned);
+		break;
+
+	case t_to_hex_u8:
+	case t_to_uint8_t:
+		incr = sizeof(uint8_t);
+		break;
+
+	case t_to_hex_u16:
+	case t_to_uint16_t:
+		incr = sizeof(uint16_t);
+		break;
+
+	case t_to_hex_u32:
+	case t_to_uint32_t:
+		incr = sizeof(uint32_t);
+		break;
+
+	case t_to_hex_u64:
+	case t_to_uint64_t:
+		incr = sizeof(uint64_t);
 		break;
 
 	case t_to_ulong:
