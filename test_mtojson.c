@@ -53,8 +53,12 @@ run_test(char *test, char *expected, char *result, const struct to_json *tjs, si
 	memset(result, '\0', len);
 	size_t l = json_generate(result, tjs, len);
 	if (!l) {
-		if (verbose)
+		if (verbose) {
 			printf("%s\n", "NON-EXPECTED buffer overflow");
+			result[len - 1] = '\0';
+			fprintf(stderr, "Expected : %s\n", expected);
+			fprintf(stderr, "Generated: %s\n", result);
+		}
 		exit(124);
 	}
 
