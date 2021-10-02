@@ -6,7 +6,6 @@
 #ifndef RKTA_MTOJSON_H
 #define RKTA_MTOJSON_H
 
-#include <stdint.h>
 #include <stddef.h>
 
 enum json_to_type {
