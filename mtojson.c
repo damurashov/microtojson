@@ -12,7 +12,6 @@ static char* gen_boolean(char *, const void *);
 static char* gen_c_array(char *, const void *);
 static char* gen_hex(char *, const void *);
 static char* gen_integer(char *, const void *);
-static char* gen_json(char *, const void *);
 static char* gen_null(char *, const void *);
 static char* gen_object(char *, const void *);
 static char* gen_primitive(char *, const void *);
@@ -374,7 +373,10 @@ gen_object(char *out, const void *val)
 		*out++ = ':';
 		*out++ = ' ';
 
-		out = gen_json(out, tjs);
+		if (tjs->count)
+			out =  gen_c_array(out, tjs);
+		else
+			out =  gen_functions[tjs->vtype](out, tjs->value);
 
 		if (!out)
 			return NULL;
@@ -394,16 +396,6 @@ gen_object(char *out, const void *val)
 
 static char*
 gen_primitive(char *out, const void *to_json)
-{
-	const struct to_json *tjs = (const struct to_json *)to_json;
-	if (tjs->count)
-		return gen_c_array(out, tjs);
-
-	return gen_functions[tjs->vtype](out, tjs->value);
-}
-
-static char*
-gen_json(char *out, const void *to_json)
 {
 	const struct to_json *tjs = (const struct to_json *)to_json;
 	if (tjs->count)
