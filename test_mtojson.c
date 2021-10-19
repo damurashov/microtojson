@@ -108,7 +108,7 @@ tell_single_test(char* test)
 static int
 test_object_string(void)
 {
-	char *expected = "{\"name\": \"value\"}";
+	char *expected = "{\"name\":\"value\"}";
 	char *test = "test_object_string";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -125,7 +125,7 @@ test_object_string(void)
 static int
 test_object_boolean(void)
 {
-	char *expected = "{\"name\": true}";
+	char *expected = "{\"name\":true}";
 	char *test = "test_object_boolean";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -143,7 +143,7 @@ test_object_boolean(void)
 static int
 test_c_array_boolean(void)
 {
-	char *expected = "[true, false]";
+	char *expected = "[true,false]";
 	char *test = "test_c_array_boolean";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -159,7 +159,7 @@ test_c_array_boolean(void)
 static int
 test_object_array_c_array(void)
 {
-	char *expected = "{\"array\": [[1, 2, 3], [1, 2, 3]]}";
+	char *expected = "{\"array\":[[1,2,3],[1,2,3]]}";
 	char *test = "test_object_array_c_array";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -201,7 +201,7 @@ test_c_array_empty(void)
 static int
 test_object_array_one_empty(void)
 {
-	char *expected = "{\"array\": [[], [1, 2, 3]]}";
+	char *expected = "{\"array\":[[],[1,2,3]]}";
 	char *test = "test_object_array_one_empty";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -244,7 +244,7 @@ test_object_empty(void)
 static int
 test_object_object_null(void)
 {
-	char *expected = "{\"name\": null}";
+	char *expected = "{\"name\":null}";
 	char *test = "test_object_object_null";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -263,12 +263,12 @@ static int
 test_object_object(void)
 {
 	char *expected = "{"
-	                   "\"names\": {"
-	                           "\"name_id\": 1, "
-	                           "\"count\": 3, "
-	                           "\"values\": [\"DEADBEEF\", \"1337BEEF\", \"0000BEEF\"]"
-	                   "}, "
-	                   "\"number_of_names\": 1"
+	                   "\"names\":{"
+	                           "\"name_id\":1,"
+	                           "\"count\":3,"
+	                           "\"values\":[\"DEADBEEF\",\"1337BEEF\",\"0000BEEF\"]"
+	                   "},"
+	                   "\"number_of_names\":1"
 	                 "}";
 
 	char *test = "test_object_object";
@@ -308,9 +308,9 @@ static int
 test_object_object_object(void)
 {
 	char *expected = "{"
-	                   "\"outer\": {"
-	                            "\"middle\": {"
-	                                          "\"inner\": true"
+	                   "\"outer\":{"
+	                            "\"middle\":{"
+	                                          "\"inner\":true"
 	                            "}"
 	                   "}"
 	                 "}";
@@ -345,9 +345,9 @@ static int
 test_object_object_nested_empty(void)
 {
 	char *expected = "{"
-	                   "\"outer\": {"
-	                            "\"middle\": {"
-	                                          "\"inner\": {}"
+	                   "\"outer\":{"
+	                            "\"middle\":{"
+	                                          "\"inner\":{}"
 	                            "}"
 	                   "}"
 	                 "}";
@@ -383,7 +383,7 @@ test_object_object_nested_empty(void)
 static int
 test_object_valuetype(void)
 {
-	char *expected = "{\"name\": This is not valid {}JSON!}";
+	char *expected = "{\"name\":This is not valid {}JSON!}";
 	char *test = "test_object_valuetype";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -400,7 +400,7 @@ test_object_valuetype(void)
 static int
 test_c_array_uint(void)
 {
-	char *expected = "[1, 2]";
+	char *expected = "[1,2]";
 	char *test = "test_c_array_uint";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -445,7 +445,7 @@ test_primitive_null(void)
 static int
 test_array_int(void)
 {
-	char *expected = "[1, 2]";
+	char *expected = "[1,2]";
 	char *test = "test_array_int";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -464,7 +464,7 @@ test_array_int(void)
 static int
 test_array_mixed(void)
 {
-	char *expected = "[1, \"2\"]";
+	char *expected = "[1,\"2\"]";
 	char *test = "test_array_mixed";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -484,7 +484,7 @@ test_array_mixed(void)
 static int
 test_c_array_int(void)
 {
-	char *expected = "[1, 2]";
+	char *expected = "[1,2]";
 	char *test = "test_c_array_int";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -520,17 +520,17 @@ static int
 test_object_from_rfc8259(void)
 {
 	char *expected = "{"
-	                    "\"Image\": {"
-	                        "\"Width\": 800, "
-	                        "\"Height\": 600, "
-	                        "\"Title\": \"View from 15th Floor\", "
-	                        "\"Thumbnail\": {"
-	                            "\"Url\": \"http://www.example.com/image/481989943\", "
-	                            "\"Height\": 125, "
-	                            "\"Width\": 100"
-	                        "}, "
-	                        "\"Animated\": false, "
-	                        "\"IDs\": [116, 943, 234, 38793]"
+	                    "\"Image\":{"
+	                        "\"Width\":800,"
+	                        "\"Height\":600,"
+	                        "\"Title\":\"View from 15th Floor\","
+	                        "\"Thumbnail\":{"
+	                            "\"Url\":\"http://www.example.com/image/481989943\","
+	                            "\"Height\":125,"
+	                            "\"Width\":100"
+	                        "},"
+	                        "\"Animated\":false,"
+	                        "\"IDs\":[116,943,234,38793]"
 	                      "}"
 	                 "}";
 	char *test = "test_object_from_rfc8259";
@@ -581,24 +581,24 @@ test_array_from_rfc8259(void)
 {
 	char *expected = "["
 	                   "{"
-	                      "\"precision\": \"zip\", "
-	                      "\"Latitude\": 37.7668, "
-	                      "\"Longitude\": -122.3959, "
-	                      "\"Address\": \"\", "
-	                      "\"City\": \"SAN FRANCISCO\", "
-	                      "\"State\": \"CA\", "
-	                      "\"Zip\": \"94107\", "
-	                      "\"Country\": \"US\""
-	                   "}, "
+	                      "\"precision\":\"zip\","
+	                      "\"Latitude\":37.7668,"
+	                      "\"Longitude\":-122.3959,"
+	                      "\"Address\":\"\","
+	                      "\"City\":\"SAN FRANCISCO\","
+	                      "\"State\":\"CA\","
+	                      "\"Zip\":\"94107\","
+	                      "\"Country\":\"US\""
+	                   "},"
 	                   "{"
-	                      "\"precision\": \"zip\", "
-	                      "\"Latitude\": 37.371991, "
-	                      "\"Longitude\": -122.026020, "
-	                      "\"Address\": \"\", "
-	                      "\"City\": \"SUNNYVALE\", "
-	                      "\"State\": \"CA\", "
-	                      "\"Zip\": \"94085\", "
-	                      "\"Country\": \"US\""
+	                      "\"precision\":\"zip\","
+	                      "\"Latitude\":37.371991,"
+	                      "\"Longitude\":-122.026020,"
+	                      "\"Address\":\"\","
+	                      "\"City\":\"SUNNYVALE\","
+	                      "\"State\":\"CA\","
+	                      "\"Zip\":\"94085\","
+	                      "\"Country\":\"US\""
 	                   "}"
 	                 "]";
 	char *test = "test_array_from_rfc8259";
@@ -656,7 +656,7 @@ test_array_from_rfc8259(void)
 static int
 test_object_null_value(void)
 {
-	char *expected = "{\"name\": null}";
+	char *expected = "{\"name\":null}";
 	char *test = "test_object_null_value";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -701,7 +701,7 @@ test_primitive_hex(void)
 static int
 test_c_array_hex(void)
 {
-	char *expected = "[\"9\", \"A\", \"B\", \"F\", \"10\", \"11\", \"FE\", \"FF\", \"100\", \"FFF\", \"1000\", \"1001\", \"1010\", \"FFFE\", \"FFFF\"]";
+	char *expected = "[\"9\",\"A\",\"B\",\"F\",\"10\",\"11\",\"FE\",\"FF\",\"100\",\"FFF\",\"1000\",\"1001\",\"1010\",\"FFFE\",\"FFFF\"]";
 	char *test = "test_c_array_hex";
 	size_t len = strlen(expected) + 1;
 	assert(len <= MAXLEN);
@@ -756,14 +756,14 @@ test_array_primitive_all_int_types(void)
 	uint32_t max_hex_uint32_t = UINT32_MAX;
 	uint64_t max_hex_uint64_t = UINT64_MAX;
 
-	sprintf(expected, "[%d, %d, %u,"
-	                  " %ld, %ld, %lu,"
-	                  " %lld, %lld, %llu,"
-	                  " %d, %d, %u,"
-	                  " %d, %d, %u,"
-	                  " %ld, %ld, %lu,"
-	                  " %lld, %lld, %llu,"
-	                  " \"%X\", \"%X\", \"%lX\", \"%llX\"]",
+	sprintf(expected, "[%d,%d,%u,"
+	                  "%ld,%ld,%lu,"
+	                  "%lld,%lld,%llu,"
+	                  "%d,%d,%u,"
+	                  "%d,%d,%u,"
+	                  "%ld,%ld,%lu,"
+	                  "%lld,%lld,%llu,"
+	                  "\"%X\",\"%X\",\"%lX\",\"%llX\"]",
 	                    max_int, min_int, max_uint,
 	                    max_long, min_long, max_ulong,
 	                    max_longlong, min_longlong, max_ulonglong,

@@ -600,10 +600,9 @@ gen_c_array(char *out, const void *val)
 	for (size_t i = 0; i < *tjs->count - 1; i++){
 		if (!(out = (*func)(out, p)))
 			return NULL;
-		if (!reduce_rem_len(2))
+		if (!reduce_rem_len(1))
 			return NULL;
 		*out++ = ',';
-		*out++ = ' ';
 
 		p += incr;
 	}
@@ -635,10 +634,9 @@ gen_array(char *out, const void *val)
 			return NULL;
 		tjs++;
 		if (tjs->value){
-			if (!reduce_rem_len(2))
+			if (!reduce_rem_len(1))
 				return NULL;
 			*out++ = ',';
-			*out++ = ' ';
 		}
 	}
 	*out++ = ']';
@@ -660,7 +658,7 @@ gen_object(char *out, const void *val)
 	while (tjs->name){
 		const char *name = tjs->name;
 		size_t len = strlen(name);
-		if (!reduce_rem_len(len + 4)) // 4 -> "":_
+		if (!reduce_rem_len(len + 3)) // 3 -> "":
 			return NULL;
 
 		*out++ = '"';
@@ -668,7 +666,6 @@ gen_object(char *out, const void *val)
 		out += len;
 		*out++ = '"';
 		*out++ = ':';
-		*out++ = ' ';
 
 		if (tjs->count)
 			out =  gen_c_array(out, tjs);
@@ -680,10 +677,9 @@ gen_object(char *out, const void *val)
 
 		tjs++;
 		if (tjs->name){
-			if (!reduce_rem_len(2))
+			if (!reduce_rem_len(1))
 				return NULL;
 			*out++ = ',';
-			*out++ = ' ';
 		}
 	}
 
