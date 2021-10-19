@@ -25,7 +25,7 @@ WSTACK = -Wstack-usage=80 -fstack-usage
 endif
 
 BUILD_FLAGS += $(ASAN)
-BUILD_FLAGS = $(DEFAULTS)
+BUILD_FLAGS += $(DEFAULTS)
 BUILD_FLAGS += $(CFLAGS)
 
 .PHONY: all
