@@ -1,25 +1,16 @@
 image: openbsd/latest
 sources:
 - https://git.sr.ht/~rkta/microtojson
+packages:
+  - gmake
 triggers:
   - action: email
     condition: failure
     to: mail@rkta.de
 tasks:
-- check_cc: |
+- tests: |
     cd microtojson
-    cc -std=c99 -O2 -Wall -Wextra -pedantic -Wconversion -Werror -Wshadow \
-    -fno-common -c \
-    mtojson.c
-    cc -std=c99 -O2 -Wall -Wextra -pedantic -Wconversion -Werror -Wshadow \
-    -fno-common -Wno-missing-field-initializers \
-    -o test_mtojson mtojson.o test_mtojson.c
-    ./test_mtojson
-    rm -f test_mtojson *.o
-- check_gcc: |
+    CFLAGS='-Werror -Wno-missing-field-initializers' gmake CC=cc ASAN= WSTACK= GCCFLAGS=
+- example: |
     cd microtojson
-    gcc -std=c99 -O2 -Wall -Wextra -pedantic -Werror -Wshadow \
-    -fno-common -Wno-missing-field-initializers \
-    -o test_mtojson mtojson.c test_mtojson.c
-    ./test_mtojson
-    rm -f test_mtojson *.o
+    CFLAGS='-Werror -Wno-missing-field-initializers' gmake CC=cc ASAN= WSTACK= GCCFLAGS= example

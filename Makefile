@@ -8,9 +8,7 @@ DEFAULTS += -Wextra
 DEFAULTS += -Wpedantic
 
 DEFAULTS += -Wconversion
-DEFAULTS += -Wduplicated-cond
 DEFAULTS += -Wformat=2
-DEFAULTS += -Wjump-misses-init
 DEFAULTS += -Wmissing-declarations
 DEFAULTS += -Wnull-dereference
 DEFAULTS += -Wshadow
@@ -19,12 +17,16 @@ DEFAULTS += -Wvla
 
 DEFAULTS += -fno-common
 
+GCCFLAGS += -Wduplicated-cond
+GCCFLAGS += -Wjump-misses-init
+
 ASAN = -fsanitize=address,undefined -fno-omit-frame-pointer
 ifndef ASAN
 WSTACK = -Wstack-usage=80 -fstack-usage
 endif
 
 BUILD_FLAGS += $(ASAN)
+BUILD_FLAGS += $(GCCFLAGS)
 BUILD_FLAGS += $(DEFAULTS)
 BUILD_FLAGS += $(CFLAGS)
 
