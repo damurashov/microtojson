@@ -949,5 +949,5 @@ main(int argc, char *argv[])
 			fprintf(stderr, "%d ", failed_tests[i]);
 		fprintf(stderr, "%s", "\n");
 	}
-	return failed;
+	return failed ? failed : rv;
 }
