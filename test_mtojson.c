@@ -912,7 +912,11 @@ main(int argc, char *argv[])
 		switch (opt){
 		case 'n':
 			single_test = 1;
-			test = atoi(optarg);
+			if (!(test = atoi(optarg))) {
+				fprintf(stderr, "Could not parse test number: %s\n",
+						optarg);
+				return 1;
+			}
 			break;
 		case 'v':
 			verbose = 1;
