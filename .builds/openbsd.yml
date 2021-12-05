@@ -2,6 +2,7 @@ image: openbsd/latest
 sources:
 - https://git.sr.ht/~rkta/microtojson
 packages:
+  - cppcheck
   - gmake
 triggers:
   - action: email
@@ -18,3 +19,6 @@ tasks:
     export CFLAGS='-Werror -Wno-missing-field-initializers'
     export DEVELOPER=1
     gmake ASAN= WSTACK= GCCFLAGS= example
+- cppcheck: |
+    cd microtojson
+    gmake cppcheck

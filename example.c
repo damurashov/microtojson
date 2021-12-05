@@ -8,10 +8,11 @@ int
 main(void)
 {
 	int data[] = { 0, 1, 2, 3 };
+	(void)data; /* Suppress a cppcheck warning */
 
 	enum { MAX_STRING_LEN = 1000 };
 	char json_text[MAX_STRING_LEN];
-	size_t json_len;
+	size_t json_len = 0;
 	rp = json_text;
 
 #ifdef OBJECT
@@ -58,6 +59,7 @@ main(void)
 	json_len = json_generate(json_text, &json, MAX_STRING_LEN);
 #endif
 
-	printf("Length of the generated JSON text is %ld\n", json_len);
+	printf("Length of the generated JSON text is %lu\n",
+			(unsigned long)json_len);
 	printf("Generated JSON text: %s\n", json_text);
 }

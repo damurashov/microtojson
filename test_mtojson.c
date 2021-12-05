@@ -611,16 +611,16 @@ test_array_from_rfc8259(void)
 	 * Since we do not have support for floating point values yet, we help
 	 * ourselfs here by using t_to_value.
 	 */
-	char *precision[] = { "zip", "zip" };
-	char *latitude[] = { "37.7668", "37.371991" };
-	char *longitude[] = { "-122.3959", "-122.026020" };
-	char *address[] = { "", "" };
-	char *city[] = { "SAN FRANCISCO", "SUNNYVALE" };
-	char *state[] = { "CA", "CA" };
-	char *zip[] = { "94107", "94085" };
-	char *country[] = { "US", "US" };
+	const char *precision[] = { "zip", "zip" };
+	const char *latitude[] = { "37.7668", "37.371991" };
+	const char *longitude[] = { "-122.3959", "-122.026020" };
+	const char *address[] = { "", "" };
+	const char *city[] = { "SAN FRANCISCO", "SUNNYVALE" };
+	const char *state[] = { "CA", "CA" };
+	const char *zip[] = { "94107", "94085" };
+	const char *country[] = { "US", "US" };
 
-	struct to_json data_tjs[2][9] = {
+	const struct to_json data_tjs[2][9] = {
 		{
 			{ .name = "precision", .value = precision[0], .vtype = t_to_string, .stype = t_to_array, },
 			{ .name = "Latitude", .value = latitude[0], .vtype = t_to_value, },

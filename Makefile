@@ -57,4 +57,4 @@ clean:
 
 .PHONY: cppcheck
 cppcheck:
-	cppcheck --suppress=missingIncludeSystem -I. --template gcc --enable=all --check-config *.[ch]
+	cppcheck -q --std=c99 --error-exitcode=1 --suppress=missingIncludeSystem -I. --template gcc --enable=all *.[ch]
