@@ -1,9 +1,11 @@
-CC=gcc
+CC ?= gcc
 
 DEFAULTS = -std=c99
 DEFAULTS += -g
 DEFAULTS += -O2
 DEFAULTS += -Wall
+
+ifdef DEVELOPER
 DEFAULTS += -Wextra
 DEFAULTS += -Wpedantic
 
@@ -15,19 +17,18 @@ DEFAULTS += -Wshadow
 DEFAULTS += -Wstrict-prototypes
 DEFAULTS += -Wvla
 
-DEFAULTS += -fno-common
-
-GCCFLAGS += -Wduplicated-cond
-GCCFLAGS += -Wjump-misses-init
-
 ASAN = -fsanitize=address,undefined -fno-omit-frame-pointer
 ifndef ASAN
 WSTACK = -Wstack-usage=80 -fstack-usage
 endif
 
+GCCFLAGS += -Wduplicated-cond
+GCCFLAGS += -Wjump-misses-init
+endif
+
 BUILD_FLAGS += $(ASAN)
-BUILD_FLAGS += $(GCCFLAGS)
 BUILD_FLAGS += $(DEFAULTS)
+BUILD_FLAGS += $(GCCFLAGS)
 BUILD_FLAGS += $(CFLAGS)
 
 .PHONY: all

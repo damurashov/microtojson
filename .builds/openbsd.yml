@@ -10,7 +10,11 @@ triggers:
 tasks:
 - tests: |
     cd microtojson
-    CFLAGS='-Werror -Wno-missing-field-initializers' gmake CC=cc ASAN= WSTACK= GCCFLAGS=
+    export CFLAGS='-Werror -Wno-missing-field-initializers'
+    export DEVELOPER=1
+    gmake ASAN= WSTACK= GCCFLAGS=
 - example: |
     cd microtojson
-    CFLAGS='-Werror -Wno-missing-field-initializers' gmake CC=cc ASAN= WSTACK= GCCFLAGS= example
+    export CFLAGS='-Werror -Wno-missing-field-initializers'
+    export DEVELOPER=1
+    gmake ASAN= WSTACK= GCCFLAGS= example

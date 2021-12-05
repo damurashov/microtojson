@@ -8,7 +8,11 @@ triggers:
 tasks:
 - tests: |
     cd microtojson
-    CFLAGS=-Werror make ASAN=
+    export CFLAGS=-Werror
+    export DEVELOPER=1
+    make ASAN=
 - example: |
     cd microtojson
+    export CFLAGS=-Werror
+    export DEVELOPER=1
     make ASAN= example
