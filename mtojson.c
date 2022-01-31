@@ -98,7 +98,7 @@ gen_boolean(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	if (*(_Bool*)val)
+	if (*(const _Bool*)val)
 		return strcpy_val(out, "true", 4);
 	else
 		return strcpy_val(out, "false", 5);
@@ -218,7 +218,7 @@ gen_hex(char *out, const void *val)
 		return NULL;
 
 	*out++ = '"';
-	if (!(out =  utoa(out, *(unsigned*)val, 16)))
+	if (!(out =  utoa(out, *(const unsigned*)val, 16)))
 		return NULL;
 	*out++ = '"';
 
@@ -235,7 +235,7 @@ gen_hex_u8(char *out, const void *val)
 		return NULL;
 
 	*out++ = '"';
-	if (!(out =  utoa(out, *(uint8_t*)val, 16)))
+	if (!(out =  utoa(out, *(const uint8_t*)val, 16)))
 		return NULL;
 	*out++ = '"';
 
@@ -252,7 +252,7 @@ gen_hex_u16(char *out, const void *val)
 		return NULL;
 
 	*out++ = '"';
-	if (!(out =  utoa(out, *(uint16_t*)val, 16)))
+	if (!(out =  utoa(out, *(const uint16_t*)val, 16)))
 		return NULL;
 	*out++ = '"';
 
@@ -269,7 +269,7 @@ gen_hex_u32(char *out, const void *val)
 		return NULL;
 
 	*out++ = '"';
-	if (!(out =  ultoa(out, *(uint32_t*)val, 16)))
+	if (!(out =  ultoa(out, *(const uint32_t*)val, 16)))
 		return NULL;
 	*out++ = '"';
 
@@ -286,7 +286,7 @@ gen_hex_u64(char *out, const void *val)
 		return NULL;
 
 	*out++ = '"';
-	if (!(out =  ulltoa(out, *(uint64_t*)val, 16)))
+	if (!(out =  ulltoa(out, *(const uint64_t*)val, 16)))
 		return NULL;
 	*out++ = '"';
 
@@ -299,7 +299,7 @@ gen_int(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	int n = *(int*)val;
+	int n = *(const int*)val;
 	unsigned u = (unsigned)n;
 	if (n < 0){
 		if (!reduce_rem_len(1))
@@ -319,7 +319,7 @@ gen_int8_t(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	int n = *(int8_t*)val;
+	int n = *(const int8_t*)val;
 	unsigned u = (unsigned)n;
 	if (n < 0){
 		if (!reduce_rem_len(1))
@@ -339,7 +339,7 @@ gen_int16_t(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	int n = *(int16_t*)val;
+	int n = *(const int16_t*)val;
 	unsigned u = (unsigned)n;
 	if (n < 0){
 		if (!reduce_rem_len(1))
@@ -359,7 +359,7 @@ gen_int32_t(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	int n = *(int*)val;
+	int n = *(const int*)val;
 	unsigned u = (unsigned)n;
 	if (n < 0){
 		if (!reduce_rem_len(1))
@@ -379,7 +379,7 @@ gen_int64_t(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	int64_t n = *(int64_t*)val;
+	int64_t n = *(const int64_t*)val;
 	uint64_t u = (uint64_t)n;
 	if (n < 0){
 		if (!reduce_rem_len(1))
@@ -399,7 +399,7 @@ gen_uint(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return utoa(out, *(unsigned*)val, 10);
+	return utoa(out, *(const unsigned*)val, 10);
 }
 
 static char*
@@ -408,7 +408,7 @@ gen_uint8_t(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return utoa(out, *(uint8_t*)val, 10);
+	return utoa(out, *(const uint8_t*)val, 10);
 }
 
 static char*
@@ -417,7 +417,7 @@ gen_uint16_t(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return utoa(out, *(uint16_t*)val, 10);
+	return utoa(out, *(const uint16_t*)val, 10);
 }
 
 static char*
@@ -426,7 +426,7 @@ gen_uint32_t(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return ultoa(out, *(uint32_t*)val, 10);
+	return ultoa(out, *(const uint32_t*)val, 10);
 }
 
 static char*
@@ -435,7 +435,7 @@ gen_uint64_t(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return ulltoa(out, *(uint64_t*)val, 10);
+	return ulltoa(out, *(const uint64_t*)val, 10);
 }
 
 static char*
@@ -444,7 +444,7 @@ gen_long(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	long n = *(long*)val;
+	long n = *(const long*)val;
 	unsigned long u = (unsigned long)n;
 	if (n < 0){
 		if (!reduce_rem_len(1))
@@ -464,7 +464,7 @@ gen_longlong(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	long long n = *(long long*)val;
+	long long n = *(const long long*)val;
 	unsigned long long u = (unsigned long long)n;
 	if (n < 0){
 		if (!reduce_rem_len(1))
@@ -485,7 +485,7 @@ gen_ulong(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return ultoa(out, *(unsigned long*)val, 10);
+	return ultoa(out, *(const unsigned long*)val, 10);
 }
 
 static char*
@@ -494,7 +494,7 @@ gen_ulonglong(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return ulltoa(out, *(unsigned long long*)val, 10);
+	return ulltoa(out, *(const unsigned long long*)val, 10);
 }
 
 static char*

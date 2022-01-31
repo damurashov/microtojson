@@ -9,6 +9,7 @@ ifdef DEVELOPER
 DEFAULTS += -Wextra
 DEFAULTS += -Wpedantic
 
+DEFAULTS += -Wcast-qual
 DEFAULTS += -Wconversion
 DEFAULTS += -Wformat=2
 DEFAULTS += -Wmissing-declarations
