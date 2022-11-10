@@ -107,7 +107,6 @@ To convert an unsigned integer to a string with hexadecimal notation use the cor
 ## Contributing
 
 This project is mainly developed on [sourcehut](https://sr.ht/~rkta/microtojson/).
-It is mirrored on [gitlab](https://gitlab.com/rkta/microtojson) and [github](https://github.com/rkta/microtojson).
 
 If you want to contribute or find any bugs, feel free to choose the way that best fits your work style.
 
