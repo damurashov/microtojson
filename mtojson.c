@@ -308,9 +308,7 @@ gen_int(char *out, const void *val)
 		u = -(unsigned)n;
 	}
 
-	if (!(out = utoa(out, u, 10)))
-		return NULL;
-	return out;
+	return utoa(out, u, 10);
 }
 
 static char*
@@ -328,9 +326,7 @@ gen_int8_t(char *out, const void *val)
 		u = -(unsigned)n;
 	}
 
-	if (!(out = utoa(out, u, 10)))
-		return NULL;
-	return out;
+	return utoa(out, u, 10);
 }
 
 static char*
@@ -348,9 +344,7 @@ gen_int16_t(char *out, const void *val)
 		u = -(unsigned)n;
 	}
 
-	if (!(out = utoa(out, u, 10)))
-		return NULL;
-	return out;
+	return utoa(out, u, 10);
 }
 
 static char*
@@ -368,9 +362,7 @@ gen_int32_t(char *out, const void *val)
 		u = -(unsigned)n;
 	}
 
-	if (!(out = utoa(out, u, 10)))
-		return NULL;
-	return out;
+	return utoa(out, u, 10);
 }
 
 static char*
@@ -388,9 +380,7 @@ gen_int64_t(char *out, const void *val)
 		u = -(uint64_t)n;
 	}
 
-	if (!(out = ulltoa(out, u, 10)))
-		return NULL;
-	return out;
+	return ulltoa(out, u, 10);
 }
 
 static char*
@@ -453,9 +443,7 @@ gen_long(char *out, const void *val)
 		u = -(unsigned long)n;
 	}
 
-	if (!(out = ultoa(out, u, 10)))
-		return NULL;
-	return out;
+	return ultoa(out, u, 10);
 }
 
 static char*
@@ -473,9 +461,7 @@ gen_longlong(char *out, const void *val)
 		u = -(unsigned long long)n;
 	}
 
-	if (!(out = ulltoa(out, u, 10)))
-		return NULL;
-	return out;
+	return ulltoa(out, u, 10);
 }
 
 
