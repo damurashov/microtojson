@@ -8,6 +8,10 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum json_to_type {
 	t_to_primitive,
 	t_to_array,
@@ -47,4 +51,9 @@ struct to_json {
 
 /* Returns the length of the generated JSON text or 0 in case of an error. */
 size_t json_generate(char *out, const struct to_json *tjs, size_t len);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
