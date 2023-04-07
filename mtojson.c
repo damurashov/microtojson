@@ -152,7 +152,7 @@ gen_string(char *out, const void *val)
 }
 
 static char*
-utoa(char *dst, unsigned n, unsigned base)
+mtojson_utoa(char *dst, unsigned n, unsigned base)
 {
 	char *s = dst;
 	char *e;
@@ -218,7 +218,7 @@ gen_hex(char *out, const void *val)
 		return NULL;
 
 	*out++ = '"';
-	if (!(out =  utoa(out, *(const unsigned*)val, 16)))
+	if (!(out =  mtojson_utoa(out, *(const unsigned*)val, 16)))
 		return NULL;
 	*out++ = '"';
 
@@ -235,7 +235,7 @@ gen_hex_u8(char *out, const void *val)
 		return NULL;
 
 	*out++ = '"';
-	if (!(out =  utoa(out, *(const uint8_t*)val, 16)))
+	if (!(out =  mtojson_utoa(out, *(const uint8_t*)val, 16)))
 		return NULL;
 	*out++ = '"';
 
@@ -252,7 +252,7 @@ gen_hex_u16(char *out, const void *val)
 		return NULL;
 
 	*out++ = '"';
-	if (!(out =  utoa(out, *(const uint16_t*)val, 16)))
+	if (!(out =  mtojson_utoa(out, *(const uint16_t*)val, 16)))
 		return NULL;
 	*out++ = '"';
 
@@ -308,7 +308,7 @@ gen_int(char *out, const void *val)
 		u = -(unsigned)n;
 	}
 
-	return utoa(out, u, 10);
+	return mtojson_utoa(out, u, 10);
 }
 
 static char*
@@ -326,7 +326,7 @@ gen_int8_t(char *out, const void *val)
 		u = -(unsigned)n;
 	}
 
-	return utoa(out, u, 10);
+	return mtojson_utoa(out, u, 10);
 }
 
 static char*
@@ -344,7 +344,7 @@ gen_int16_t(char *out, const void *val)
 		u = -(unsigned)n;
 	}
 
-	return utoa(out, u, 10);
+	return mtojson_utoa(out, u, 10);
 }
 
 static char*
@@ -362,7 +362,7 @@ gen_int32_t(char *out, const void *val)
 		u = -(unsigned)n;
 	}
 
-	return utoa(out, u, 10);
+	return mtojson_utoa(out, u, 10);
 }
 
 static char*
@@ -389,7 +389,7 @@ gen_uint(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return utoa(out, *(const unsigned*)val, 10);
+	return mtojson_utoa(out, *(const unsigned*)val, 10);
 }
 
 static char*
@@ -398,7 +398,7 @@ gen_uint8_t(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return utoa(out, *(const uint8_t*)val, 10);
+	return mtojson_utoa(out, *(const uint8_t*)val, 10);
 }
 
 static char*
@@ -407,7 +407,7 @@ gen_uint16_t(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return utoa(out, *(const uint16_t*)val, 10);
+	return mtojson_utoa(out, *(const uint16_t*)val, 10);
 }
 
 static char*
