@@ -171,7 +171,7 @@ mtojson_utoa(char *dst, unsigned n, unsigned base)
 }
 
 static char*
-ultoa(char *dst, unsigned long n, unsigned base)
+mtojson_ultoa(char *dst, unsigned long n, unsigned base)
 {
 	char *s = dst;
 	char *e;
@@ -269,7 +269,7 @@ gen_hex_u32(char *out, const void *val)
 		return NULL;
 
 	*out++ = '"';
-	if (!(out =  ultoa(out, *(const uint32_t*)val, 16)))
+	if (!(out =  mtojson_ultoa(out, *(const uint32_t*)val, 16)))
 		return NULL;
 	*out++ = '"';
 
@@ -416,7 +416,7 @@ gen_uint32_t(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return ultoa(out, *(const uint32_t*)val, 10);
+	return mtojson_ultoa(out, *(const uint32_t*)val, 10);
 }
 
 static char*
@@ -443,7 +443,7 @@ gen_long(char *out, const void *val)
 		u = -(unsigned long)n;
 	}
 
-	return ultoa(out, u, 10);
+	return mtojson_ultoa(out, u, 10);
 }
 
 static char*
@@ -471,7 +471,7 @@ gen_ulong(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return ultoa(out, *(const unsigned long*)val, 10);
+	return mtojson_ultoa(out, *(const unsigned long*)val, 10);
 }
 
 static char*
