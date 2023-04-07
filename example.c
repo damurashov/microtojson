@@ -15,6 +15,26 @@ main(void)
 	size_t json_len = 0;
 	rp = json_text;
 
+#ifdef MIXED_OBJECT
+	const char *string_value = "Beacon 1";
+	const int enabled_value = 1;
+	const struct to_json json[] = {
+		{
+			.name = "beacon name",
+			.value = string_value,
+			.vtype = t_to_string,
+			.stype = t_to_object
+		},
+		{
+			.name = "state enabled",
+			.value = &enabled_value,
+			.vtype = t_to_boolean,
+		},
+		{ NULL }
+	};
+	json_len = json_generate(json_text, json, MAX_STRING_LEN);
+#endif
+
 #ifdef OBJECT
 	size_t len = sizeof(data)/sizeof(data[0]);
 	/* Define the JSON object */
