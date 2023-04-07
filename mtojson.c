@@ -190,7 +190,7 @@ mtojson_ultoa(char *dst, unsigned long n, unsigned base)
 }
 
 static char*
-ulltoa(char *dst, unsigned long long n, unsigned base)
+mtojson_ulltoa(char *dst, unsigned long long n, unsigned base)
 {
 	char *s = dst;
 	char *e;
@@ -286,7 +286,7 @@ gen_hex_u64(char *out, const void *val)
 		return NULL;
 
 	*out++ = '"';
-	if (!(out =  ulltoa(out, *(const uint64_t*)val, 16)))
+	if (!(out =  mtojson_ulltoa(out, *(const uint64_t*)val, 16)))
 		return NULL;
 	*out++ = '"';
 
@@ -380,7 +380,7 @@ gen_int64_t(char *out, const void *val)
 		u = -(uint64_t)n;
 	}
 
-	return ulltoa(out, u, 10);
+	return mtojson_ulltoa(out, u, 10);
 }
 
 static char*
@@ -425,7 +425,7 @@ gen_uint64_t(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return ulltoa(out, *(const uint64_t*)val, 10);
+	return mtojson_ulltoa(out, *(const uint64_t*)val, 10);
 }
 
 static char*
@@ -461,7 +461,7 @@ gen_longlong(char *out, const void *val)
 		u = -(unsigned long long)n;
 	}
 
-	return ulltoa(out, u, 10);
+	return mtojson_ulltoa(out, u, 10);
 }
 
 
@@ -480,7 +480,7 @@ gen_ulonglong(char *out, const void *val)
 	if (!val)
 		return gen_null(out, val);
 
-	return ulltoa(out, *(const unsigned long long*)val, 10);
+	return mtojson_ulltoa(out, *(const unsigned long long*)val, 10);
 }
 
 static char*
