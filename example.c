@@ -18,6 +18,7 @@ main(void)
 #ifdef MIXED_OBJECT
 	const char *string_value = "Beacon 1";
 	const int enabled_value = 1;
+	const int integer_value = 123;
 	const struct to_json json[] = {
 		{
 			.name = "beacon name",
@@ -29,6 +30,11 @@ main(void)
 			.name = "state enabled",
 			.value = &enabled_value,
 			.vtype = t_to_boolean,
+		},
+		{
+			.name = "position",
+			.value = &integer_value,
+			.vtype = t_to_int,
 		},
 		{ NULL }
 	};
