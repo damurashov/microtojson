@@ -51,6 +51,7 @@ example: mtojson.o example.c
 	$(CC) -Werror $(BUILD_FLAGS) -DARRAY -o $@_ARRAY $^
 	$(CC) -Werror $(BUILD_FLAGS) -DC_ARRAY -o $@_C_ARRAY $^
 	$(CC) -Werror $(BUILD_FLAGS) -DPRIMITIVE -o $@_PRIMITIVE $^
+	$(CC) -Werror $(BUILD_FLAGS) -DMIXED_OBJECT -o $@_MIXED_OBJECT $^
 
 .PHONY: clean
 clean:
